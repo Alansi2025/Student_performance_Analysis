@@ -207,6 +207,26 @@ def get_current_user():
     return user
 
 # Routes
+
+@app.context_processor
+def inject_global_vars():
+    user_id = session.get("user_id")
+    current_user = None
+    layout = "base.html"
+    roll_no = "N/A"
+    
+    if user_id:
+        db = SessionLocal()
+        current_user = db.query(models.User).filter_by(id=user_id).first()
+        if current_user:
+            layout = "teacher_layout.html" if current_user.role == "teacher" else "student_layout.html"
+            if current_user.role == "student":
+                profile = db.query(models.StudentProfile).filter_by(user_id=current_user.id).first()
+                if profile:
+                    roll_no = profile.roll_no
+        db.close()
+    return dict(layout_template=layout, current_user=current_user, current_roll_no=roll_no)
+
 @app.route("/")
 def home():
     if "user_id" in session:
