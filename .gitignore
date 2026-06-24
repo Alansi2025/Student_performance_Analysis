@@ -13,3 +13,4 @@ __pycache__/
 # SQLite databases
 *.db
 *.sqlite3
+scratch/
