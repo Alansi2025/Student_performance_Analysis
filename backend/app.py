@@ -660,6 +660,25 @@ def student_dashboard():
         mascot_rec=mascot_rec
     )
 
+@app.route('/api/chat', methods=['POST'])
+def api_chat():
+    data = request.get_json()
+    if not data or 'messages' not in data:
+        return jsonify({'error': 'messages is required'}), 400
+    
+    messages = data['messages']
+    
+    system_prompt = {
+        "role": "system",
+        "content": "You are the Academic Atelier AI mascot, a helpful and encouraging robotic owl. Keep your answers concise, engaging, and educational."
+    }
+    
+    # Insert system prompt at the beginning
+    messages.insert(0, system_prompt)
+    
+    response_text = ai_module.get_ai_chat_response(messages)
+    return jsonify({'message': response_text})
+
 if __name__ == "__main__":
     port = int(os.getenv("FLASK_PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=True)

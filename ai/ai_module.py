@@ -15,7 +15,7 @@ use_nvidia = bool(NVIDIA_API_KEY)
 use_gemini = bool(GEMINI_API_KEY) and not use_nvidia
 
 LOCAL_OLLAMA_URL = os.getenv("LOCAL_OLLAMA_URL", "http://localhost:11434/api/generate")
-LOCAL_OLLAMA_MODEL = os.getenv("LOCAL_OLLAMA_MODEL", "gemma")
+LOCAL_OLLAMA_MODEL = os.getenv("LOCAL_OLLAMA_MODEL", "gemma4:12b")
 
 if use_nvidia:
     logger.info("Nvidia NIM API configured for text completions.")
@@ -175,3 +175,61 @@ def predict_next_year_paper(course_name, extracted_text):
         return ai_response
         
     return "## Predicted Practice Paper\n\n*Error: Could not connect to AI services to generate the practice paper.*"
+
+
+def get_ai_chat_response(messages):
+    """Sends a conversational chat request to Ollama, Gemini, or Nvidia."""
+    if use_nvidia:
+        try:
+            url = "https://integrate.api.nvidia.com/v1/chat/completions"
+            headers = {
+                "Authorization": f"Bearer {NVIDIA_API_KEY}",
+                "Content-Type": "application/json"
+            }
+            payload = {
+                "model": "meta/llama-3.1-8b-instruct",
+                "messages": messages,
+                "temperature": 0.5,
+                "max_tokens": 1024
+            }
+            response = requests.post(url, json=payload, headers=headers, timeout=10)
+            if response.status_code == 200:
+                result = response.json()
+                return result["choices"][0]["message"]["content"].strip()
+            else:
+                logger.error(f"Nvidia API returned status code {response.status_code}: {response.text}")
+                return "Sorry, there was an error with the AI service."
+        except Exception as e:
+            logger.error(f"Error calling Nvidia API: {e}")
+            return "Sorry, there was an error connecting to the AI service."
+    elif use_gemini:
+        try:
+            model = genai.GenerativeModel("gemini-1.5-flash")
+            conversation = ""
+            for msg in messages:
+                role = "User" if msg["role"] == "user" else "Assistant"
+                conversation += f"{role}: {msg['content']}\n"
+            response = model.generate_content(conversation)
+            return response.text.strip()
+        except Exception as e:
+            logger.error(f"Error calling Gemini API: {e}")
+            return "Sorry, I am currently unavailable."
+    else:
+        try:
+            # Ollama API
+            url = LOCAL_OLLAMA_URL.replace("/api/generate", "/api/chat")
+            payload = {
+                "model": LOCAL_OLLAMA_MODEL,
+                "messages": messages,
+                "stream": False
+            }
+            response = requests.post(url, json=payload, timeout=20)
+            if response.status_code == 200:
+                result = response.json()
+                return result.get("message", {}).get("content", "").strip()
+            else:
+                logger.error(f"Ollama API returned status code {response.status_code}: {response.text}")
+                return "Sorry, my brain (Ollama) is currently offline or returning an error."
+        except Exception as e:
+            logger.error(f"Error calling Ollama API: {e}")
+            return "Sorry, I couldn't reach my local brain (Ollama)."
