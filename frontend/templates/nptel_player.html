@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>{{ course.title }} | NPTEL Player</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0f0f0f",
+                        "surface": "#f9f9f9",
+                        "surface-container": "#f1f1f1",
+                        "on-surface-variant": "#606060",
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        /* Scrollbar styling for the playlist */
+        .playlist-scroll::-webkit-scrollbar { width: 8px; }
+        .playlist-scroll::-webkit-scrollbar-track { background: transparent; }
+        .playlist-scroll::-webkit-scrollbar-thumb { background-color: #d1d5db; border-radius: 20px; }
+    </style>
+</head>
+<body class="bg-surface text-primary antialiased h-screen overflow-hidden flex flex-col">
+    
+    <!-- Navbar -->
+    <nav class="h-16 px-6 flex items-center justify-between bg-white border-b border-gray-200 shrink-0">
+        <div class="flex items-center gap-4">
+            <a href="{{ url_for('nptel_courses') }}" class="p-2 hover:bg-gray-100 rounded-full transition-colors flex items-center justify-center" title="Back to Courses">
+                <span class="material-symbols-outlined text-2xl">arrow_back</span>
+            </a>
+            <div class="flex items-center gap-2 text-red-600">
+                <span class="material-symbols-outlined text-3xl">video_library</span>
+                <span class="font-headline font-bold text-xl tracking-tight text-primary">NPTEL Player</span>
+            </div>
+        </div>
+        <div class="hidden md:flex flex-1 max-w-2xl mx-8">
+            <div class="w-full bg-gray-100 rounded-full px-6 py-2 flex items-center border border-gray-200">
+                <span class="material-symbols-outlined text-gray-500 mr-3">search</span>
+                <input type="text" placeholder="Search within course..." class="bg-transparent border-none outline-none w-full text-sm placeholder-gray-500 focus:ring-0">
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-sm">
+                {{ user.name[0] }}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 overflow-y-auto lg:overflow-hidden p-4 lg:p-6 lg:flex gap-6 max-w-[1600px] mx-auto w-full">
+        
+        <!-- Video Player Section (Left) -->
+        <div class="flex-1 lg:overflow-y-auto playlist-scroll pb-6">
+            <div class="w-full bg-black rounded-xl overflow-hidden aspect-video shadow-lg">
+                {% if current_video %}
+                <iframe class="w-full h-full" 
+                        src="https://www.youtube.com/embed/{{ current_video.youtube_id }}?autoplay=1&rel=0" 
+                        title="{{ current_video.title }}" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                </iframe>
+                {% else %}
+                <div class="w-full h-full flex flex-col items-center justify-center text-white">
+                    <span class="material-symbols-outlined text-6xl mb-2">error</span>
+                    <p>No video selected or available.</p>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="mt-4 px-2">
+                <h1 class="text-xl md:text-2xl font-bold text-primary">{{ current_video.title if current_video else course.title }}</h1>
+                <div class="mt-3 flex items-center justify-between border-b border-gray-200 pb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 border border-gray-300">
+                            <span class="material-symbols-outlined">school</span>
+                        </div>
+                        <div>
+                            <p class="font-bold text-sm">{{ course.instructor }}</p>
+                            <p class="text-xs text-on-surface-variant">NPTEL Certified Instructor</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-full font-medium text-sm transition-colors">
+                            <span class="material-symbols-outlined text-[20px]">thumb_up</span>
+                            Like
+                        </button>
+                        <button class="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-full font-medium text-sm transition-colors">
+                            <span class="material-symbols-outlined text-[20px]">share</span>
+                            Share
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mt-4 bg-surface-container rounded-xl p-4 text-sm text-primary">
+                    <p class="font-semibold mb-1">Course Description</p>
+                    <p class="whitespace-pre-wrap">{{ course.description }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Playlist Sidebar (Right) -->
+        <div class="w-full lg:w-[400px] shrink-0 mt-6 lg:mt-0 flex flex-col h-full bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+            <div class="p-4 border-b border-gray-200 shrink-0">
+                <h3 class="font-bold text-lg leading-tight">{{ course.title }}</h3>
+                <p class="text-sm text-on-surface-variant mt-1">{{ videos|length }} lectures</p>
+            </div>
+            <div class="flex-1 overflow-y-auto playlist-scroll p-2">
+                {% for video in videos %}
+                <a href="{{ url_for('nptel_course', course_id=course.id, video_id=video.youtube_id) }}" 
+                   class="flex gap-3 p-2 rounded-lg hover:bg-gray-100 transition-colors {{ 'bg-gray-100' if current_video and current_video.id == video.id else '' }}">
+                    <div class="relative w-32 shrink-0 aspect-video bg-gray-200 rounded-md overflow-hidden">
+                        <img src="https://img.youtube.com/vi/{{ video.youtube_id }}/mqdefault.jpg" alt="{{ video.title }}" class="w-full h-full object-cover">
+                        <div class="absolute bottom-1 right-1 bg-black/80 text-white text-[10px] font-medium px-1 rounded">
+                            {{ video.order }}
+                        </div>
+                        {% if current_video and current_video.id == video.id %}
+                        <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-white">play_arrow</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="flex flex-col pt-1">
+                        <h4 class="font-medium text-sm leading-tight text-primary line-clamp-2">{{ video.title }}</h4>
+                        <p class="text-xs text-on-surface-variant mt-1 line-clamp-1">{{ course.instructor }}</p>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+
+    </main>
+</body>
+</html>

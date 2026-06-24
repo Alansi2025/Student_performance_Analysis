@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Practice Papers | Academic Atelier</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <!-- Markdown to HTML rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#001a40",
+                        "surface": "#f8f9fa",
+                        "surface-container": "#edeeef",
+                        "on-surface-variant": "#454652",
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .markdown-body h1 { font-size: 1.875rem; font-weight: 700; margin-bottom: 1rem; color: #001a40; }
+        .markdown-body h2 { font-size: 1.5rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.75rem; color: #001a40; }
+        .markdown-body h3 { font-size: 1.25rem; font-weight: 600; margin-top: 1rem; margin-bottom: 0.5rem; }
+        .markdown-body p { margin-bottom: 1rem; }
+        .markdown-body ul { list-style-type: disc; margin-left: 1.5rem; margin-bottom: 1rem; }
+        .markdown-body ol { list-style-type: decimal; margin-left: 1.5rem; margin-bottom: 1rem; }
+        .markdown-body strong { font-weight: 600; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased">
+    <main class="min-h-screen p-8 max-w-4xl mx-auto space-y-8">
+        
+        <header class="flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-['Manrope'] font-bold text-primary">Practice Papers Generator</h1>
+                <p class="text-on-surface-variant mt-2">Upload a past paper and let AI predict next year's questions.</p>
+            </div>
+            <a href="{{ '/' + role if role else '/' }}" class="flex items-center gap-2 px-4 py-2 bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300 transition-colors">
+                <span class="material-symbols-outlined text-sm">arrow_back</span>
+                Back to Dashboard
+            </a>
+        </header>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="p-4 rounded-lg {% if category == 'error' %}bg-red-100 text-red-800{% else %}bg-indigo-100 text-indigo-800{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Upload Form -->
+        <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+            <form action="/practice_papers" method="POST" enctype="multipart/form-data" class="space-y-6">
+                <input type="hidden" name="role" value="{{ role }}">
+                
+                <div>
+                    <label class="block text-sm font-semibold text-primary mb-2">Course Name</label>
+                    <input type="text" name="course_name" required placeholder="e.g. Advanced Mathematics 101" class="w-full rounded-lg border-slate-300 focus:border-indigo-500 focus:ring-indigo-500">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-semibold text-primary mb-2">Past Test Paper (PDF)</label>
+                    <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-slate-300 border-dashed rounded-lg">
+                        <div class="space-y-1 text-center">
+                            <span class="material-symbols-outlined text-4xl text-slate-400">upload_file</span>
+                            <div class="flex text-sm text-slate-600 justify-center">
+                                <label for="file-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500">
+                                    <span>Upload a file</span>
+                                    <input id="file-upload" name="file" type="file" class="sr-only" accept=".pdf" required>
+                                </label>
+                            </div>
+                            <p class="text-xs text-slate-500">PDF up to 10MB</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end">
+                    <button type="submit" class="bg-primary text-white px-6 py-2.5 rounded-lg font-medium hover:bg-indigo-900 transition-colors flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sm">auto_awesome</span>
+                        Generate Practice Paper
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Result Display -->
+        {% if generated_paper %}
+        <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 mt-8">
+            <h2 class="text-xl font-bold text-primary mb-6 flex items-center gap-2 border-b pb-4">
+                <span class="material-symbols-outlined text-indigo-600">description</span>
+                Generated Practice Paper
+            </h2>
+            <div id="markdown-content" class="markdown-body text-slate-800 leading-relaxed"></div>
+        </div>
+        
+        <script>
+            // Render markdown content safely
+            const rawContent = {{ generated_paper | tojson | safe }};
+            document.getElementById('markdown-content').innerHTML = marked.parse(rawContent);
+        </script>
+        {% endif %}
+
+    </main>
+</body>
+</html>

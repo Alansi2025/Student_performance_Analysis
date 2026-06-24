@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Academic Atelier - Teacher Dashboard</title>
+    <!-- Fonts and Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-error": "#ffffff",
+              "secondary-container": "#959efd",
+              "tertiary-fixed": "#89fa9b",
+              "on-secondary-container": "#27308a",
+              "surface-container-lowest": "#ffffff",
+              "on-tertiary-container": "#3aad57",
+              "tertiary-container": "#003913",
+              "surface-variant": "#e1e3e4",
+              "on-primary-container": "#5a96ff",
+              "secondary": "#4c56af",
+              "inverse-primary": "#adc7ff",
+              "surface-dim": "#d9dadb",
+              "on-background": "#191c1d",
+              "error": "#ba1a1a",
+              "outline-variant": "#c6c5d4",
+              "surface": "#f8f9fa",
+              "on-tertiary-fixed-variant": "#005320",
+              "surface-tint": "#005bc0",
+              "tertiary": "#002108",
+              "inverse-on-surface": "#f0f1f2",
+              "on-secondary-fixed": "#000767",
+              "error-container": "#ffdad6",
+              "surface-container": "#edeeef",
+              "on-primary-fixed-variant": "#004493",
+              "on-tertiary": "#ffffff",
+              "on-error-container": "#93000a",
+              "primary-fixed-dim": "#adc7ff",
+              "tertiary-fixed-dim": "#6ddd81",
+              "on-primary-fixed": "#001a41",
+              "on-secondary": "#ffffff",
+              "on-secondary-fixed-variant": "#343d96",
+              "outline": "#767683",
+              "on-primary": "#ffffff",
+              "secondary-fixed": "#e0e0ff",
+              "surface-container-high": "#e7e8e9",
+              "surface-container-low": "#f3f4f5",
+              "background": "#f8f9fa",
+              "surface-bright": "#f8f9fa",
+              "on-surface": "#191c1d",
+              "secondary-fixed-dim": "#bdc2ff",
+              "primary": "#001a40",
+              "inverse-surface": "#2e3132",
+              "primary-fixed": "#d8e2ff",
+              "on-surface-variant": "#454652",
+              "on-tertiary-fixed": "#002108",
+              "primary-container": "#002e67",
+              "surface-container-highest": "#e1e3e4"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+    <style>
+      body { font-family: 'Inter', sans-serif; }
+      .font-headline { font-family: 'Manrope', sans-serif; }
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .glass-card {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(12px);
+      }
+      ::-webkit-scrollbar { width: 6px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: #e1e3e4; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+    <!-- Sidebar Navigation -->
+    <aside class="h-screen w-64 fixed left-0 top-0 flex flex-col bg-slate-100 font-['Inter'] text-sm font-medium z-50">
+        <div class="p-6">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-on-primary">
+                    <span class="material-symbols-outlined" data-icon="school">school</span>
+                </div>
+                <div>
+                    <h1 class="font-['Manrope'] font-bold text-indigo-900 leading-none">Teacher Portal</h1>
+                    <p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1">Academic Management</p>
+                </div>
+            </div>
+            <nav class="flex flex-col gap-2">
+                <a class="flex items-center gap-3 px-4 py-3 bg-white text-indigo-700 rounded-lg shadow-sm" href="#">
+                    <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                    <span>Dashboard</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-200/50 rounded-lg transition-colors" href="/profile">
+                    <span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+                    <span>My Profile</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-200/50 rounded-lg transition-colors" href="/practice_papers?role=teacher">
+                    <span class="material-symbols-outlined" data-icon="description">description</span>
+                    <span>Practice Papers</span>
+                </a>
+            </nav>
+        </div>
+        <div class="mt-auto p-6 border-t border-slate-200/50">
+            <button onclick="toggleModal(true)" class="w-full py-3 px-4 bg-primary text-white rounded-xl font-semibold flex items-center justify-center gap-2 mb-6 hover:opacity-90 transition-opacity">
+                <span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+                <span>Register Student</span>
+            </button>
+            <a class="flex items-center gap-3 px-4 py-2 text-slate-600 hover:bg-slate-200/50 rounded-lg transition-all" href="/logout">
+                <span class="material-symbols-outlined text-xl" data-icon="logout">logout</span>
+                <span>Sign Out</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="ml-64 min-h-screen flex flex-col">
+        <!-- Top App Bar -->
+        <header class="w-full sticky top-0 z-40 bg-slate-50 flex items-center justify-between px-8 py-4 border-b border-slate-100">
+            <div class="flex items-center flex-1 max-w-xl">
+                <div class="relative w-full">
+                    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" data-icon="search">search</span>
+                    <input class="w-full pl-12 pr-4 py-2 bg-surface-container border-none rounded-full focus:ring-2 focus:ring-primary/20 text-sm" placeholder="Search students, classes..." type="text"/>
+                </div>
+            </div>
+            <div class="flex items-center gap-6">
+                <div class="flex items-center gap-3">
+                    <div class="text-right hidden sm:block">
+                        <p class="text-sm font-semibold text-primary">{{ teacher_name }}</p>
+                        <p class="text-[10px] text-slate-500 uppercase tracking-tighter">Senior Educator</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold font-headline">
+                        T
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Canvas -->
+        <section class="p-8 flex-1">
+            <!-- Alert Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="p-4 mb-6 text-sm font-semibold rounded-lg {% if category == 'error' %}bg-red-100 text-red-700 border border-red-200{% else %}bg-green-100 text-green-700 border border-green-200{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <!-- Page Header -->
+            <div class="flex items-end justify-between mb-8">
+                <div>
+                    <h2 class="text-3xl font-['Manrope'] font-bold text-primary tracking-tight">Teacher Dashboard</h2>
+                    <p class="text-on-surface-variant mt-1">Welcome back. Here is what's happening in your classes today.</p>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="togglePdfModal(true)" class="px-5 py-2.5 rounded-full bg-slate-200 text-slate-800 text-sm font-semibold hover:bg-slate-300 transition-colors flex items-center gap-2">
+                        <span class="material-symbols-outlined text-lg" data-icon="upload_file">upload_file</span>
+                        Upload PDF Report
+                    </button>
+                    <button onclick="toggleModal(true)" class="px-5 py-2.5 rounded-full bg-secondary text-white text-sm font-semibold hover:opacity-90 transition-opacity flex items-center gap-2">
+                        <span class="material-symbols-outlined text-lg" data-icon="add">add</span>
+                        Register Student
+                    </button>
+                </div>
+            </div>
+
+            <!-- Metric Cards: Top Row -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-slate-100">
+                    <p class="text-on-surface-variant text-sm font-medium">Total Registered</p>
+                    <h3 class="text-3xl font-bold text-primary mt-1">{{ total_students }}</h3>
+                </div>
+                <div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-slate-100">
+                    <p class="text-on-surface-variant text-sm font-medium">Class Avg. Performance</p>
+                    <h3 class="text-3xl font-bold text-primary mt-1">{{ class_avg }}%</h3>
+                </div>
+                <div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-slate-100">
+                    <p class="text-on-surface-variant text-sm font-medium">Active Courses</p>
+                    <h3 class="text-3xl font-bold text-primary mt-1">03</h3>
+                </div>
+                <div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-slate-100">
+                    <p class="text-on-surface-variant text-sm font-medium">ML Model Status</p>
+                    <h3 class="text-3xl font-bold text-green-600 mt-1">Active</h3>
+                </div>
+            </div>
+
+            <!-- Middle Section: Two Columns -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+                <!-- Left: Student List (2/3 width) -->
+                <div class="lg:col-span-2 bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden flex flex-col border border-slate-100">
+                    <div class="p-6 flex items-center justify-between">
+                        <h4 class="text-lg font-bold text-primary font-headline">Student Roster</h4>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead>
+                                <tr class="bg-surface text-on-surface-variant uppercase text-[10px] tracking-widest font-bold">
+                                    <th class="px-6 py-4">Student</th>
+                                    <th class="px-6 py-4">Academics</th>
+                                    <th class="px-6 py-4">Performance Indicator</th>
+                                    <th class="px-6 py-4">Wellbeing (Lifestyle)</th>
+                                    <th class="px-6 py-4">Risk Level</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                {% for s in students %}
+                                <tr class="hover:bg-slate-50 transition-colors">
+                                    <td class="px-6 py-4 align-top">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-primary text-sm font-bold">{{ s.avatar_init }}</div>
+                                            <div>
+                                                <p class="text-sm font-semibold text-primary">{{ s.name }}</p>
+                                                <p class="text-xs text-on-surface-variant">Roll No: {{ s.roll_no }}</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 align-top">
+                                        <div class="flex flex-col gap-1">
+                                            <span class="px-2.5 py-1 bg-indigo-50 text-indigo-700 text-[11px] font-bold rounded-full w-max">Grade: {{ s.grade_letter }}</span>
+                                            <span class="text-xs text-slate-500 font-medium">Att: {{ s.attendance }}</span>
+                                            <span class="text-xs text-slate-500 font-medium">Study: {{ s.study_hours }} hrs/wk</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 align-top">
+                                        <div class="w-24 h-2 bg-slate-100 rounded-full overflow-hidden mb-1">
+                                            <div class="h-full bg-indigo-600 rounded-full" style="width: {{ s.progress_percent }}%"></div>
+                                        </div>
+                                        <span class="text-[10px] font-bold text-slate-500 uppercase">GPA Progress</span>
+                                    </td>
+                                    <td class="px-6 py-4 align-top">
+                                        <div class="flex flex-col gap-2 w-32">
+                                            <div>
+                                                <div class="flex justify-between text-[10px] font-bold mb-0.5"><span>Sleep ({{ s.sleep_hours }}h)</span></div>
+                                                <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full {% if s.sleep_hours < 6 %}bg-amber-500{% else %}bg-green-500{% endif %}" style="width: {{ (s.sleep_hours/12)*100 }}%"></div></div>
+                                            </div>
+                                            <div>
+                                                <div class="flex justify-between text-[10px] font-bold mb-0.5"><span>Stress ({{ s.stress_level }}/10)</span></div>
+                                                <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full {% if s.stress_level > 7 %}bg-red-500{% elif s.stress_level > 4 %}bg-amber-500{% else %}bg-green-500{% endif %}" style="width: {{ (s.stress_level/10)*100 }}%"></div></div>
+                                            </div>
+                                            <div>
+                                                <div class="flex justify-between text-[10px] font-bold mb-0.5"><span>Social ({{ s.social_media_hours }}h)</span></div>
+                                                <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full {% if s.social_media_hours > 4 %}bg-amber-500{% else %}bg-indigo-400{% endif %}" style="width: {{ (s.social_media_hours/8)*100 }}%"></div></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 align-top">
+                                        <span class="px-2 py-0.5 rounded text-[11px] font-bold {% if s.risk == 'High' %}bg-red-100 text-red-700{% elif s.risk == 'Medium' %}bg-amber-100 text-amber-700{% else %}bg-green-100 text-green-700{% endif %}">
+                                            {{ s.risk }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Right: Performance Chart (1/3 width) -->
+                <div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-slate-100">
+                    <div class="flex items-center justify-between mb-6">
+                        <h4 class="text-lg font-bold text-primary font-headline">Grade Distribution</h4>
+                        <span class="material-symbols-outlined text-slate-400" data-icon="info">info</span>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium">A Grade (Excellent)</span>
+                            <span class="text-xs font-bold">60%</span>
+                        </div>
+                        <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                            <div class="w-[60%] h-full bg-green-500"></div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium">B Grade (Good)</span>
+                            <span class="text-xs font-bold">20%</span>
+                        </div>
+                        <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                            <div class="w-[20%] h-full bg-blue-500"></div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium">C/D Grade (At-Risk)</span>
+                            <span class="text-xs font-bold">20%</span>
+                        </div>
+                        <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                            <div class="w-[20%] h-full bg-red-500"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Section: Predictive Analytics Alerts -->
+            <div class="w-full">
+                <div class="flex items-center gap-2 mb-4">
+                    <span class="material-symbols-outlined text-primary" data-icon="psychology">psychology</span>
+                    <h4 class="text-lg font-bold text-primary font-headline">AI-Generated Academic Interventions</h4>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {% for alert in alerts %}
+                    <div class="border-l-4 {% if alert.risk == 'High' %}border-red-500 bg-red-50/50 text-red-950{% else %}border-amber-500 bg-amber-50/50 text-amber-950{% endif %} p-5 rounded-xl flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 {% if alert.risk == 'High' %}bg-red-100 text-red-700{% else %}bg-amber-100 text-amber-700{% endif %}">
+                            <span class="material-symbols-outlined" data-icon="warning">warning</span>
+                        </div>
+                        <div class="flex-grow">
+                            <div class="flex justify-between items-center mb-1">
+                                <p class="text-sm font-bold">{{ alert.name }} (Predicted GPA: {{ alert.predicted_gpa }})</p>
+                                <span class="text-[10px] font-bold uppercase">{{ alert.risk }} Risk</span>
+                            </div>
+                            <p class="text-xs leading-relaxed mb-3">{{ alert.details }}</p>
+                            <div class="flex gap-2">
+                                <a href="tel:{{ alert.phone }}" class="px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-tight text-white {% if alert.risk == 'High' %}bg-red-600{% else %}bg-amber-600{% endif %}">
+                                    Call Parent: {{ alert.phone }}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer Decor -->
+        <footer class="p-8 mt-auto flex justify-between items-center border-t border-slate-100">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">© 2024 Academic Atelier. Powered by Flask, MySQL & Google Gemini.</p>
+            <div class="flex gap-4">
+                <span class="w-2 h-2 rounded-full bg-green-500 animate-ping"></span>
+                <span class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter">System Online</span>
+            </div>
+        </footer>
+    </main>
+
+    <!-- Student Registration Modal (Stitch Form Layout) -->
+    <div id="registerModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center hidden">
+        <div class="bg-white rounded-2xl w-full max-w-2xl p-8 max-h-[90vh] overflow-y-auto shadow-2xl relative">
+            <button onclick="toggleModal(false)" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                <span class="material-symbols-outlined" data-icon="close">close</span>
+            </button>
+            
+            <h3 class="text-2xl font-bold font-headline text-primary mb-2">Register New Student</h3>
+            <p class="text-slate-500 text-sm mb-6">Enter academic, school board, and contact details. This will automatically execute the Scikit-learn predictive assessment model.</p>
+            
+            <form action="/teacher" method="POST" class="space-y-6">
+                <!-- Academic details -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">Full Name</label>
+                        <input name="name" required class="w-full bg-slate-50 border-none rounded-lg focus:ring-1 focus:ring-primary py-2.5 px-4 text-sm text-slate-800" placeholder="e.g. John Doe" type="text"/>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">Email Address</label>
+                        <input name="email" required class="w-full bg-slate-50 border-none rounded-lg focus:ring-1 focus:ring-primary py-2.5 px-4 text-sm text-slate-800" placeholder="e.g. john@atelier.edu" type="email"/>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">Roll Number</label>
+                        <input name="roll_no" required class="w-full bg-slate-50 border-none rounded-lg focus:ring-1 focus:ring-primary py-2.5 px-4 text-sm text-slate-800" placeholder="e.g. 2024-1029" type="text"/>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">Admission Number</label>
+                        <input name="admin_no" required class="w-full bg-slate-50 border-none rounded-lg focus:ring-1 focus:ring-primary py-2.5 px-4 text-sm text-slate-800" placeholder="e.g. ADM-1029" type="text"/>
+                    </div>
+                </div>
+
+                <!-- School Board details -->
+                <div class="grid grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">Class / Section</label>
+                        <input name="class_name" value="Grade 12-A" class="w-full bg-slate-50 border-none rounded-lg focus:ring-1 focus:ring-primary py-2.5 px-4 text-sm text-slate-800" type="text"/>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">School Name</label>
+                        <input name="school_name" value="Academic Atelier Academy" class="w-full bg-slate-50 border-none rounded-lg focus:ring-1 focus:ring-primary py-2.5 px-4 text-sm text-slate-800" type="text"/>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">School Board</label>
+                        <input name="school_board" value="Standard Board" class="w-full bg-slate-50 border-none rounded-lg focus:ring-1 focus:ring-primary py-2.5 px-4 text-sm text-slate-800" type="text"/>
+                    </div>
+                </div>
+
+                <!-- Parent contact info -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">Parent / Guardian Name</label>
+                        <input name="parent_name" required class="w-full bg-slate-50 border-none rounded-lg focus:ring-1 focus:ring-primary py-2.5 px-4 text-sm text-slate-800" placeholder="e.g. Robert Doe" type="text"/>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">Parent Phone Number</label>
+                        <input name="parent_phone" required class="w-full bg-slate-50 border-none rounded-lg focus:ring-1 focus:ring-primary py-2.5 px-4 text-sm text-slate-800" placeholder="e.g. +1-555-9081" type="text"/>
+                    </div>
+                </div>
+
+                <!-- Input metrics for Scikit-Learn Model -->
+                <div class="border-t border-slate-100 pt-6">
+                    <h4 class="text-sm font-bold text-slate-800 mb-4">Baseline Performance & Lifestyle Indicators (For ML Prediction)</h4>
+                    <div class="grid grid-cols-3 gap-4 mb-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">Attendance Rate (%)</label>
+                            <input name="attendance_rate" required min="0" max="100" step="0.1" value="90.0" class="w-full bg-slate-50 border-none rounded-lg focus:ring-1 focus:ring-primary py-2.5 px-4 text-sm text-slate-800" type="number"/>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">Study Hours/Week</label>
+                            <input name="study_hours" required min="0" max="168" step="0.5" value="10.0" class="w-full bg-slate-50 border-none rounded-lg focus:ring-1 focus:ring-primary py-2.5 px-4 text-sm text-slate-800" type="number"/>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">Avg Placement Grade (%)</label>
+                            <input name="avg_grade" required min="0" max="100" step="0.1" value="75.0" class="w-full bg-slate-50 border-none rounded-lg focus:ring-1 focus:ring-primary py-2.5 px-4 text-sm text-slate-800" type="number"/>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">Sleep Hours</label>
+                            <input name="sleep_hours" required min="0" max="24" step="0.5" value="7.5" class="w-full bg-slate-50 border-none rounded-lg focus:ring-1 focus:ring-primary py-2.5 px-4 text-sm text-slate-800" type="number"/>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">Social Media Hrs</label>
+                            <input name="social_media_hours" required min="0" max="24" step="0.5" value="2.0" class="w-full bg-slate-50 border-none rounded-lg focus:ring-1 focus:ring-primary py-2.5 px-4 text-sm text-slate-800" type="number"/>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">Exam Pressure (1-10)</label>
+                            <input name="exam_pressure" required min="1" max="10" step="1" value="5" class="w-full bg-slate-50 border-none rounded-lg focus:ring-1 focus:ring-primary py-2.5 px-4 text-sm text-slate-800" type="number"/>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">Stress Level (1-10)</label>
+                            <input name="stress_level" required min="1" max="10" step="1" value="5" class="w-full bg-slate-50 border-none rounded-lg focus:ring-1 focus:ring-primary py-2.5 px-4 text-sm text-slate-800" type="number"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-3 pt-4">
+                    <button type="button" onclick="toggleModal(false)" class="px-5 py-2.5 rounded-full border border-slate-200 text-sm font-medium hover:bg-slate-50 transition-colors">Cancel</button>
+                    <button type="submit" class="px-5 py-2.5 rounded-full bg-primary text-white text-sm font-bold hover:opacity-90 transition-opacity">Submit & Assess</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- PDF Upload Modal -->
+    <div id="pdfModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center hidden">
+        <div class="bg-white rounded-2xl w-full max-w-lg p-8 shadow-2xl relative">
+            <button onclick="togglePdfModal(false)" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                <span class="material-symbols-outlined" data-icon="close">close</span>
+            </button>
+            
+            <h3 class="text-2xl font-bold font-headline text-primary mb-2">Upload Student Report (PDF)</h3>
+            <p class="text-slate-500 text-sm mb-6">Extract insights using AI OCR and Gemini.</p>
+            
+            <form id="pdfForm" class="space-y-4">
+                <input type="file" id="pdf_file" name="pdf_file" accept="application/pdf" required class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20"/>
+                <div class="flex justify-end gap-3 pt-4">
+                    <button type="button" onclick="togglePdfModal(false)" class="px-5 py-2.5 rounded-full border border-slate-200 text-sm font-medium hover:bg-slate-50">Cancel</button>
+                    <button type="button" onclick="uploadPdf()" class="px-5 py-2.5 rounded-full bg-primary text-white text-sm font-bold hover:opacity-90 flex items-center gap-2">
+                        <span id="uploadSpinner" class="hidden animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
+                        Analyze
+                    </button>
+                </div>
+            </form>
+            
+            <div id="pdfResult" class="mt-6 p-4 bg-slate-50 rounded-lg hidden text-sm text-slate-700 max-h-64 overflow-y-auto whitespace-pre-wrap border border-slate-200"></div>
+        </div>
+    </div>
+
+    <script>
+        function toggleModal(show) {
+            const modal = document.getElementById("registerModal");
+            if (show) {
+                modal.classList.remove("hidden");
+            } else {
+                modal.classList.add("hidden");
+            }
+        }
+        
+        function togglePdfModal(show) {
+            const modal = document.getElementById("pdfModal");
+            if (show) {
+                modal.classList.remove("hidden");
+            } else {
+                modal.classList.add("hidden");
+            }
+        }
+        
+        async function uploadPdf() {
+            const fileInput = document.getElementById('pdf_file');
+            if (!fileInput.files.length) return;
+            
+            const formData = new FormData();
+            formData.append('pdf_file', fileInput.files[0]);
+            
+            document.getElementById('uploadSpinner').classList.remove('hidden');
+            const resultDiv = document.getElementById('pdfResult');
+            resultDiv.classList.add('hidden');
+            
+            try {
+                const response = await fetch('/upload_pdf', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                
+                resultDiv.textContent = data.analysis || data.error;
+                resultDiv.classList.remove('hidden');
+            } catch (err) {
+                resultDiv.textContent = "An error occurred during upload: " + err;
+                resultDiv.classList.remove('hidden');
+            } finally {
+                document.getElementById('uploadSpinner').classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
