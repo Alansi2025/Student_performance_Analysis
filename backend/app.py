@@ -1,6 +1,7 @@
 import os
 import sys
 import datetime
+import random
 
 # Add the project root to sys.path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -61,9 +62,18 @@ def seed_database():
         print("Seeding database with default academic data...")
         
         # Create Teacher
-        teacher_user = models.User(name="Dr. Julian Vance", email="teacher@atelier.edu", role="teacher")
+        teacher_user = models.User(name="Dr. Julian Vance", email="teacher@atelier.edu", role="teacher", department="Computer Science")
         teacher_user.set_password("password")
         db.add(teacher_user)
+        db.commit()
+        
+        # Create 19 more CS teachers
+        cs_teachers = [teacher_user]
+        for i in range(1, 20):
+            t = models.User(name=f"CS Teacher {i}", email=f"csteacher{i}@atelier.edu", role="teacher", department="Computer Science")
+            t.set_password("password")
+            db.add(t)
+            cs_teachers.append(t)
         db.commit()
         
         # Create Courses
@@ -89,9 +99,9 @@ def seed_database():
         if os.path.exists(csv_path):
             with open(csv_path, mode="r", encoding="utf-8") as f:
                 reader = csv.DictReader(f)
-                # Seed the first 15 students to populate the database roster
+                # Seed the first 20 students to populate the database roster
                 for idx, row in enumerate(reader):
-                    if idx >= 15:
+                    if idx >= 20:
                         break
                     
                     avg_g = float(row["avg_grade"])
@@ -136,6 +146,12 @@ def seed_database():
                 study_hours_per_week=s["study_hours"]
             )
             db.add(profile)
+            
+            # Allocate 5 random CS teachers to this student
+            allocated = random.sample(cs_teachers, 5)
+            for t in allocated:
+                profile.allocated_teachers.append(t)
+                
             db.commit()
 
             # Add submissions/grades

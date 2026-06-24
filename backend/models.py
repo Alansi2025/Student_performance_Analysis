@@ -1,9 +1,15 @@
 import datetime
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime, Text, Enum
+from sqlalchemy import Table, Column, Integer, String, Float, ForeignKey, DateTime, Text, Enum
 from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 from backend.database import Base
 
+student_teacher_allocation = Table(
+    "student_teacher_allocation",
+    Base.metadata,
+    Column("student_id", Integer, ForeignKey("student_profiles.id", ondelete="CASCADE"), primary_key=True),
+    Column("teacher_id", Integer, ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
+)
 class User(Base):
     __tablename__ = "users"
     
@@ -12,11 +18,15 @@ class User(Base):
     email = Column(String(100), unique=True, index=True, nullable=False)
     password_hash = Column(String(255), nullable=False)
     role = Column(String(20), nullable=False)  # 'teacher' or 'student'
+    department = Column(String(100), nullable=True)
+
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
     
     # Relationships
     student_profile = relationship("StudentProfile", back_populates="user", uselist=False)
     courses_taught = relationship("Course", back_populates="teacher")
+    allocated_students = relationship("StudentProfile", secondary=student_teacher_allocation, back_populates="allocated_teachers")
+
     
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -51,6 +61,7 @@ class StudentProfile(Base):
     user = relationship("User", back_populates="student_profile")
     submissions = relationship("Submission", back_populates="student")
     predictions = relationship("MLPrediction", back_populates="student", uselist=False)
+    allocated_teachers = relationship("User", secondary=student_teacher_allocation, back_populates="allocated_students")
 
 class Course(Base):
     __tablename__ = "courses"
