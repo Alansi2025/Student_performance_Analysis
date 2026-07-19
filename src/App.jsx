@@ -13,7 +13,6 @@ import LoginPage from './components/LoginPage';
 import StudentDashboard from './components/StudentDashboard';
 import MentorDashboard from './components/MentorDashboard';
 import OverseerDashboard from './components/OverseerDashboard';
-import AIPanelButton from './components/AIPanelButton';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -120,8 +119,6 @@ function App() {
         />
       )}
       
-      {/* Floating AI Button on Dashboards */}
-      {isLoggedIn && activeTab === 'Dashboard' && <AIPanelButton />}
     </div>
   );
 }
