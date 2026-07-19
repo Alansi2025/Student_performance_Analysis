@@ -1,8 +1,3 @@
-# React + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
 # AetherLearn — AI-Powered Student Performance Analysis System
 
 > A full-stack, role-based intelligent learning platform combining a React frontend with a FastAPI backend. AetherLearn delivers personalized AI-assisted education, real-time performance analytics, live mentorship sessions, and deep institutional integration capabilities.
