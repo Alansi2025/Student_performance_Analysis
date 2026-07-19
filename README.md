@@ -3,14 +3,440 @@
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:
+# AetherLearn — AI-Powered Student Performance Analysis System
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+> A full-stack, role-based intelligent learning platform combining a React frontend with a FastAPI backend. AetherLearn delivers personalized AI-assisted education, real-time performance analytics, live mentorship sessions, and deep institutional integration capabilities.
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Table of Contents
 
-## Expanding the ESLint configuration
+- [Overview](#overview)
+- [Key Features](#key-features)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [User Roles](#user-roles)
+- [Pages & Components](#pages--components)
+- [Backend API](#backend-api)
+- [Database Models](#database-models)
+- [Security Architecture](#security-architecture)
+- [Environment Variables](#environment-variables)
+- [Getting Started](#getting-started)
+- [Default Accounts](#default-accounts)
+- [Scripts](#scripts)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## Overview
+
+AetherLearn is a **Student Performance Analysis System** built as an industrial-grade, production-ready web application. It features:
+
+- A public-facing **marketing landing page** showcasing the platform's capabilities
+- A **secure authentication system** with session-based login
+- **Three distinct role-based dashboards** — Student, Mentor, and Overseer
+- An **AI processing pipeline** for PDF document analysis via OCR
+- A **third-party integrations panel** for LMS, SSO, and Data Lake connectors
+- A **floating AI Panel** accessible from all dashboards
+
+The system is named **AetherLearn** internally and positions itself as an AI Learning Platform that uses deep analytics to personalize curriculum delivery, predict learning gaps, and accelerate student progress.
+
+---
+
+## Key Features
+
+### Student Dashboard
+- **Performance Analytics** — Visual widgets for retention rate, cognitive load, course progress, and weekly study streaks
+- **My Courses** — Active, completed, and upcoming courses with filtering by semester
+- **Course Explorer** — Deep-dive into individual course modules with sequential lesson navigation
+- **AI Tutor Chat** — Conversational AI tutor interface with multiple AI persona options (Priya Sharma, Vikram Singh, Ananya Desai, etc.)
+- **Assignments Panel** — View, filter, and manage academic assignments by status
+- **Quizzes & Practice Generator** — Configure and generate AI-powered practice sessions with parameters:
+  - Practice type (AI Quiz, Flashcards, Code Challenge)
+  - Session mode (Timed Quiz, Adaptive, Marathon)
+  - Difficulty level (Beginner, Intermediate, Advanced)
+  - Question count
+- **Past Year Question Vault** — Generate historical exam practice sets by subject, year range, exam type, and topic focus with real-time progress tracking
+- **Discussions** — Forum-style discussion threads per course
+- **Learning Insights** — Performance trends and AI-driven recommendations
+- **Settings** — Profile editing, notification preferences, adaptive voice toggle, and dark/light mode
+
+### Mentor Dashboard
+- Overview of assigned students and their progress
+- Integration status visibility (LMS sync, SSO, Data Lake)
+- Access to activity logs and student performance data
+- Dedicated mentor analytics and course management
+
+### Overseer Dashboard
+- **Full platform administration** — system-wide visibility
+- **Activity Log Viewer** — audit trail of all user actions (logins, logouts, AI usage, integration events) with timestamps and IP addresses
+- **Integration Management** — create, configure, test, connect, disconnect, and delete third-party integrations
+- Overseer-only access to sensitive platform settings
+
+### Public Landing Page
+The unauthenticated homepage contains several full-page sections:
+1. **Hero** — Animated neural pathway visualization with retention and cognitive load metrics
+2. **Neural Advantage** — Platform differentiators and AI capabilities
+3. **Core Capabilities** — Feature breakdown cards
+4. **Ecosystem** — Partner and tool integrations overview
+5. **Integration & Safety** — Security and compliance information
+6. **Measurable Evolution** — Platform growth metrics and case studies
+7. **Live Sessions** — Browse and join live mentor-led learning sessions
+8. **Mentors List** — Directory of available mentors with profiles
+
+### AI Processing Pipeline
+- Upload PDF documents via a secure, rate-limited API endpoint
+- **Step 1**: Convert PDF pages to JPEG images using PyMuPDF
+- **Step 2**: Extract text from images using Tesseract OCR (pytesseract)
+- All AI usage events are logged with IP address for auditing
+- Protected by API key authentication (`X-API-Key` header)
+
+### Third-Party Integrations
+Managed through the Integrations panel (Overseer/Mentor only):
+
+| Type | Supported Providers |
+|------|-------------------|
+| LMS Sync | Canvas, Blackboard, Moodle |
+| SSO | Azure AD, Okta, Google, SAML |
+| Data Lake | Snowflake, BigQuery, AWS S3, Custom |
+
+Each integration supports a full lifecycle: create → configure → connect/test → disconnect → delete.
+
+---
+
+## Tech Stack
+
+### Frontend
+| Technology | Version | Purpose |
+|-----------|---------|---------|
+| React | 19.x | UI framework |
+| Vite | 8.x | Build tool & dev server |
+| Tailwind CSS | 3.x | Utility-first styling |
+| Lucide React | 1.17+ | Icon library |
+| PostCSS / Autoprefixer | Latest | CSS processing |
+
+### Backend
+| Technology | Purpose |
+|-----------|---------|
+| FastAPI | REST API framework |
+| Uvicorn | ASGI server |
+| SQLAlchemy | ORM and database layer |
+| Pydantic | Request/response validation |
+| Passlib + bcrypt | Password hashing |
+| Starlette SessionMiddleware | Cookie-based session auth |
+| SlowAPI | Rate limiting |
+| PyMuPDF (fitz) | PDF to image conversion |
+| pytesseract | OCR text extraction |
+| Pillow | Image processing |
+| python-dotenv | Environment variable loading |
+| psycopg2-binary | PostgreSQL driver |
+
+### Database
+- **SQLite** (development default — `industrial.db`)
+- **PostgreSQL** (production — via `DATABASE_URL` environment variable)
+
+---
+
+## Project Structure
+
+```
+.
+├── backend/                        # FastAPI backend
+│   ├── main.py                     # App entry point, middleware, seed data
+│   ├── database.py                 # SQLAlchemy engine & session factory
+│   ├── models.py                   # ORM models: User, ActivityLog, Integration
+│   ├── schemas.py                  # Pydantic schemas for request/response
+│   ├── security.py                 # Auth helpers, bcrypt, session, API key
+│   ├── requirements.txt            # Python dependencies
+│   ├── routers/
+│   │   ├── users.py                # /users — register, login, logout, me, logs
+│   │   ├── ai.py                   # /ai — PDF processing endpoint
+│   │   └── integrations.py         # /integrations — CRUD + connect/disconnect
+│   └── ai/
+│       ├── convert_pdfs.py         # PDF → JPG conversion via PyMuPDF
+│       ├── extract_text.py         # JPG → text via pytesseract OCR
+│       ├── pyq_analysis/
+│       │   └── analyze_pyq.py      # Past Year Question analysis logic
+│       └── resources/
+│           └── extracted_text.txt  # OCR output storage
+│
+├── src/                            # React frontend
+│   ├── main.jsx                    # App entry point
+│   ├── App.jsx                     # Root component, tab routing, session check
+│   ├── index.css                   # Global styles, Tailwind imports
+│   ├── assets/                     # Profile images and UI illustrations
+│   └── components/
+│       ├── Navbar.jsx              # Navigation bar (public pages)
+│       ├── Footer.jsx              # Footer with links
+│       ├── Hero.jsx                # Landing page hero section
+│       ├── NeuralAdvantage.jsx     # Feature highlights section
+│       ├── CoreCapabilities.jsx    # Capabilities grid section
+│       ├── Ecosystem.jsx           # Ecosystem overview section
+│       ├── IntegrationSafety.jsx   # Safety & compliance section
+│       ├── MeasurableEvolution.jsx # Metrics & growth section
+│       ├── LiveSessions.jsx        # Live session browser
+│       ├── MentorsList.jsx         # Mentor directory
+│       ├── LoginPage.jsx           # Login form with session auth
+│       ├── StudentDashboard.jsx    # Full student portal
+│       ├── MentorDashboard.jsx     # Mentor management portal
+│       ├── OverseerDashboard.jsx   # Admin/overseer control panel
+│       └── AIPanelButton.jsx       # Floating AI assistant button
+│
+├── public/
+│   ├── favicon.svg
+│   └── icons.svg
+│
+├── index.html                      # HTML entry point
+├── package.json                    # Frontend dependencies & scripts
+├── vite.config.js                  # Vite configuration
+├── tailwind.config.js              # Tailwind theme configuration
+├── start.sh                        # Unified start/stop script
+└── .env                            # Environment variables (not committed)
+```
+
+---
+
+## User Roles
+
+The platform implements **three distinct roles** with separate dashboards and permission levels:
+
+| Role | Dashboard | Permissions |
+|------|-----------|-------------|
+| **Student** | `StudentDashboard` | View own courses, assignments, quizzes, AI tutor, insights, settings |
+| **Mentor** / **Teacher** | `MentorDashboard` | View student progress, integration status, activity data |
+| **Overseer** | `OverseerDashboard` | Full admin — activity logs, integration management, all user data |
+
+Role is determined at login and stored in the server-side session. The frontend renders the appropriate dashboard based on `currentUser.role`.
+
+---
+
+## Pages & Components
+
+### App Routing (Tab-Based)
+The app uses a **tab-based SPA routing** system with the following tabs:
+
+| Tab | Component | Access |
+|-----|-----------|--------|
+| `Curriculum` | Hero + 5 landing sections | Public |
+| `Live Sessions` | `LiveSessions` | Public |
+| `Mentors` | `MentorsList` | Public |
+| `Login` | `LoginPage` | Public |
+| `Dashboard` | Role-specific dashboard | Authenticated only |
+
+### Session Persistence
+On mount, `App.jsx` calls `GET /users/me` with cookies to restore an existing session. If valid, the user is auto-redirected to their dashboard without re-logging in.
+
+---
+
+## Backend API
+
+Base URL: `http://localhost:8000`
+
+### Authentication — `/users`
+
+| Method | Endpoint | Auth Required | Description |
+|--------|----------|---------------|-------------|
+| `POST` | `/users/register` | Public | Register new user (default role: Student) |
+| `POST` | `/users/login` | Public | Login with email + password, sets session cookie |
+| `POST` | `/users/logout` | Session | Clears session, logs activity |
+| `GET` | `/users/me` | Session | Returns current authenticated user |
+| `GET` | `/users/logs` | Overseer only | Returns last 100 activity log entries |
+
+### AI Processing — `/ai`
+
+| Method | Endpoint | Auth Required | Description |
+|--------|----------|---------------|-------------|
+| `POST` | `/ai/process-pdf` | API Key + Rate Limit (5/min) | Upload PDF → OCR text extraction |
+
+**Request**: `multipart/form-data` with a `.pdf` file  
+**Header**: `X-API-Key: <your-api-key>`  
+**Response**: `{ "status": "success", "filename": "...", "extracted_text": "..." }`
+
+### Integrations — `/integrations`
+
+| Method | Endpoint | Auth Required | Description |
+|--------|----------|---------------|-------------|
+| `GET` | `/integrations/` | Overseer / Mentor | List all configured integrations |
+| `POST` | `/integrations/` | Overseer | Create new integration |
+| `POST` | `/integrations/{id}/connect` | Overseer | Test and activate an integration |
+| `POST` | `/integrations/{id}/disconnect` | Overseer | Deactivate an integration |
+| `DELETE` | `/integrations/{id}` | Overseer | Permanently delete an integration |
+| `GET` | `/integrations/status` | Overseer / Mentor | Summary of all integration statuses |
+
+---
+
+## Database Models
+
+### User
+| Column | Type | Description |
+|--------|------|-------------|
+| `id` | Integer PK | Auto-increment primary key |
+| `email` | String (unique) | Login identifier |
+| `hashed_password` | String | bcrypt hash |
+| `role` | String | `Student`, `Mentor`, or `Overseer` |
+| `is_active` | Boolean | Account active status |
+
+### ActivityLog
+| Column | Type | Description |
+|--------|------|-------------|
+| `id` | Integer PK | Auto-increment primary key |
+| `user_email` | String | Actor's email |
+| `action` | String | `LOGIN`, `LOGOUT`, `FAILED_LOGIN`, `AI_USAGE`, `INTEGRATION_CREATED`, etc. |
+| `details` | String | Additional context |
+| `ip_address` | String | Client IP at time of event |
+| `timestamp` | DateTime | UTC timestamp |
+
+### Integration
+| Column | Type | Description |
+|--------|------|-------------|
+| `id` | Integer PK | Auto-increment primary key |
+| `type` | String | `lms_sync`, `sso`, or `data_lake` |
+| `provider` | String | e.g. `canvas`, `azure_ad`, `snowflake` |
+| `name` | String | Display name |
+| `config_url` | String | LMS base URL or SSO endpoint |
+| `api_key` | String | API key / client secret |
+| `is_active` | Boolean | Whether integration is currently active |
+| `status` | String | `connected`, `disconnected`, or `error` |
+| `created_by` | String | Email of the Overseer who created it |
+| `created_at` | DateTime | Creation timestamp |
+| `last_synced` | DateTime | Last successful sync timestamp |
+
+---
+
+## Security Architecture
+
+| Mechanism | Implementation |
+|-----------|---------------|
+| **Password Hashing** | bcrypt via `passlib` — passwords never stored in plain text |
+| **Session Auth** | Starlette `SessionMiddleware` with signed cookies (HMAC via `itsdangerous`) |
+| **API Key Auth** | `X-API-Key` header validated against `API_SECRET_KEY` env var |
+| **Rate Limiting** | SlowAPI — AI endpoint limited to **5 requests/minute per IP** |
+| **Role-Based Access Control** | Every protected route checks `current_user.role` before processing |
+| **Activity Logging** | All login attempts (success/fail), logouts, AI usage, and integration events logged with IP and timestamp |
+| **Production Guard** | Fallback default API key is rejected when `ENVIRONMENT=production` |
+| **CORS** | Configured for `localhost:5173`, `localhost:3000`, and `localhost` only |
+
+---
+
+## Environment Variables
+
+Create a `.env` file in the project root (never commit this file):
+
+```env
+# Required — generate a strong random string for each
+SESSION_SECRET_KEY=your-strong-random-secret-key-here
+API_SECRET_KEY=your-strong-api-key-here
+
+# Database (defaults to SQLite if not set)
+DATABASE_URL=postgresql://user:password@localhost/aetherlearn
+
+# Set to "production" to enable production-mode security guards
+ENVIRONMENT=development
+```
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- **Node.js** 18+ and **npm**
+- **Python** 3.10+
+- **Tesseract OCR** installed on your system:
+  - macOS: `brew install tesseract`
+  - Ubuntu: `sudo apt install tesseract-ocr`
+  - Windows: [Download installer](https://github.com/UB-Mannheim/tesseract/wiki)
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/Alansi2025/Student_performance_Analysis.git
+cd Student_performance_Analysis
+```
+
+### 2. Set Up the Backend
+
+```bash
+# Create and activate a virtual environment
+python3 -m venv .venv
+source .venv/bin/activate        # macOS/Linux
+# .venv\Scripts\activate         # Windows
+
+# Install Python dependencies
+pip install -r backend/requirements.txt
+
+# Create your environment file
+cp .env.example .env             # then edit with your actual secrets
+```
+
+### 3. Set Up the Frontend
+
+```bash
+npm install
+```
+
+### 4. Run Everything (One Command)
+
+```bash
+npm run start:all
+```
+
+This executes `start.sh` which:
+- Starts the FastAPI backend on **http://localhost:8000**
+- Starts the Vite dev server on **http://localhost:5173**
+
+### 5. Open in Browser
+
+Navigate to **http://localhost:5173**
+
+### Stop All Services
+
+```bash
+npm run stop:all
+```
+
+### Run Services Individually
+
+```bash
+# Backend only
+source .venv/bin/activate
+uvicorn backend.main:app --reload --port 8000
+
+# Frontend only
+npm run dev
+```
+
+---
+
+## Default Accounts
+
+The backend automatically seeds these demo accounts on first startup:
+
+| Role | Email | Password |
+|------|-------|----------|
+| **Overseer** (Admin) | `admin@aetherlearn.com` | `admin123` |
+| **Mentor** | `sarah@cyberdyne.sys` | `123456` |
+| **Student** | `alex@aetherlearn.com` | `123456` |
+
+> ⚠️ **Important**: Change all default credentials immediately in any production deployment.
+
+---
+
+## Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start Vite frontend dev server only |
+| `npm run build` | Build frontend for production output to `/dist` |
+| `npm run preview` | Preview the production build locally |
+| `npm run lint` | Run ESLint on all frontend source files |
+| `npm run start:all` | Start both backend and frontend together |
+| `npm run stop:all` | Stop both backend and frontend services |
+
+---
+
+## API Documentation
+
+When the backend is running, interactive API docs are available at:
+
+- **Swagger UI**: http://localhost:8000/docs
+- **ReDoc**: http://localhost:8000/redoc
