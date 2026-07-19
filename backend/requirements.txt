@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+sqlalchemy
+pydantic[email]
+passlib[bcrypt]
+python-multipart
+psycopg2-binary
+itsdangerous
+slowapi
+python-dotenv
+pymupdf
+pytesseract
+pillow
