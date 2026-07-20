@@ -51,15 +51,16 @@ The system is named **AetherLearn** internally and positions itself as an AI Lea
   - Difficulty level (Beginner, Intermediate, Advanced)
   - Question count
 - **Past Year Question Vault** — Generate historical exam practice sets by subject, year range, exam type, and topic focus with real-time progress tracking
-- **Discussions** — Forum-style discussion threads per course
-- **Learning Insights** — Performance trends and AI-driven recommendations
-- **Settings** — Profile editing, notification preferences, adaptive voice toggle, and dark/light mode
+- **Communication Hub (Telegram Integration)** — Direct deep-links to class Telegram groups and 1-on-1 Mentor chats.
+- **PowerBI-style Learning Insights** — Advanced visualizations for subject-wise focus, peer benchmarking, and performance radar.
+- **Settings** — Profile editing with custom avatars, notification preferences, adaptive voice toggle, dark/light mode, and direct contact to overseers.
 
 ### Mentor Dashboard
 - Overview of assigned students and their progress
 - Integration status visibility (LMS sync, SSO, Data Lake)
 - Access to activity logs and student performance data
 - Dedicated mentor analytics and course management
+- **Quick Messaging** — Directly launch Telegram 1-on-1 chats with assigned students.
 
 ### Overseer Dashboard
 - **Full platform administration** — system-wide visibility
@@ -68,15 +69,10 @@ The system is named **AetherLearn** internally and positions itself as an AI Lea
 - Overseer-only access to sensitive platform settings
 
 ### Public Landing Page
-The unauthenticated homepage contains several full-page sections:
-1. **Hero** — Animated neural pathway visualization with retention and cognitive load metrics
-2. **Neural Advantage** — Platform differentiators and AI capabilities
-3. **Core Capabilities** — Feature breakdown cards
-4. **Ecosystem** — Partner and tool integrations overview
-5. **Integration & Safety** — Security and compliance information
-6. **Measurable Evolution** — Platform growth metrics and case studies
-7. **Live Sessions** — Browse and join live mentor-led learning sessions
-8. **Mentors List** — Directory of available mentors with profiles
+The unauthenticated homepage is a consolidated, high-converting single-page view inside `App.jsx` featuring:
+1. **Hero & Intro** — Animated neural pathway visualization with retention metrics and direct CTA.
+2. **Platform Capabilities** — Consolidated feature breakdowns, integration overviews, and safety compliance metrics.
+3. **Login Modal** — Simple unified entry point replacing the separate login page.
 
 ### AI Processing Pipeline
 - Upload PDF documents via a secure, rate-limited API endpoint
@@ -161,20 +157,9 @@ Each integration supports a full lifecycle: create → configure → connect/tes
 │   ├── assets/                     # Profile images and UI illustrations
 │   └── components/
 │       ├── Navbar.jsx              # Navigation bar (public pages)
-│       ├── Footer.jsx              # Footer with links
-│       ├── Hero.jsx                # Landing page hero section
-│       ├── NeuralAdvantage.jsx     # Feature highlights section
-│       ├── CoreCapabilities.jsx    # Capabilities grid section
-│       ├── Ecosystem.jsx           # Ecosystem overview section
-│       ├── IntegrationSafety.jsx   # Safety & compliance section
-│       ├── MeasurableEvolution.jsx # Metrics & growth section
-│       ├── LiveSessions.jsx        # Live session browser
-│       ├── MentorsList.jsx         # Mentor directory
-│       ├── LoginPage.jsx           # Login form with session auth
 │       ├── StudentDashboard.jsx    # Full student portal
 │       ├── MentorDashboard.jsx     # Mentor management portal
 │       ├── OverseerDashboard.jsx   # Admin/overseer control panel
-│       └── AIPanelButton.jsx       # Floating AI assistant button
 │
 ├── public/
 │   ├── favicon.svg

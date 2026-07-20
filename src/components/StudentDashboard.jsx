@@ -7,7 +7,7 @@ import {
   Paperclip, Mic, Send, ExternalLink, Zap, Play, Trophy,
   Globe, Network, Database, Cpu, Router, Scale, ChevronDown,
   User, Sliders, ShieldCheck, Mail, BookOpen,
-  Megaphone, PlayCircle, CheckCircle, Layers, Download, Timer, Check
+  Megaphone, PlayCircle, CheckCircle, Layers, Download, Timer, Check, Camera
 } from 'lucide-react';
 
 import alexRiversProfile from '../assets/alex_rivers_profile.png';
@@ -21,6 +21,7 @@ import circuitBoardImage from '../assets/circuit_board.png';
 export default function StudentDashboard({ user, onLogout }) {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [activeNav, setActiveNav] = useState('Dashboard');
+  const [selectedSubject, setSelectedSubject] = useState('All Subjects');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTutor, setSelectedTutor] = useState(null);
   const [inputMessage, setInputMessage] = useState('');
@@ -29,6 +30,9 @@ export default function StudentDashboard({ user, onLogout }) {
   const [semesterFilter, setSemesterFilter] = useState('All');
   const [settingsTab, setSettingsTab] = useState('Profile');
   const [formName, setFormName] = useState(user?.name || 'Alex Rivers');
+  const [profileImage, setProfileImage] = useState(null);
+  const [contactMessage, setContactMessage] = useState('');
+  const [contactSent, setContactSent] = useState(false);
   const [formEmail, setFormEmail] = useState(user?.email || 'alex@aetherlearn.com');
   const [formInstitution, setFormInstitution] = useState(user?.institute || 'Aether Academy');
   const [formCity, setFormCity] = useState(user?.city || 'San Francisco');
@@ -126,6 +130,7 @@ export default function StudentDashboard({ user, onLogout }) {
   }, [theme]);
 
   const getUserAvatar = (u) => {
+    if (profileImage) return profileImage;
     if (!u) return null;
     const email = u.email ? u.email.toLowerCase() : '';
     if (email.includes('alex')) return alexRiversProfile;
@@ -232,10 +237,7 @@ export default function StudentDashboard({ user, onLogout }) {
           <span>Upgrade to Pro</span>
         </button>
         <div className="space-y-3 px-2">
-          <button className="flex items-center gap-3 text-xs font-bold text-slate-550 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white transition-colors duration-250 w-full text-left">
-            <HelpCircle className="w-4 h-4 text-slate-400 dark:text-gray-500" />
-            <span>HELP CENTER</span>
-          </button>
+          
           <button 
             onClick={onLogout}
             className="flex items-center gap-3 text-xs font-bold text-slate-550 dark:text-gray-450 hover:text-rose-600 dark:hover:text-rose-400 transition-colors duration-250 w-full text-left"
@@ -685,10 +687,7 @@ export default function StudentDashboard({ user, onLogout }) {
 
             {/* Bottom Actions */}
             <div className="space-y-5 pt-6 border-t border-slate-100 dark:border-slate-850/60">
-              <button className="flex items-center gap-3 text-xs font-bold text-slate-550 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white transition-colors duration-255 w-full text-left">
-                <HelpCircle className="w-4 h-4 text-slate-400 dark:text-gray-500" />
-                <span>Help Center</span>
-              </button>
+              
               
               {/* User Profile Info Card */}
               <div className="flex items-center gap-3 px-2 border-t border-slate-50 dark:border-slate-850/50 pt-4">
@@ -903,7 +902,7 @@ export default function StudentDashboard({ user, onLogout }) {
                     <div className="flex flex-col sm:flex-row gap-3 pt-3">
                       <button className="flex-1 bg-[#253df5] hover:bg-[#1d2ae0] text-white py-3.5 px-4 rounded-2xl text-xs font-bold tracking-wider transition-all duration-200 flex items-center justify-center gap-2 shadow-md shadow-brand-500/10">
                         <Play size={12} className="fill-current" />
-                        <span>Start AI Quiz</span>
+                        <span onClick={() => setActiveNav('Quizzes')}>Start AI Quiz</span>
                       </button>
                       <button 
                         onClick={() => setQuizzesView('past-year')}
@@ -1316,7 +1315,7 @@ export default function StudentDashboard({ user, onLogout }) {
 
                             {/* Action CTA */}
                             <button className="w-full sm:w-auto bg-[#253df5] hover:bg-[#1d2ae0] text-white text-xs font-black py-3 px-6 rounded-xl transition-all duration-200 tracking-wider flex items-center justify-center gap-1.5 shadow-sm shadow-brand-500/10">
-                              <span>Start Learning</span>
+                              <span onClick={() => setActiveNav('Courses')}>Start Learning</span>
                               <ArrowRight size={13} className="stroke-[2.5px]" />
                             </button>
                           </div>
@@ -2194,40 +2193,111 @@ export default function StudentDashboard({ user, onLogout }) {
           })()}
 
 
-          {/* ================= INSIGHTS VIEW ================= */}
-          {activeNav === 'Insights' && (
-            <div className="space-y-6 w-full text-left animate-fadeIn">
-              {/* Header */}
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-slate-205 dark:border-slate-800">
-                <div className="space-y-2.5 text-left max-w-3xl">
-                  <h1 className="text-2xl sm:text-3.5xl font-black text-slate-909 dark:text-white tracking-tight leading-none">
-                    Performance Insights
-                  </h1>
-                  <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 leading-relaxed">
-                    Track your mastery and optimize your learning path.
-                  </p>
+                    {/* ================= INSIGHTS VIEW ================= */}
+          {activeNav === 'Insights' && (() => {
+            // Simulated PowerBI-style data
+            const subjectStats = {
+              "All Subjects": { rank: "12th / 150", marks: "85%", hours: "42h", pie: [40, 35, 15, 10] },
+              "Machine Learning": { rank: "5th / 150", marks: "92%", hours: "15h", pie: [50, 20, 20, 10] },
+              "Neural Networks": { rank: "18th / 150", marks: "78%", hours: "12h", pie: [30, 45, 15, 10] },
+              "Data Science": { rank: "8th / 150", marks: "89%", hours: "15h", pie: [35, 35, 20, 10] }
+            };
+            const selectedSubjectData = subjectStats[selectedSubject] || subjectStats["All Subjects"];
+            const [pLectures, pPractice, pRevision, pQuiz] = selectedSubjectData.pie;
+            
+            // Pie chart calculations (approximate SVG paths for visual representation)
+            const createPieSlice = (startPercent, percent, color) => {
+              const startAngle = (startPercent * 3.6) - 90;
+              const endAngle = ((startPercent + percent) * 3.6) - 90;
+              const startRad = (startAngle * Math.PI) / 180;
+              const endRad = (endAngle * Math.PI) / 180;
+              const x1 = 50 + 40 * Math.cos(startRad);
+              const y1 = 50 + 40 * Math.sin(startRad);
+              const x2 = 50 + 40 * Math.cos(endRad);
+              const y2 = 50 + 40 * Math.sin(endRad);
+              const largeArcFlag = percent > 50 ? 1 : 0;
+              return <path d={`M 50 50 L ${x1} ${y1} A 40 40 0 ${largeArcFlag} 1 ${x2} ${y2} Z`} fill={color} />;
+            };
+
+            return (
+              <div className="space-y-6 w-full text-left animate-fadeIn">
+                {/* Header */}
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-slate-205 dark:border-slate-800">
+                  <div className="space-y-2.5 text-left max-w-3xl">
+                    <h1 className="text-2xl sm:text-3.5xl font-black text-slate-909 dark:text-white tracking-tight leading-none">
+                      Performance Insights
+                    </h1>
+                    <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 leading-relaxed">
+                      Track your mastery and optimize your learning path with PowerBI-style analytics.
+                    </p>
+                  </div>
+
+                  {/* Header Action Buttons */}
+                  <div className="flex items-center gap-3">
+                    <div className="relative">
+                      <select 
+                        className="appearance-none pl-4 pr-10 py-2.5 bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800 rounded-2xl text-xs font-extrabold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors shadow-xs focus:outline-none focus:ring-2 focus:ring-brand-500"
+                        value={selectedSubject}
+                        onChange={(e) => setSelectedSubject(e.target.value)}
+                      >
+                        <option value="All Subjects">All Subjects</option>
+                        <option value="Machine Learning">Machine Learning</option>
+                        <option value="Neural Networks">Neural Networks</option>
+                        <option value="Data Science">Data Science</option>
+                      </select>
+                      <ChevronDown size={14} className="absolute right-3 top-3 text-slate-400 pointer-events-none" />
+                    </div>
+                    <button className="flex items-center gap-2 px-4 py-2.5 bg-brand-600 text-white rounded-2xl text-xs font-extrabold hover:bg-brand-700 transition-colors shadow-xs" onClick={() => alert('Downloading CSV...')}>
+                      <FileText size={14} />
+                      <span>Export Report</span>
+                    </button>
+                  </div>
                 </div>
 
-                {/* Header Action Buttons */}
-                <div className="flex items-center gap-3">
-                  <button className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800 rounded-2xl text-xs font-extrabold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors shadow-xs">
-                    <Calendar size={14} className="text-slate-400" />
-                    <span>Last 30 Days</span>
-                  </button>
-                  <button className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800 rounded-2xl text-xs font-extrabold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors shadow-xs">
-                    <svg className="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                    </svg>
-                    <span>Export Report</span>
-                  </button>
-                </div>
-              </div>
+                {/* KPI Cards Row */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                  {/* Rank KPI */}
+                  <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-4 opacity-10">
+                      <Award size={48} className="text-brand-500" />
+                    </div>
+                    <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest font-mono mb-2">Class Rank</h3>
+                    <div className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">{selectedSubjectData.rank}</div>
+                    <div className="mt-4 flex items-center gap-2 text-xs font-bold text-emerald-600">
+                      <TrendingUp size={14} />
+                      <span>Top 10%</span>
+                    </div>
+                  </div>
 
-              {/* Main Grid: Left Column (60%), Right Column (40%) */}
-              <div className="grid grid-cols-1 lg:grid-cols-10 gap-6 items-stretch">
-                
-                {/* Left Column (lg:col-span-6) */}
-                <div className="lg:col-span-6 space-y-6">
+                  {/* Marks KPI */}
+                  <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-4 opacity-10">
+                      <Target size={48} className="text-blue-500" />
+                    </div>
+                    <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest font-mono mb-2">Overall Score</h3>
+                    <div className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">{selectedSubjectData.marks}</div>
+                    <div className="mt-4 flex items-center gap-2 text-xs font-bold text-slate-500">
+                      <BarChart2 size={14} />
+                      <span>Based on assignments & quizzes</span>
+                    </div>
+                  </div>
+
+                  {/* Hours KPI */}
+                  <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-4 opacity-10">
+                      <Clock size={48} className="text-purple-500" />
+                    </div>
+                    <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest font-mono mb-2">Focus Hours</h3>
+                    <div className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">{selectedSubjectData.hours}</div>
+                    <div className="mt-4 flex items-center gap-2 text-xs font-bold text-emerald-600">
+                      <TrendingUp size={14} />
+                      <span>+2h this week</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Main Grid: Left Column (60%), Right Column (40%) */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
                   
                   {/* Skill Balancing Radar Card */}
                   <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs space-y-4">
@@ -2235,33 +2305,31 @@ export default function StudentDashboard({ user, onLogout }) {
                       <div>
                         <h3 className="font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-2">
                           <span className="w-5 h-5 rounded-full bg-[#253df5]/10 text-[#253df5] flex items-center justify-center">
-                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <circle cx="12" cy="12" r="10" strokeWidth="3.5" />
-                              <circle cx="12" cy="12" r="4" strokeWidth="3.5" />
-                            </svg>
+                            <Target size={12} />
                           </span>
                           Skill Balancing Radar
                         </h3>
                         <p className="text-[10px] font-semibold text-slate-400 mt-1">
-                          Visualizing your mastery across core AI disciplines against syllabus goals.
+                          Visualizing mastery across core disciplines.
                         </p>
                       </div>
                       <span className="text-[9px] font-black text-[#253df5] bg-blue-50 dark:bg-blue-950/20 px-2.5 py-1 rounded-full uppercase tracking-wider">
-                        On Track
+                        {selectedSubject}
                       </span>
                     </div>
 
-                    <div className="flex justify-center py-4 bg-slate-50/20 dark:bg-slate-900/10 rounded-2xl">
+                    <div className="flex justify-center py-4 bg-slate-50/20 dark:bg-slate-900/10 rounded-2xl h-64 items-center">
+                      {/* Original Radar Code Integrated here */}
                       {(() => {
                         const cx = 200;
                         const cy = 125;
                         const rMax = 80;
                         const categories = [
-                          { name: 'Machine Learning', value: 0.8, xLabel: 200, yLabel: 30 },
-                          { name: 'Neural Networks', value: 0.76, xLabel: 320, yLabel: 120 },
-                          { name: 'NLP', value: 0.94, xLabel: 275, yLabel: 215 },
-                          { name: 'Data Science', value: 0.7, xLabel: 125, yLabel: 215 },
-                          { name: 'Computer Vision', value: 0.6, xLabel: 80, yLabel: 120 }
+                          { name: 'Theory', value: selectedSubject === 'Machine Learning' ? 0.9 : 0.8, xLabel: 200, yLabel: 30 },
+                          { name: 'Application', value: selectedSubject === 'Neural Networks' ? 0.85 : 0.76, xLabel: 320, yLabel: 120 },
+                          { name: 'Analysis', value: 0.94, xLabel: 275, yLabel: 215 },
+                          { name: 'Coding', value: selectedSubject === 'Data Science' ? 0.9 : 0.7, xLabel: 125, yLabel: 215 },
+                          { name: 'Optimization', value: 0.6, xLabel: 80, yLabel: 120 }
                         ];
                         
                         const getPt = (i, r) => {
@@ -2270,594 +2338,131 @@ export default function StudentDashboard({ user, onLogout }) {
                         };
                         
                         const rings = [20, 40, 60, 80];
-                        
-                        const valPoints = categories.map((cat, i) => {
-                          const r = rMax * cat.value;
-                          const angle = -Math.PI / 2 + (i * 2 * Math.PI) / 5;
-                          return `${cx + r * Math.cos(angle)},${cy + r * Math.sin(angle)}`;
-                        }).join(' ');
+                        const valPoints = categories.map((cat, i) => getPt(i, rMax * cat.value)).join(' ');
 
                         return (
-                          <svg className="w-full h-64 overflow-visible" viewBox="0 0 400 250">
-                            {/* Pentagon Grids */}
-                            {rings.map((r, ri) => {
-                              const pts = Array.from({ length: 5 }, (_, i) => getPt(i, r)).join(' ');
-                              return (
-                                <polygon 
-                                  key={ri} 
-                                  points={pts} 
-                                  fill="none" 
-                                  stroke="currentColor" 
-                                  className="text-slate-100 dark:text-slate-800" 
-                                  strokeWidth="1.5" 
-                                />
-                              );
-                            })}
-                            
-                            {/* Axis Lines */}
-                            {Array.from({ length: 5 }).map((_, i) => {
-                              const ptMax = getPt(i, rMax);
-                              return (
-                                <line 
-                                  key={i} 
-                                  x1={cx} 
-                                  y1={cy} 
-                                  x2={ptMax.split(',')[0]} 
-                                  y2={ptMax.split(',')[1]} 
-                                  stroke="currentColor" 
-                                  className="text-slate-100 dark:text-slate-800" 
-                                  strokeWidth="1.5" 
-                                />
-                              );
-                            })}
-                            
-                            {/* Student Data polygon */}
-                            <polygon 
-                              points={valPoints} 
-                              fill="rgba(37, 61, 245, 0.15)" 
-                              stroke="#253df5" 
-                              strokeWidth="2.5" 
-                            />
-                            
-                            {/* Data Dots */}
-                            {categories.map((cat, i) => {
-                              const r = rMax * cat.value;
-                              const angle = -Math.PI / 2 + (i * 2 * Math.PI) / 5;
-                              const x = cx + r * Math.cos(angle);
-                              const y = cy + r * Math.sin(angle);
-                              return (
-                                <circle 
-                                  key={i} 
-                                  cx={x} 
-                                  cy={y} 
-                                  r="4" 
-                                  fill="#253df5" 
-                                  stroke="white" 
-                                  strokeWidth="1.5" 
-                                />
-                              );
-                            })}
-                            
-                            {/* Text labels */}
-                            {categories.map((cat, i) => {
-                              const textAnchor = i === 0 ? 'middle' : (i === 1 || i === 2) ? 'start' : 'end';
-                              return (
-                                <text 
-                                  key={i} 
-                                  x={cat.xLabel} 
-                                  y={cat.yLabel} 
-                                  textAnchor={textAnchor}
-                                  className="text-[9px] font-black fill-slate-500 dark:fill-slate-400 uppercase tracking-wide"
-                                >
-                                  {cat.name}
-                                </text>
-                              );
-                            })}
+                          <svg className="w-full h-full overflow-visible" viewBox="0 0 400 250">
+                            {rings.map((r, ri) => (
+                              <polygon key={ri} points={Array.from({ length: 5 }, (_, i) => getPt(i, r)).join(' ')} fill="none" stroke="currentColor" className="text-slate-200 dark:text-slate-700" strokeWidth="1.5" />
+                            ))}
+                            {Array.from({ length: 5 }).map((_, i) => (
+                              <line key={i} x1={cx} y1={cy} x2={getPt(i, rMax).split(',')[0]} y2={getPt(i, rMax).split(',')[1]} stroke="currentColor" className="text-slate-200 dark:text-slate-700" strokeWidth="1.5" />
+                            ))}
+                            <polygon points={valPoints} fill="rgba(37, 61, 245, 0.15)" stroke="#253df5" strokeWidth="2.5" />
+                            {categories.map((cat, i) => (
+                              <circle key={i} cx={getPt(i, rMax * cat.value).split(',')[0]} cy={getPt(i, rMax * cat.value).split(',')[1]} r="4" fill="#253df5" stroke="white" strokeWidth="1.5" />
+                            ))}
+                            {categories.map((cat, i) => (
+                              <text key={i} x={cat.xLabel} y={cat.yLabel} textAnchor={i === 0 ? 'middle' : (i === 1 || i === 2) ? 'start' : 'end'} className="text-[9px] font-black fill-slate-500 dark:fill-slate-400 uppercase tracking-wide">
+                                {cat.name}
+                              </text>
+                            ))}
                           </svg>
                         );
                       })()}
                     </div>
                   </div>
 
-                  {/* Subject-wise Mastery Trend Card */}
+                  {/* Focus Period Pie Chart Card */}
                   <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs space-y-4">
-                    <div className="border-b border-slate-105 dark:border-slate-850 pb-3 text-left">
-                      <h3 className="font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-2">
-                        <span className="w-5 h-5 rounded-full bg-blue-500/10 text-blue-500 flex items-center justify-center">
-                          <TrendingUp size={12} />
-                        </span>
-                        Subject-wise Mastery Trend
-                      </h3>
-                      <p className="text-[10px] font-semibold text-slate-400 mt-1">
-                        Tracking progress against syllabus goals over the current semester.
-                      </p>
-                    </div>
-
-                    <div className="pt-2">
-                      <svg className="w-full h-52 overflow-visible" viewBox="0 0 500 200">
-                        <defs>
-                          <linearGradient id="chart-grad" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#253df5" stopOpacity="0.12" />
-                            <stop offset="100%" stopColor="#253df5" stopOpacity="0.0" />
-                          </linearGradient>
-                        </defs>
-                        
-                        {/* Y-axis gridlines */}
-                        {[0, 1, 2, 3].map((i) => {
-                          const y = 30 + i * 45;
-                          return (
-                            <line 
-                              key={i} 
-                              x1="30" 
-                              y1={y} 
-                              x2="470" 
-                              y2={y} 
-                              stroke="currentColor" 
-                              className="text-slate-100 dark:text-slate-800/60" 
-                              strokeWidth="1" 
-                              strokeDasharray="4 4"
-                            />
-                          );
-                        })}
-                        
-                        {/* Area under curve */}
-                        <path 
-                          d="M 30,150 Q 130,140 240,110 T 470,60 L 470,170 L 30,170 Z" 
-                          fill="url(#chart-grad)"
-                        />
-                        
-                        {/* Syllabus Goal (dashed) */}
-                        <path 
-                          d="M 30,150 Q 130,145 240,130 T 470,100" 
-                          fill="none" 
-                          stroke="#94a3b8" 
-                          strokeWidth="2" 
-                          strokeDasharray="6 6" 
-                          className="opacity-50"
-                        />
-                        
-                        {/* Student Progress (solid) */}
-                        <path 
-                          d="M 30,150 Q 130,140 240,110 T 470,60" 
-                          fill="none" 
-                          stroke="#253df5" 
-                          strokeWidth="3.5" 
-                          strokeLinecap="round"
-                        />
-                        
-                        {/* Center text watermark */}
-                        <text 
-                          x="250" 
-                          y="130" 
-                          textAnchor="middle" 
-                          className="text-[10px] font-black fill-slate-350 dark:fill-slate-600 uppercase tracking-widest pointer-events-none"
-                        >
-                          Interactive Line Chart Area
-                        </text>
-                        
-                        {/* X-axis labels */}
-                        {['Week 1', 'Week 4', 'Week 8', 'Week 12', 'Week 16'].map((label, idx) => {
-                          const x = 30 + idx * 110;
-                          return (
-                            <text 
-                              key={idx} 
-                              x={x} 
-                              y="190" 
-                              textAnchor="middle" 
-                              className="text-[9px] font-extrabold fill-slate-400 uppercase tracking-wider font-mono"
-                            >
-                              {label}
-                            </text>
-                          );
-                        })}
-                      </svg>
-                    </div>
-                  </div>
-
-                  {/* Subject-wise Insights Section */}
-                  <div className="space-y-4 text-left">
-                    <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest font-mono">
-                      Subject-wise Insights
-                    </h3>
-                    
-                    {/* Top Row: AML & Neural Networks */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                      
-                      {/* Advanced Machine Learning Card */}
-                      <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-5 shadow-xs flex flex-col justify-between space-y-4">
-                        <div>
-                          <div className="flex justify-between items-center">
-                            <h4 className="font-extrabold text-xs text-slate-900 dark:text-white">
-                              Advanced Machine Learning
-                            </h4>
-                            <span className="text-xs font-black text-[#253df5] dark:text-brand-400">
-                              88%
-                            </span>
-                          </div>
-                          
-                          {/* Mini Sparkline */}
-                          <div className="py-2.5 flex justify-start">
-                            <svg className="w-32 h-8 overflow-visible" viewBox="0 0 100 30">
-                              <path d="M 5,25 Q 25,10 50,20 T 95,8" fill="none" stroke="#253df5" strokeWidth="2.5" strokeLinecap="round" />
-                              <circle cx="95" cy="8" r="3" fill="#253df5" />
-                            </svg>
-                          </div>
-
-                          {/* Strengths & Weaknesses */}
-                          <div className="space-y-2.5 mt-2">
-                            <div className="flex items-start gap-2 text-[11px] font-semibold text-slate-650 dark:text-slate-350">
-                              <span className="w-4 h-4 rounded-full bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="3">
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                                </svg>
-                              </span>
-                              <span><strong className="text-slate-808 dark:text-white">Strength:</strong> Ensemble Methods</span>
-                            </div>
-                            <div className="flex items-start gap-2 text-[11px] font-semibold text-slate-650 dark:text-slate-350">
-                              <span className="w-4 h-4 rounded-full bg-rose-50 dark:bg-rose-950/20 text-rose-600 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="3">
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                                </svg>
-                              </span>
-                              <span><strong className="text-slate-808 dark:text-white">Weakness:</strong> SVM Optimization</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* AI Recommendation Bar */}
-                        <div className="p-3 rounded-2xl bg-blue-50/40 dark:bg-blue-950/10 border border-blue-100/50 dark:border-blue-900/20 text-[10px] font-semibold text-slate-600 dark:text-slate-350 leading-relaxed">
-                          <strong className="text-[#253df5] dark:text-brand-400">AI Recommendation:</strong> Practice Lagrange multipliers to master SVM math.
-                        </div>
-                      </div>
-
-                      {/* Neural Networks Card */}
-                      <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-5 shadow-xs flex flex-col justify-between space-y-4">
-                        <div>
-                          <div className="flex justify-between items-center">
-                            <h4 className="font-extrabold text-xs text-slate-900 dark:text-white">
-                              Neural Networks
-                            </h4>
-                            <span className="text-xs font-black text-[#253df5] dark:text-brand-400">
-                              76%
-                            </span>
-                          </div>
-                          
-                          {/* Mini Sparkline */}
-                          <div className="py-2.5 flex justify-start">
-                            <svg className="w-32 h-8 overflow-visible" viewBox="0 0 100 30">
-                              <path d="M 5,22 Q 25,28 50,15 T 95,12" fill="none" stroke="#253df5" strokeWidth="2.5" strokeLinecap="round" />
-                              <circle cx="95" cy="12" r="3" fill="#253df5" />
-                            </svg>
-                          </div>
-
-                          {/* Strengths & Weaknesses */}
-                          <div className="space-y-2.5 mt-2">
-                            <div className="flex items-start gap-2 text-[11px] font-semibold text-slate-655 dark:text-slate-350">
-                              <span className="w-4 h-4 rounded-full bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="3">
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                                </svg>
-                              </span>
-                              <span><strong className="text-slate-808 dark:text-white">Strength:</strong> Backpropagation</span>
-                            </div>
-                            <div className="flex items-start gap-2 text-[11px] font-semibold text-slate-655 dark:text-slate-350">
-                              <span className="w-4 h-4 rounded-full bg-rose-50 dark:bg-rose-950/20 text-rose-600 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="3">
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                                </svg>
-                              </span>
-                              <span><strong className="text-slate-808 dark:text-white">Weakness:</strong> RNN Architectures</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* AI Recommendation Bar */}
-                        <div className="p-3 rounded-2xl bg-blue-50/40 dark:bg-blue-950/10 border border-blue-100/50 dark:border-blue-900/20 text-[10px] font-semibold text-slate-600 dark:text-slate-350 leading-relaxed">
-                          <strong className="text-[#253df5] dark:text-brand-400">AI Recommendation:</strong> Visualize LSTM gates to understand memory retention.
-                        </div>
-                      </div>
-
-                    </div>
-
-                    {/* Bottom Row: NLP (Full Width) */}
-                    <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-5 shadow-xs flex flex-col justify-between space-y-4">
+                    <div className="flex justify-between items-center border-b border-slate-105 dark:border-slate-850 pb-3">
                       <div>
-                        <div className="flex justify-between items-center">
-                          <h4 className="font-extrabold text-xs text-slate-900 dark:text-white">
-                            Natural Language Processing
-                          </h4>
-                          <span className="text-xs font-black text-[#253df5] dark:text-brand-400">
-                            94%
-                          </span>
-                        </div>
-                        
-                        {/* Mini Sparkline */}
-                        <div className="py-2.5 flex justify-start">
-                          <svg className="w-full h-8 overflow-visible" viewBox="0 0 300 30">
-                            <path d="M 5,25 Q 75,22 150,12 T 295,6" fill="none" stroke="#253df5" strokeWidth="2.5" strokeLinecap="round" />
-                            <circle cx="295" cy="6" r="3" fill="#253df5" />
-                          </svg>
-                        </div>
-
-                        {/* Strengths & Weaknesses */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2.5 mt-2">
-                          <div className="flex items-start gap-2 text-[11px] font-semibold text-slate-655 dark:text-slate-350">
-                            <span className="w-4 h-4 rounded-full bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 flex items-center justify-center flex-shrink-0 mt-0.5">
-                              <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="3">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                              </svg>
-                            </span>
-                            <span><strong className="text-slate-808 dark:text-white">Strength:</strong> Transformers</span>
-                          </div>
-                          <div className="flex items-start gap-2 text-[11px] font-semibold text-slate-655 dark:text-slate-350">
-                            <span className="w-4 h-4 rounded-full bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 flex items-center justify-center flex-shrink-0 mt-0.5">
-                              <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="3">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                              </svg>
-                            </span>
-                            <span><strong className="text-slate-808 dark:text-white">Strength:</strong> Tokenization</span>
-                          </div>
-                          <div className="flex items-start gap-2 text-[11px] font-semibold text-slate-655 dark:text-slate-350 sm:col-span-2">
-                            <span className="w-4 h-4 rounded-full bg-rose-50 dark:bg-rose-950/20 text-rose-600 flex items-center justify-center flex-shrink-0 mt-0.5">
-                              <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="3">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                              </svg>
-                            </span>
-                            <span><strong className="text-slate-808 dark:text-white">Weakness:</strong> Sentiment Analysis</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* AI Recommendation Bar */}
-                      <div className="p-3 rounded-2xl bg-blue-50/40 dark:bg-blue-950/10 border border-blue-100/50 dark:border-blue-900/20 text-[10px] font-semibold text-slate-600 dark:text-slate-350 leading-relaxed mt-2.5">
-                        <strong className="text-[#253df5] dark:text-brand-400">AI Recommendation:</strong> You're excelling! Explore BERT fine-tuning for specialized domains.
-                      </div>
-                    </div>
-
-                  </div>
-                </div>
-
-                {/* Right Column: Digital Mentor Alerts & Micro-Assessment Pipeline (lg:col-span-4) */}
-                <div className="lg:col-span-4 space-y-6 flex flex-col">
-                  
-                  {/* Digital Mentor Alerts Card */}
-                  <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col justify-between text-left space-y-5">
-                    <div className="space-y-4 w-full">
-                      <div className="border-b border-slate-100 dark:border-slate-850 pb-3">
                         <h3 className="font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-2">
-                          <span className="w-5 h-5 rounded-full bg-indigo-500/10 text-indigo-550 dark:text-indigo-400 flex items-center justify-center">
-                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                            </svg>
+                          <span className="w-5 h-5 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
+                            <Clock size={12} />
                           </span>
-                          Digital Mentor Alerts
-                        </h3>
-                      </div>
-
-                      {/* Alerts list */}
-                      <div className="space-y-3.5">
-                        
-                        {/* Alert 1 */}
-                        <div className="p-3.5 rounded-2xl bg-rose-50/40 dark:bg-red-950/10 border border-red-100/60 dark:border-red-900/20 flex items-start gap-3">
-                          <span className="w-7 h-7 rounded-xl bg-rose-100 dark:bg-red-900/30 text-rose-600 dark:text-red-400 flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                            </svg>
-                          </span>
-                          <div className="space-y-0.5 text-left">
-                            <h4 className="text-[11px] font-extrabold text-slate-805 dark:text-white leading-tight">
-                              Neural Networks: Backpropagation
-                            </h4>
-                            <p className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 leading-normal mt-0.5">
-                              Struggling identified in recent quizzes. Recommended: Review Module 3.2.
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Alert 2 */}
-                        <div className="p-3.5 rounded-2xl bg-blue-50/40 dark:bg-blue-950/10 border border-blue-100/50 dark:border-blue-900/20 flex items-start gap-3">
-                          <span className="w-7 h-7 rounded-xl bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                            </svg>
-                          </span>
-                          <div className="space-y-0.5 text-left">
-                            <h4 className="text-[11px] font-extrabold text-slate-805 dark:text-white leading-tight">
-                              Daily Nudge: Consistency
-                            </h4>
-                            <p className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 leading-normal mt-0.5">
-                              You're 15 mins away from your daily goal. Quick micro-quiz available.
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Alert 3 */}
-                        <div className="p-3.5 rounded-2xl bg-indigo-50/30 dark:bg-indigo-950/10 border border-indigo-100/40 dark:border-indigo-900/20 flex items-start gap-3">
-                          <span className="w-7 h-7 rounded-xl bg-indigo-100 dark:bg-indigo-900/30 text-[#253df5] dark:text-brand-400 flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <TrendingUp size={14} />
-                          </span>
-                          <div className="space-y-0.5 text-left">
-                            <h4 className="text-[11px] font-extrabold text-slate-805 dark:text-white leading-tight">
-                              Strength Identified
-                            </h4>
-                            <p className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 leading-normal mt-0.5">
-                              Excellent grasp of NLP concepts. Advancing you to next tier materials.
-                            </p>
-                          </div>
-                        </div>
-
-                      </div>
-                    </div>
-
-                    <button className="w-full bg-white dark:bg-slate-900 border border-slate-205 dark:border-slate-800 hover:border-[#253df5] dark:hover:border-slate-700 text-[#253df5] dark:text-brand-400 text-xs font-black py-3 rounded-2xl transition-all duration-200 tracking-wider text-center mt-3">
-                      View All Recommendations
-                    </button>
-                  </div>
-
-                  {/* Micro-Assessment Pipeline Card */}
-                  <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs text-left space-y-5 flex flex-col">
-                    <div className="space-y-4 w-full">
-                      <div className="border-b border-slate-100 dark:border-slate-850 pb-3">
-                        <h3 className="font-extrabold text-sm text-slate-900 dark:text-white">
-                          Micro-Assessment Pipeline
+                          Focus Period Breakdown
                         </h3>
                         <p className="text-[10px] font-semibold text-slate-400 mt-1">
-                          High-frequency data refining your learning model week-over-week.
+                          Distribution of study time for {selectedSubject}.
                         </p>
                       </div>
-
-                      {/* Progress Metrics */}
-                      <div className="space-y-3.5">
-                        
-                        {/* Metric 1 */}
-                        <div className="space-y-1.5">
-                          <div className="flex items-center justify-between text-xs font-bold">
-                            <span className="text-slate-655 dark:text-slate-350">Completion Rate (This Week)</span>
-                            <span className="text-[#253df5] dark:text-brand-400 font-extrabold">85%</span>
-                          </div>
-                          <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-850 rounded-full overflow-hidden">
-                            <div className="h-full bg-[#253df5] rounded-full" style={{ width: '85%' }} />
-                          </div>
-                        </div>
-
-                        {/* Metric 2 */}
-                        <div className="space-y-1.5">
-                          <div className="flex items-center justify-between text-xs font-bold">
-                            <span className="text-slate-655 dark:text-slate-350">Model Accuracy Confidence</span>
-                            <span className="text-indigo-500 font-extrabold">92%</span>
-                          </div>
-                          <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-850 rounded-full overflow-hidden">
-                            <div className="h-full bg-indigo-500 rounded-full" style={{ width: '92%' }} />
-                          </div>
-                        </div>
-
-                      </div>
                     </div>
 
-                    {/* Bottom Stats Grid */}
-                    <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-100 dark:border-slate-850/80">
-                      <div className="p-3.5 bg-slate-50/50 dark:bg-slate-900/30 border border-[#eef2f6]/60 dark:border-slate-850/60 rounded-2xl space-y-1 text-center">
-                        <h4 className="text-2xl font-black text-slate-900 dark:text-white leading-none">
-                          12
-                        </h4>
-                        <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest block font-mono">
-                          Quizzes Taken
-                        </span>
-                      </div>
-                      <div className="p-3.5 bg-slate-50/50 dark:bg-slate-900/30 border border-[#eef2f6]/60 dark:border-slate-850/60 rounded-2xl space-y-1 text-center">
-                        <h4 className="text-2xl font-black text-emerald-600 dark:text-emerald-450 leading-none">
-                          +4%
-                        </h4>
-                        <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest block font-mono">
-                          Model Refinement
-                        </span>
-                      </div>
-                    </div>
-
-                  </div>
-
-                  {/* Distributed Systems Subject Card */}
-                  <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-5 shadow-xs flex flex-col justify-between space-y-4">
-                    <div>
-                      <div className="flex justify-between items-center">
-                        <h4 className="font-extrabold text-xs text-slate-900 dark:text-white">
-                          Distributed Systems
-                        </h4>
-                        <span className="text-xs font-black text-[#253df5] dark:text-brand-400">
-                          75%
-                        </span>
-                      </div>
-                      
-                      {/* Mini Sparkline */}
-                      <div className="py-2.5 flex justify-start">
-                        <svg className="w-32 h-8 overflow-visible" viewBox="0 0 100 30">
-                          <path d="M 5,20 Q 30,5 60,25 T 95,15" fill="none" stroke="#253df5" strokeWidth="2.5" strokeLinecap="round" />
-                          <circle cx="95" cy="15" r="3" fill="#253df5" />
+                    <div className="flex flex-row items-center justify-center py-4 gap-8">
+                      {/* SVG Pie Chart */}
+                      <div className="relative w-40 h-40">
+                        <svg viewBox="0 0 100 100" className="w-full h-full transform -rotate-90 rounded-full">
+                          <circle cx="50" cy="50" r="40" fill="transparent" stroke="currentColor" strokeWidth="20" className="text-slate-100 dark:text-slate-800" />
+                          <circle cx="50" cy="50" r="40" fill="transparent" stroke="#3b82f6" strokeWidth="20" strokeDasharray={`${pLectures * 2.51} 251`} strokeDashoffset="0" />
+                          <circle cx="50" cy="50" r="40" fill="transparent" stroke="#10b981" strokeWidth="20" strokeDasharray={`${pPractice * 2.51} 251`} strokeDashoffset={`-${pLectures * 2.51}`} />
+                          <circle cx="50" cy="50" r="40" fill="transparent" stroke="#8b5cf6" strokeWidth="20" strokeDasharray={`${pRevision * 2.51} 251`} strokeDashoffset={`-${(pLectures + pPractice) * 2.51}`} />
+                          <circle cx="50" cy="50" r="40" fill="transparent" stroke="#f59e0b" strokeWidth="20" strokeDasharray={`${pQuiz * 2.51} 251`} strokeDashoffset={`-${(pLectures + pPractice + pRevision) * 2.51}`} />
                         </svg>
-                      </div>
-
-                      {/* Strengths & Weaknesses */}
-                      <div className="space-y-2.5 mt-2">
-                        <div className="flex items-start gap-2 text-[11px] font-semibold text-slate-650 dark:text-slate-350">
-                          <span className="w-4 h-4 rounded-full bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="3">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                            </svg>
-                          </span>
-                          <span><strong className="text-slate-808 dark:text-white">Strength:</strong> Consistency Protocols</span>
-                        </div>
-                        <div className="flex items-start gap-2 text-[11px] font-semibold text-slate-655 dark:text-slate-350">
-                          <span className="w-4 h-4 rounded-full bg-rose-50 dark:bg-rose-950/20 text-rose-600 flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="3">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                            </svg>
-                          </span>
-                          <span><strong className="text-slate-808 dark:text-white">Weakness:</strong> Consensus Algorithms (Raft)</span>
+                        {/* Center Hole for Doughnut Look */}
+                        <div className="absolute inset-0 m-auto w-24 h-24 bg-white dark:bg-[#0d1326] rounded-full flex items-center justify-center shadow-inner">
+                          <div className="text-center">
+                            <span className="text-xl font-black text-slate-900 dark:text-white block">{selectedSubjectData.hours}</span>
+                            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Total</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    {/* AI Recommendation Bar */}
-                    <div className="p-3 rounded-2xl bg-blue-50/40 dark:bg-blue-950/10 border border-blue-100/50 dark:border-blue-900/20 text-[10px] font-semibold text-slate-600 dark:text-slate-350 leading-relaxed">
-                      <strong className="text-[#253df5] dark:text-brand-400">AI Recommendation:</strong> Simulate a 3-node Raft cluster to debug leader election.
+                      {/* Legend */}
+                      <div className="flex flex-col gap-3 justify-center">
+                        <div className="flex items-center gap-2">
+                          <span className="w-3 h-3 rounded-full bg-blue-500"></span>
+                          <span className="text-xs font-bold text-slate-700 dark:text-slate-300">Lectures ({pLectures}%)</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="w-3 h-3 rounded-full bg-emerald-500"></span>
+                          <span className="text-xs font-bold text-slate-700 dark:text-slate-300">Practice ({pPractice}%)</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="w-3 h-3 rounded-full bg-purple-500"></span>
+                          <span className="text-xs font-bold text-slate-700 dark:text-slate-300">Revision ({pRevision}%)</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="w-3 h-3 rounded-full bg-amber-500"></span>
+                          <span className="text-xs font-bold text-slate-700 dark:text-slate-300">Quizzes ({pQuiz}%)</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
-
-                  {/* Data Structures & Algorithms Subject Card */}
-                  <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-5 shadow-xs flex flex-col justify-between space-y-4">
-                    <div>
-                      <div className="flex justify-between items-center">
-                        <h4 className="font-extrabold text-xs text-slate-900 dark:text-white">
-                          Data Structures & Algorithms
-                        </h4>
-                        <span className="text-xs font-black text-[#253df5] dark:text-brand-400">
-                          89%
-                        </span>
-                      </div>
-                      
-                      {/* Mini Sparkline */}
-                      <div className="py-2.5 flex justify-start">
-                        <svg className="w-32 h-8 overflow-visible" viewBox="0 0 100 30">
-                          <path d="M 5,10 Q 35,25 65,5 T 95,8" fill="none" stroke="#253df5" strokeWidth="2.5" strokeLinecap="round" />
-                          <circle cx="95" cy="8" r="3" fill="#253df5" />
-                        </svg>
-                      </div>
-
-                      {/* Strengths & Weaknesses */}
-                      <div className="space-y-2.5 mt-2">
-                        <div className="flex items-start gap-2 text-[11px] font-semibold text-slate-650 dark:text-slate-350">
-                          <span className="w-4 h-4 rounded-full bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="3">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                            </svg>
-                          </span>
-                          <span><strong className="text-slate-808 dark:text-white">Strength:</strong> Dynamic Programming</span>
-                        </div>
-                        <div className="flex items-start gap-2 text-[11px] font-semibold text-slate-655 dark:text-slate-350">
-                          <span className="w-4 h-4 rounded-full bg-rose-50 dark:bg-rose-950/20 text-rose-600 flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="3">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                            </svg>
-                          </span>
-                          <span><strong className="text-slate-808 dark:text-white">Weakness:</strong> Graph Algorithms (Dijkstra)</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* AI Recommendation Bar */}
-                    <div className="p-3 rounded-2xl bg-blue-50/40 dark:bg-blue-950/10 border border-blue-100/50 dark:border-blue-900/20 text-[10px] font-semibold text-slate-600 dark:text-slate-350 leading-relaxed">
-                      <strong className="text-[#253df5] dark:text-brand-400">AI Recommendation:</strong> Solve 5 graph optimization problems on the sandbox.
-                    </div>
-                  </div>
-
                 </div>
 
+                {/* Subject-wise Mastery Trend Card */}
+                <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs space-y-4">
+                  <div className="border-b border-slate-105 dark:border-slate-850 pb-3 text-left">
+                    <h3 className="font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-full bg-blue-500/10 text-blue-500 flex items-center justify-center">
+                        <TrendingUp size={12} />
+                      </span>
+                      Subject-wise Mastery Trend
+                    </h3>
+                    <p className="text-[10px] font-semibold text-slate-400 mt-1">
+                      Tracking progress against syllabus goals over the current semester.
+                    </p>
+                  </div>
+
+                  <div className="pt-2">
+                    <svg className="w-full h-52 overflow-visible" viewBox="0 0 500 200">
+                      <defs>
+                        <linearGradient id="chart-grad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#253df5" stopOpacity="0.12" />
+                          <stop offset="100%" stopColor="#253df5" stopOpacity="0.0" />
+                        </linearGradient>
+                      </defs>
+                      {[0, 1, 2, 3].map((i) => (
+                        <line key={i} x1="30" y1={30 + i * 45} x2="470" y2={30 + i * 45} stroke="currentColor" className="text-slate-100 dark:text-slate-800/60" strokeWidth="1" strokeDasharray="4 4" />
+                      ))}
+                      <path d="M 30,150 Q 130,140 240,110 T 470,60 L 470,170 L 30,170 Z" fill="url(#chart-grad)" />
+                      <path d="M 30,150 Q 130,145 240,130 T 470,100" fill="none" stroke="#94a3b8" strokeWidth="2" strokeDasharray="6 6" className="opacity-50" />
+                      <path d={selectedSubject === 'Machine Learning' ? "M 30,150 Q 130,110 240,90 T 470,30" : "M 30,150 Q 130,140 240,110 T 470,60"} fill="none" stroke="#253df5" strokeWidth="3.5" strokeLinecap="round" />
+                      
+                      {['Week 1', 'Week 4', 'Week 8', 'Week 12', 'Week 16'].map((label, idx) => (
+                        <text key={idx} x={30 + idx * 110} y="190" textAnchor="middle" className="text-[9px] font-extrabold fill-slate-400 uppercase tracking-wider font-mono">
+                          {label}
+                        </text>
+                      ))}
+                    </svg>
+                  </div>
+                </div>
               </div>
+            );
+          })()}
 
-            </div>
-          )}
-
-          {/* ================= SETTINGS VIEW ================= */}
+{/* ================= SETTINGS VIEW ================= */}
           {activeNav === 'Settings' && (() => {
             const handleSaveSettings = (e) => {
               e.preventDefault();
@@ -2881,7 +2486,7 @@ export default function StudentDashboard({ user, onLogout }) {
 
                   {/* Filter Pills */}
                   <div className="flex items-center bg-slate-100/80 dark:bg-slate-900/60 p-1 rounded-full border border-slate-205/60 dark:border-slate-800">
-                    {['Profile', 'Preferences', 'Security'].map((tab) => (
+                    {['Profile', 'Preferences', 'Security', 'Contact Support'].map((tab) => (
                       <button
                         key={tab}
                         onClick={() => setSettingsTab(tab)}
@@ -2908,6 +2513,33 @@ export default function StudentDashboard({ user, onLogout }) {
                         <div className="flex items-center gap-2 pb-2 border-b border-slate-100 dark:border-slate-850">
                           <User className="w-5 h-5 text-[#253df5]" />
                           <h3 className="font-extrabold text-base text-slate-900 dark:text-white">Personal Information</h3>
+                        </div>
+
+                        <div className="flex items-center gap-6 mb-6">
+                          <div className="relative group">
+                            <img 
+                              src={getUserAvatar(user) || "https://ui-avatars.com/api/?name="+formName} 
+                              alt="Profile" 
+                              className="w-20 h-20 rounded-full object-cover border-4 border-white dark:border-slate-800 shadow-sm"
+                            />
+                            <label className="absolute inset-0 flex items-center justify-center bg-black/50 text-white rounded-full opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity">
+                              <Camera className="w-6 h-6" />
+                              <input 
+                                type="file" 
+                                accept="image/*" 
+                                className="hidden" 
+                                onChange={(e) => {
+                                  if (e.target.files && e.target.files[0]) {
+                                    setProfileImage(URL.createObjectURL(e.target.files[0]));
+                                  }
+                                }} 
+                              />
+                            </label>
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-slate-900 dark:text-white">{formName}</h4>
+                            <p className="text-xs text-slate-500">{formEmail}</p>
+                          </div>
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -3055,6 +2687,31 @@ export default function StudentDashboard({ user, onLogout }) {
                           </div>
                         </div>
                       </div>
+                    )}
+
+                    
+                    {settingsTab === 'Contact Support' && (
+                      <form onSubmit={(e) => { e.preventDefault(); setContactSent(true); setTimeout(() => { setContactSent(false); setContactMessage(''); }, 3000); }} className="space-y-6">
+                        <div className="flex items-center gap-2 pb-2 border-b border-slate-100 dark:border-slate-850">
+                          <Mail className="w-5 h-5 text-[#253df5]" />
+                          <h3 className="font-extrabold text-base text-slate-900 dark:text-white">Contact Overseer</h3>
+                        </div>
+                        <div className="space-y-2">
+                          <label className="block text-xs font-bold text-slate-450 dark:text-slate-400 uppercase tracking-wide">Message</label>
+                          <textarea 
+                            value={contactMessage}
+                            onChange={(e) => setContactMessage(e.target.value)}
+                            placeholder="How can we help you?"
+                            rows={5}
+                            className="w-full pl-4 pr-4 py-3 bg-slate-50/50 dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800 rounded-2xl text-xs font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#253df5] focus:border-[#253df5] transition-all"
+                            required
+                          />
+                        </div>
+                        <button type="submit" className="flex items-center gap-2 bg-[#253df5] hover:bg-[#1d2ae0] text-white text-xs font-black py-3 px-6 rounded-2xl transition-all duration-200 tracking-wider w-fit">
+                          {contactSent ? <Check className="w-4 h-4" /> : <Send className="w-4 h-4" />}
+                          {contactSent ? "Message Sent" : "Send Message"}
+                        </button>
+                      </form>
                     )}
 
                     {settingsTab === 'Security' && (
@@ -3320,106 +2977,92 @@ export default function StudentDashboard({ user, onLogout }) {
             </div>
           )}
 
-          {/* ================= DISCUSSIONS VIEW ================= */}
+                    {/* ================= DISCUSSIONS VIEW ================= */}
           {activeNav === 'Discussions' && (
             <div className="space-y-6 w-full text-left animate-fadeIn">
               {/* Header */}
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-slate-205 dark:border-slate-800">
                 <div className="space-y-2.5 text-left max-w-3xl">
                   <h1 className="text-2xl sm:text-3.5xl font-black text-slate-909 dark:text-white tracking-tight leading-none">
-                    Community Discussions
+                    Communication Hub
                   </h1>
                   <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 leading-relaxed">
-                    Participate in study groups, ask questions, collaborate with peers, and interact with course mentors.
+                    AetherLearn partners with secure, encrypted messaging platforms. Connect with your class or mentor instantly.
                   </p>
                 </div>
               </div>
 
               {/* Discussions Grid */}
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-                {/* Left Column: Channels List (4 cols) */}
-                <div className="lg:col-span-4 bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col justify-between text-left space-y-6">
-                  <div className="space-y-4 w-full">
-                    <div className="text-left border-b border-slate-100 dark:border-slate-850 pb-3">
-                      <h3 className="font-extrabold text-[12px] text-slate-505 dark:text-slate-400 uppercase tracking-wider">
-                        Discussion Channels
-                      </h3>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+                
+                {/* Telegram Class Group */}
+                <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-8 shadow-xs flex flex-col justify-between text-left space-y-6 relative overflow-hidden group">
+                  <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
+                    <MessageSquare size={120} className="text-[#0088cc]" />
+                  </div>
+                  <div className="space-y-4 w-full relative z-10">
+                    <div className="w-12 h-12 rounded-2xl bg-[#0088cc]/10 flex items-center justify-center mb-6">
+                      <MessageSquare className="text-[#0088cc] w-6 h-6" />
                     </div>
-
-                    <div className="space-y-1">
-                      {[
-                        { name: "# general-announcements", active: true, count: 0 },
-                        { name: "# machine-learning-qa", active: false, count: 3 },
-                        { name: "# nlp-transformers-group", active: false, count: 8 },
-                        { name: "# homework-help-dsa", active: false, count: 0 },
-                        { name: "# peer-projects-showcase", active: false, count: 12 },
-                      ].map((item, idx) => (
-                        <button 
-                          key={idx} 
-                          className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-xs font-bold transition-all duration-200 ${
-                            item.active 
-                              ? 'bg-[#253df5]/10 text-[#253df5] dark:text-white dark:bg-[#253df5]' 
-                              : 'text-slate-600 dark:text-gray-400 hover:bg-slate-50 dark:hover:bg-slate-800/60'
-                          }`}
-                        >
-                          <span className="truncate">{item.name}</span>
-                          {item.count > 0 && (
-                            <span className="bg-[#253df5] text-white text-[9px] font-bold px-2 py-0.5 rounded-full">
-                              {item.count}
-                            </span>
-                          )}
-                        </button>
-                      ))}
-                    </div>
+                    <h3 className="font-extrabold text-2xl text-slate-900 dark:text-white">
+                      Class Telegram Group
+                    </h3>
+                    <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">
+                      Join the official Fall cohort Telegram group. Ask questions, share resources, and collaborate with peers in a secure, end-to-end encrypted channel.
+                    </p>
+                    <ul className="text-xs font-bold text-slate-450 dark:text-slate-500 space-y-2 mt-4">
+                      <li className="flex items-center gap-2">
+                        <Check size={14} className="text-emerald-500" /> Real-time peer support
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Check size={14} className="text-emerald-500" /> Pinned announcements
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Check size={14} className="text-emerald-500" /> End-to-end encrypted
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="relative z-10 pt-4 border-t border-slate-100 dark:border-slate-850">
+                    <a href="https://telegram.org/" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 bg-[#0088cc] hover:bg-[#0077b5] text-white text-xs font-black py-3 px-6 rounded-xl transition-all duration-200 tracking-wider w-full justify-center">
+                      Open Telegram Group <ArrowRight size={14} />
+                    </a>
                   </div>
                 </div>
 
-                {/* Right Column: Active Threads (8 cols) */}
-                <div className="lg:col-span-8 bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col justify-between text-left space-y-6">
-                  <div className="space-y-4 w-full">
-                    <div className="flex justify-between items-center border-b border-slate-100 dark:border-slate-850 pb-3">
-                      <h3 className="font-extrabold text-[12px] text-slate-505 dark:text-slate-400 uppercase tracking-wider">
-                        Active Threads
-                      </h3>
-                      <button className="bg-[#253df5] hover:bg-[#1d2ae0] text-white text-[10px] font-black py-2 px-3.5 rounded-xl transition-all duration-200 tracking-wider">
-                        New Thread
-                      </button>
+                {/* 1-on-1 Mentor Slack/Telegram */}
+                <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-8 shadow-xs flex flex-col justify-between text-left space-y-6 relative overflow-hidden group">
+                  <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
+                    <Star size={120} className="text-brand-500" />
+                  </div>
+                  <div className="space-y-4 w-full relative z-10">
+                    <div className="w-12 h-12 rounded-2xl bg-brand-500/10 flex items-center justify-center mb-6">
+                      <MessageSquare className="text-brand-500 w-6 h-6" />
                     </div>
-
-                    <div className="space-y-4">
-                      {[
-                        { title: "Derivation of Transformer Self-Attention scaling factor", author: "Julian Vance", replies: 12, views: 89, category: "NLP", lastActive: "10m ago" },
-                        { title: "Understanding multi-process synchronization in kernel scheduling", author: "Sarah Jenkins", replies: 4, views: 32, category: "OS", lastActive: "2h ago" },
-                        { title: "Midterm PyTorch image classification parameters setup issues", author: "Rohan Sharma", replies: 28, views: 145, category: "AML", lastActive: "4h ago" },
-                      ].map((item, idx) => (
-                        <div key={idx} className="p-4 rounded-2xl bg-slate-50/30 dark:bg-slate-900/20 border border-[#eef2f6]/60 dark:border-slate-850 flex flex-col justify-between gap-3 hover:border-slate-300 dark:hover:border-slate-700 cursor-pointer transition-colors duration-200">
-                          <div className="flex justify-between items-start gap-4">
-                            <div>
-                              <span className="inline-block text-[8px] font-black tracking-wider text-[#253df5] bg-[#253df5]/10 px-2 py-0.5 rounded font-mono uppercase">
-                                {item.category}
-                              </span>
-                              <h4 className="text-sm font-extrabold text-slate-900 dark:text-white mt-1.5 leading-snug">
-                                {item.title}
-                              </h4>
-                            </div>
-                            <span className="text-[10px] font-bold text-slate-400 font-mono whitespace-nowrap">
-                              {item.lastActive}
-                            </span>
-                          </div>
-
-                          <div className="flex items-center justify-between text-[10px] font-bold text-slate-455 dark:text-slate-500 pt-1.5 border-t border-slate-100/50 dark:border-slate-850/40">
-                            <span>Started by <span className="text-slate-700 dark:text-slate-300">{item.author}</span></span>
-                            <div className="flex items-center gap-3">
-                              <span>{item.replies} replies</span>
-                              <span>•</span>
-                              <span>{item.views} views</span>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+                    <h3 className="font-extrabold text-2xl text-slate-900 dark:text-white">
+                      1-on-1 Mentor Chat
+                    </h3>
+                    <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">
+                      Need direct help with an assignment? Message your assigned mentor directly on Telegram. Private, secure, and fast.
+                    </p>
+                    <ul className="text-xs font-bold text-slate-450 dark:text-slate-500 space-y-2 mt-4">
+                      <li className="flex items-center gap-2">
+                        <Check size={14} className="text-emerald-500" /> Private code reviews
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Check size={14} className="text-emerald-500" /> Career advice
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Check size={14} className="text-emerald-500" /> Direct feedback
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="relative z-10 pt-4 border-t border-slate-100 dark:border-slate-850">
+                    <a href="https://telegram.org/" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white text-xs font-black py-3 px-6 rounded-xl transition-all duration-200 tracking-wider w-full justify-center">
+                      Message Mentor <ArrowRight size={14} />
+                    </a>
                   </div>
                 </div>
+
               </div>
             </div>
           )}

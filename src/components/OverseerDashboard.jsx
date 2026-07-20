@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Activity, Shield, LogOut, Search, Clock, AlertTriangle } from 'lucide-react';
+import { Activity, Shield, LogOut, Search, Clock, AlertTriangle, Camera } from 'lucide-react';
 
 const OverseerDashboard = ({ user, onLogout }) => {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [profileImage, setProfileImage] = useState(null);
 
   useEffect(() => {
     const fetchLogs = async () => {
@@ -45,6 +46,27 @@ const OverseerDashboard = ({ user, onLogout }) => {
           </div>
           
           <div className="flex items-center gap-4">
+            
+            <div className="relative group mr-2">
+              <img 
+                src={profileImage || "https://ui-avatars.com/api/?name=" + (user?.email || "Overseer")} 
+                alt="Profile" 
+                className="w-10 h-10 rounded-full object-cover border-2 border-slate-200 dark:border-slate-700"
+              />
+              <label className="absolute inset-0 flex items-center justify-center bg-black/50 text-white rounded-full opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity">
+                <Camera className="w-4 h-4" />
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  className="hidden" 
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      setProfileImage(URL.createObjectURL(e.target.files[0]));
+                    }
+                  }} 
+                />
+              </label>
+            </div>
             <div className="text-right hidden sm:block">
               <div className="font-medium dark:text-white">{user?.email}</div>
               <div className="text-sm text-indigo-500 font-semibold">{user?.role}</div>

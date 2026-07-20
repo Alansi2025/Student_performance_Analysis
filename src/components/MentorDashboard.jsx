@@ -4,7 +4,7 @@ import {
   HelpCircle, LogOut, Bell, ChevronDown, ChevronRight, ArrowRight, User, 
   Check, Search, Sliders, Sun, Moon, Zap, Plus, MessageSquare, Download, 
   BookOpen, Play, AlertCircle, AlertTriangle, Send, RefreshCw, X, Star,
-  CheckCircle, Clock, BarChart2, Sparkles
+  CheckCircle, Clock, BarChart2, Sparkles, Camera, Mail
 } from 'lucide-react';
 
 import alexRiversProfile from '../assets/alex_rivers_profile.png';
@@ -450,13 +450,7 @@ export default function MentorDashboard({ user, onLogout }) {
 
           {/* Create New Cohort Button */}
           <div className="px-1.5 pb-2">
-            <button
-              onClick={() => alert('Create New Cohort feature coming soon!')}
-              className="w-full flex items-center justify-center gap-2 py-3 bg-[#253df5] hover:bg-blue-600 text-white rounded-xl text-xs font-black tracking-wide transition-all duration-200 shadow-md shadow-blue-500/10"
-            >
-              <Plus className="w-3.5 h-3.5 text-white" />
-              <span>Create New Cohort</span>
-            </button>
+            
           </div>
 
           {/* Nav Links */}
@@ -965,6 +959,7 @@ export default function MentorDashboard({ user, onLogout }) {
                         <th className="py-2.5 pb-2 text-center">Avg Mastery</th>
                         <th className="py-2.5 pb-2 text-center">Stress Level</th>
                         <th className="py-2.5 pb-2 text-right">Engagement</th>
+                        <th className="py-2.5 pb-2 text-right">Action</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100/50 dark:divide-slate-850/50">
@@ -1001,6 +996,18 @@ export default function MentorDashboard({ user, onLogout }) {
                               : 'text-slate-600 dark:text-slate-400'
                           }`}>
                             {student.engagement}
+                          </td>
+                          <td className="py-3.5 text-right">
+                            <a 
+                              href={`https://t.me/`} 
+                              target="_blank" 
+                              rel="noreferrer"
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#0088cc]/10 text-[#0088cc] hover:bg-[#0088cc] hover:text-white rounded-lg text-[10px] font-black transition-colors duration-200"
+                              title={`Message ${student.name} on Telegram`}
+                            >
+                              <MessageSquare size={12} />
+                              <span>Message</span>
+                            </a>
                           </td>
                         </tr>
                       ))}
@@ -1715,7 +1722,7 @@ export default function MentorDashboard({ user, onLogout }) {
 
                         {/* Action trigger */}
                         <button
-                          onClick={() => alert('Launching Zoom link... Redirecting to Zoom Room A.')}
+                          onClick={() => window.open('https://zoom.us', '_blank')}
                           className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 active:scale-95 text-white px-5 py-3 rounded-xl text-xs font-black transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 self-start md:self-auto"
                         >
                           <Play size={10} className="fill-current text-white" />
@@ -1783,7 +1790,7 @@ export default function MentorDashboard({ user, onLogout }) {
                           </p>
                         </div>
                         <button
-                          onClick={() => alert('Launching Zoom link... Zoom Room B.')}
+                          onClick={() => window.open('https://zoom.us', '_blank')}
                           className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 active:scale-95 text-white px-5 py-3 rounded-xl text-xs font-black transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 self-start md:self-auto"
                         >
                           <Play size={10} className="fill-current text-white" />
@@ -1875,7 +1882,7 @@ export default function MentorDashboard({ user, onLogout }) {
 
                             {/* Action trigger */}
                             <button
-                              onClick={() => alert('Launching Zoom link... Redirecting to Zoom Room A.')}
+                              onClick={() => window.open('https://zoom.us', '_blank')}
                               className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 active:scale-95 text-white px-5 py-3 rounded-xl text-xs font-black transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 self-start md:self-auto"
                             >
                               <Play size={10} className="fill-current text-white" />
@@ -1942,7 +1949,7 @@ export default function MentorDashboard({ user, onLogout }) {
                               </p>
                             </div>
                             <button
-                              onClick={() => alert('Launching Zoom link... Zoom Room B.')}
+                              onClick={() => window.open('https://zoom.us', '_blank')}
                               className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 active:scale-95 text-white px-5 py-3 rounded-xl text-xs font-black transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 self-start md:self-auto"
                             >
                               <Play size={10} className="fill-current text-white" />
@@ -2400,12 +2407,39 @@ export default function MentorDashboard({ user, onLogout }) {
                     <h3 className="font-extrabold text-base text-slate-909 dark:text-white">Personal Information</h3>
                   </div>
 
+                  <div className="flex items-center gap-6 mb-6">
+                    <div className="relative group">
+                      <img 
+                        src={profileImage || "https://ui-avatars.com/api/?name="+formName} 
+                        alt="Profile" 
+                        className="w-20 h-20 rounded-full object-cover border-4 border-white dark:border-slate-800 shadow-sm"
+                      />
+                      <label className="absolute inset-0 flex items-center justify-center bg-black/50 text-white rounded-full opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity">
+                        <Camera className="w-6 h-6" />
+                        <input 
+                          type="file" 
+                          accept="image/*" 
+                          className="hidden" 
+                          onChange={(e) => {
+                            if (e.target.files && e.target.files[0]) {
+                              setProfileImage(URL.createObjectURL(e.target.files[0]));
+                            }
+                          }} 
+                        />
+                      </label>
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-slate-900 dark:text-white">{formName}</h4>
+                      <p className="text-xs text-slate-500">{formEmail}</p>
+                    </div>
+                  </div>
+
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 text-left">
                     <div className="space-y-2">
                       <label className="text-[10px] font-black tracking-widest text-slate-500 dark:text-slate-400 uppercase font-mono block">Full Name</label>
                       <input 
                         type="text"
-                        defaultValue={user?.name || 'Prof. Arjun Singh'}
+                        value={formName} onChange={(e) => setFormName(e.target.value)}
                         className="w-full px-4 py-3 bg-slate-55/50 dark:bg-slate-900 border border-slate-205 dark:border-slate-805 rounded-2xl text-xs font-bold text-slate-808 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-[#253df5]"
                       />
                     </div>
@@ -2413,7 +2447,7 @@ export default function MentorDashboard({ user, onLogout }) {
                       <label className="text-[10px] font-black tracking-widest text-slate-550 dark:text-slate-400 uppercase font-mono block">Email Address</label>
                       <input 
                         type="email"
-                        defaultValue={user?.email || 'arjun@aetherlearn.com'}
+                        value={formEmail} onChange={(e) => setFormEmail(e.target.value)}
                         className="w-full px-4 py-3 bg-slate-55/50 dark:bg-slate-900 border border-slate-205 dark:border-slate-805 rounded-2xl text-xs font-bold text-slate-808 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-[#253df5]"
                       />
                     </div>
@@ -2439,6 +2473,29 @@ export default function MentorDashboard({ user, onLogout }) {
                   <button className="bg-[#253df5] hover:bg-[#1d2ae0] text-white text-xs font-black py-3 px-6 rounded-2xl transition-all duration-200 tracking-wider">
                     Save Changes
                   </button>
+                </div>
+                <div className="lg:col-span-2 bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-xs space-y-6 text-left mt-6">
+                  <div className="flex items-center gap-2.5 pb-3 border-b border-slate-100 dark:border-slate-850">
+                    <Mail className="w-5 h-5 text-[#253df5]" />
+                    <h3 className="font-extrabold text-base text-slate-909 dark:text-white">Contact Overseer</h3>
+                  </div>
+                  <form onSubmit={(e) => { e.preventDefault(); setContactSent(true); setTimeout(() => { setContactSent(false); setContactMessage(''); }, 3000); }} className="space-y-6">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black tracking-widest text-slate-500 dark:text-slate-400 uppercase font-mono block">Message</label>
+                      <textarea 
+                        value={contactMessage}
+                        onChange={(e) => setContactMessage(e.target.value)}
+                        placeholder="How can we help you?"
+                        rows={4}
+                        className="w-full px-4 py-3 bg-slate-55/50 dark:bg-slate-900 border border-slate-205 dark:border-slate-805 rounded-2xl text-xs font-bold text-slate-808 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-[#253df5]"
+                        required
+                      />
+                    </div>
+                    <button type="submit" className="flex items-center justify-center gap-2 bg-[#253df5] hover:bg-[#1d2ae0] text-white text-xs font-black py-3 px-6 rounded-2xl transition-all duration-200 tracking-wider w-fit">
+                      {contactSent ? <Check className="w-4 h-4" /> : <Send className="w-4 h-4" />}
+                      {contactSent ? "Message Sent" : "Send Message"}
+                    </button>
+                  </form>
                 </div>
 
                 {/* Right Preferences Card */}
@@ -2575,18 +2632,6 @@ export default function MentorDashboard({ user, onLogout }) {
               >
                 <Settings className="w-4 h-4" />
                 <span>Settings</span>
-              </button>
-
-              {/* Logout link */}
-              <button
-                onClick={() => {
-                  onLogout();
-                  setIsMobileSidebarOpen(false);
-                }}
-                className="w-full flex items-center gap-3 px-3.5 py-2.5 text-xs font-bold rounded-xl transition-all duration-200 text-slate-600 dark:text-gray-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50/50 dark:hover:bg-rose-950/15"
-              >
-                <LogOut className="w-4 h-4 text-slate-400 dark:text-gray-500" />
-                <span>Logout</span>
               </button>
 
               <div className="border-t border-slate-105 dark:border-slate-800 my-2" />
