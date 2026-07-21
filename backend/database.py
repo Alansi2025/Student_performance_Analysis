@@ -1,10 +1,7 @@
-import os
 import socket
-from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
-
-load_dotenv()
+from .config import settings
 
 SQLITE_FALLBACK = "sqlite:///./industrial.db"
 
@@ -23,7 +20,7 @@ def _pg_is_reachable(url: str, timeout: float = 2.0) -> bool:
         return False
 
 # Decide which database to use
-_configured_url = os.getenv("DATABASE_URL", "")
+_configured_url = settings.database_url
 if _configured_url and _configured_url.startswith("postgresql"):
     if _pg_is_reachable(_configured_url):
         SQLALCHEMY_DATABASE_URL = _configured_url

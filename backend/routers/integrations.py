@@ -1,7 +1,8 @@
 from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.orm import Session
-from .. import schemas, models, database, security
+from .. import schemas, models, database, security, crud
+from ..security import RoleChecker
 
 router = APIRouter(
     prefix="/integrations",
@@ -16,26 +17,21 @@ SUPPORTED_DATA_LAKE = {"custom", "snowflake", "bigquery", "s3"}
 # ── GET all integrations ────────────────────────────────────
 @router.get("/", response_model=list[schemas.IntegrationOut])
 def list_integrations(
-    current_user: models.User = Depends(security.get_current_user),
+    current_user: models.User = Depends(RoleChecker(["Overseer", "Mentor"])),
     db: Session = Depends(database.get_db)
-):
+) -> list[models.Integration]:
     """List all configured integrations. Overseer/Mentor only."""
-    if current_user.role not in ("Overseer", "Mentor"):
-        raise HTTPException(status_code=403, detail="Not authorized")
-    return db.query(models.Integration).order_by(models.Integration.created_at.desc()).all()
+    return crud.get_integrations(db)
 
 # ── POST create integration ─────────────────────────────────
 @router.post("/", response_model=schemas.IntegrationOut, status_code=status.HTTP_201_CREATED)
 def create_integration(
     payload: schemas.IntegrationCreate,
     request: Request,
-    current_user: models.User = Depends(security.get_current_user),
+    current_user: models.User = Depends(RoleChecker(["Overseer"])),
     db: Session = Depends(database.get_db)
-):
+) -> models.Integration:
     """Create a new integration (LMS sync, SSO, or Data Lake)."""
-    if current_user.role != "Overseer":
-        raise HTTPException(status_code=403, detail="Only Overseers can create integrations")
-
     # Validate type + provider combo
     valid_providers = {
         "lms_sync": SUPPORTED_LMS,
@@ -50,21 +46,11 @@ def create_integration(
             detail=f"Invalid provider '{payload.provider}' for type '{payload.type}'. Must be one of: {valid_providers[payload.type]}"
         )
 
-    integration = models.Integration(
-        type=payload.type,
-        provider=payload.provider,
-        name=payload.name,
-        config_url=payload.config_url,
-        api_key=payload.api_key,
-        created_by=current_user.email,
-    )
-    db.add(integration)
-    db.commit()
-    db.refresh(integration)
+    integration = crud.create_integration(db, payload, current_user.email)
 
     # Log activity
     client_ip = request.client.host if request.client else "unknown"
-    security.log_activity(db, action="INTEGRATION_CREATED", details=f"{payload.type}/{payload.provider}: {payload.name}", user_email=current_user.email, ip_address=client_ip)
+    crud.log_activity(db, action="INTEGRATION_CREATED", details=f"{payload.type}/{payload.provider}: {payload.name}", user_email=current_user.email, ip_address=client_ip)
 
     return integration
 
@@ -73,14 +59,11 @@ def create_integration(
 def connect_integration(
     integration_id: int,
     request: Request,
-    current_user: models.User = Depends(security.get_current_user),
+    current_user: models.User = Depends(RoleChecker(["Overseer"])),
     db: Session = Depends(database.get_db)
-):
+) -> dict:
     """Test connectivity and activate an integration."""
-    if current_user.role != "Overseer":
-        raise HTTPException(status_code=403, detail="Only Overseers can manage integrations")
-
-    integration = db.query(models.Integration).filter(models.Integration.id == integration_id).first()
+    integration = crud.get_integration_by_id(db, integration_id)
     if not integration:
         raise HTTPException(status_code=404, detail="Integration not found")
 
@@ -110,68 +93,54 @@ def connect_integration(
             message = "Data Lake integration requires an API key"
 
     # Update status
-    integration.is_active = connected
-    integration.status = "connected" if connected else "error"
+    status_str = "connected" if connected else "error"
+    crud.update_integration_status(db, integration_id, is_active=connected, status=status_str)
+    
     if connected:
         integration.last_synced = datetime.utcnow()
-    db.commit()
+        db.commit()
 
     # Log
     client_ip = request.client.host if request.client else "unknown"
     action = "INTEGRATION_CONNECTED" if connected else "INTEGRATION_FAILED"
-    security.log_activity(db, action=action, details=f"{integration.name}: {message}", user_email=current_user.email, ip_address=client_ip)
+    crud.log_activity(db, action=action, details=f"{integration.name}: {message}", user_email=current_user.email, ip_address=client_ip)
 
-    return {"status": "connected" if connected else "error", "message": message}
+    return {"status": status_str, "message": message}
 
 # ── POST disconnect an integration ──────────────────────────
 @router.post("/{integration_id}/disconnect")
 def disconnect_integration(
     integration_id: int,
-    current_user: models.User = Depends(security.get_current_user),
+    current_user: models.User = Depends(RoleChecker(["Overseer"])),
     db: Session = Depends(database.get_db)
-):
+) -> dict:
     """Disconnect an integration."""
-    if current_user.role != "Overseer":
-        raise HTTPException(status_code=403, detail="Only Overseers can manage integrations")
-
-    integration = db.query(models.Integration).filter(models.Integration.id == integration_id).first()
+    integration = crud.update_integration_status(db, integration_id, is_active=False, status="disconnected")
     if not integration:
         raise HTTPException(status_code=404, detail="Integration not found")
 
-    integration.is_active = False
-    integration.status = "disconnected"
-    db.commit()
     return {"status": "disconnected", "message": f"{integration.name} has been disconnected"}
 
 # ── DELETE an integration ───────────────────────────────────
 @router.delete("/{integration_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_integration(
     integration_id: int,
-    current_user: models.User = Depends(security.get_current_user),
+    current_user: models.User = Depends(RoleChecker(["Overseer"])),
     db: Session = Depends(database.get_db)
-):
+) -> None:
     """Delete an integration permanently."""
-    if current_user.role != "Overseer":
-        raise HTTPException(status_code=403, detail="Only Overseers can delete integrations")
-
-    integration = db.query(models.Integration).filter(models.Integration.id == integration_id).first()
-    if not integration:
+    success = crud.delete_integration(db, integration_id)
+    if not success:
         raise HTTPException(status_code=404, detail="Integration not found")
-
-    db.delete(integration)
-    db.commit()
 
 # ── GET integration status summary ──────────────────────────
 @router.get("/status")
 def integration_status(
-    current_user: models.User = Depends(security.get_current_user),
+    current_user: models.User = Depends(RoleChecker(["Overseer", "Mentor"])),
     db: Session = Depends(database.get_db)
-):
+) -> dict:
     """Get a summary of all integration statuses."""
-    if current_user.role not in ("Overseer", "Mentor"):
-        raise HTTPException(status_code=403, detail="Not authorized")
-
-    integrations = db.query(models.Integration).all()
+    integrations = crud.get_integrations(db)
     summary = {
         "lms_sync": {"total": 0, "connected": 0, "providers": []},
         "sso": {"total": 0, "connected": 0, "providers": []},

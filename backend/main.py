@@ -1,43 +1,41 @@
-import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
-from dotenv import load_dotenv
 
 from .database import engine, Base
 from .routers import users, ai, integrations
 from .routers.ai import limiter
-
-load_dotenv()
+from .config import settings
 
 # Create database tables automatically
 Base.metadata.create_all(bind=engine)
 
 def seed_accounts():
     from .database import SessionLocal
-    from . import models, security
+    from . import models, crud
+    from .security import get_password_hash
     db = SessionLocal()
     try:
         # Seed Overseer
         overseer_email = "admin@aetherlearn.com"
-        if not security.get_user_by_email(db, email=overseer_email):
-            hashed_pwd = security.get_password_hash("admin123")
+        if not crud.get_user_by_email(db, email=overseer_email):
+            hashed_pwd = get_password_hash("admin123")
             overseer = models.User(email=overseer_email, hashed_password=hashed_pwd, role="Overseer")
             db.add(overseer)
         
         # Seed Mentor
         mentor_email = "sarah@cyberdyne.sys"
-        if not security.get_user_by_email(db, email=mentor_email):
-            hashed_pwd = security.get_password_hash("123456")
+        if not crud.get_user_by_email(db, email=mentor_email):
+            hashed_pwd = get_password_hash("123456")
             mentor = models.User(email=mentor_email, hashed_password=hashed_pwd, role="Mentor")
             db.add(mentor)
 
         # Seed Student
         student_email = "alex@aetherlearn.com"
-        if not security.get_user_by_email(db, email=student_email):
-            hashed_pwd = security.get_password_hash("123456")
+        if not crud.get_user_by_email(db, email=student_email):
+            hashed_pwd = get_password_hash("123456")
             student = models.User(email=student_email, hashed_password=hashed_pwd, role="Student")
             db.add(student)
 
@@ -55,7 +53,7 @@ app = FastAPI(
 )
 
 # Secure Session Middleware
-SESSION_SECRET_KEY = os.getenv("SESSION_SECRET_KEY", "fallback-secret-key")
+SESSION_SECRET_KEY = settings.session_secret_key
 app.add_middleware(SessionMiddleware, secret_key=SESSION_SECRET_KEY)
 
 # Rate Limiter setup

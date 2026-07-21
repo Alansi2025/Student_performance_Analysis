@@ -11,3 +11,4 @@ python-dotenv
 pymupdf
 pytesseract
 pillow
+pydantic-settings
