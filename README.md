@@ -77,7 +77,8 @@ The unauthenticated homepage is a consolidated, high-converting single-page view
 ### AI Processing Pipeline
 - Upload PDF documents via a secure, rate-limited API endpoint
 - **Step 1**: Convert PDF pages to JPEG images using PyMuPDF
-- **Step 2**: Extract text from images using Tesseract OCR (pytesseract)
+- **Step 2**: Extract text from images using PaddleOCR (runs via a dedicated Python 3.12 subprocess to leverage Apple ANE seamlessly)
+- **Step 3**: Analyze content via local Ollama `gemma4:12b` for structured academic categorization
 - All AI usage events are logged with IP address for auditing
 - Protected by API key authentication (`X-API-Key` header)
 
@@ -116,8 +117,8 @@ Each integration supports a full lifecycle: create → configure → connect/tes
 | Starlette SessionMiddleware | Cookie-based session auth |
 | SlowAPI | Rate limiting |
 | PyMuPDF (fitz) | PDF to image conversion |
-| pytesseract | OCR text extraction |
-| Pillow | Image processing |
+| PaddleOCR | OCR text extraction (replaces Tesseract) |
+| Ollama | Local LLM structured JSON generation (gemma4:12b) |
 | python-dotenv | Environment variable loading |
 | psycopg2-binary | PostgreSQL driver |
 
@@ -144,9 +145,9 @@ Each integration supports a full lifecycle: create → configure → connect/tes
 │   │   └── integrations.py         # /integrations — CRUD + connect/disconnect
 │   └── ai/
 │       ├── convert_pdfs.py         # PDF → JPG conversion via PyMuPDF
-│       ├── extract_text.py         # JPG → text via pytesseract OCR
+│       ├── extract_text.py         # JPG → text via PaddleOCR (ai_venv subprocess)
 │       ├── pyq_analysis/
-│       │   └── analyze_pyq.py      # Past Year Question analysis logic
+│       │   └── analyze_pyq.py      # Past Year Question analysis via Ollama gemma4:12b
 │       └── resources/
 │           └── extracted_text.txt  # OCR output storage
 │
@@ -225,11 +226,12 @@ Base URL: `http://localhost:8000`
 
 | Method | Endpoint | Auth Required | Description |
 |--------|----------|---------------|-------------|
-| `POST` | `/ai/process-pdf` | API Key + Rate Limit (5/min) | Upload PDF → OCR text extraction |
+| `POST` | `/ai/process-pdf` | API Key + Rate Limit (5/min) | Upload PDF → PaddleOCR + Ollama analysis |
+| `GET`  | `/ai/health`      | None                         | Check OCR and LLM status |
 
 **Request**: `multipart/form-data` with a `.pdf` file  
 **Header**: `X-API-Key: <your-api-key>`  
-**Response**: `{ "status": "success", "filename": "...", "extracted_text": "..." }`
+**Response**: `{ "status": "success", "filename": "...", "extracted_text": "...", "analysis": {...} }`
 
 ### Integrations — `/integrations`
 
@@ -320,11 +322,11 @@ ENVIRONMENT=development
 ### Prerequisites
 
 - **Node.js** 18+ and **npm**
-- **Python** 3.10+
-- **Tesseract OCR** installed on your system:
-  - macOS: `brew install tesseract`
-  - Ubuntu: `sudo apt install tesseract-ocr`
-  - Windows: [Download installer](https://github.com/UB-Mannheim/tesseract/wiki)
+- **Python** 3.10+ (Python 3.12 is highly recommended as the `start.sh` script automatically provisions a Python 3.12 virtual environment specifically for PaddleOCR)
+- **Ollama** installed on your system:
+  - Download from [https://ollama.com](https://ollama.com)
+  - Ensure the `ollama` command is available in your PATH.
+  - The `start.sh` script will automatically pull `gemma4:12b` if you haven't downloaded it yet.
 
 ### 1. Clone the Repository
 

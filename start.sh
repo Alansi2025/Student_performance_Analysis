@@ -26,6 +26,19 @@ FRONTEND_LOG="$PROJECT_DIR/.frontend.log"
 BACKEND_PORT=8000
 FRONTEND_PORT=5173
 
+AI_VENV_DIR="$PROJECT_DIR/backend/ai/ai_venv"
+OLLAMA_MODEL="${OLLAMA_MODEL:-gemma4:12b}"
+
+# Load .env for PADDLE_HOME override
+if [ -f "$PROJECT_DIR/.env" ]; then
+  # export only PADDLE_HOME and OLLAMA_* vars
+  set -a
+  # shellcheck disable=SC1090
+  source <(grep -E '^(PADDLE_HOME|OLLAMA_BASE_URL|OLLAMA_MODEL)=' "$PROJECT_DIR/.env" 2>/dev/null || true)
+  set +a
+fi
+PADDLE_HOME="${PADDLE_HOME:-$HOME/.paddleocr}"
+
 # ── Helper functions ────────────────────────────────────────────────────────
 banner() {
   echo ""
@@ -149,6 +162,45 @@ if [ ! -d "$PROJECT_DIR/node_modules" ]; then
 fi
 log_success "Node dependencies ready"
 
+# ── Step 3a: Set up PaddleOCR AI venv (Python 3.12) ─────────────────────────
+log_info "Checking PaddleOCR environment (Python 3.12 ai_venv)..."
+mkdir -p "$PADDLE_HOME"
+if [ ! -f "$AI_VENV_DIR/bin/python" ]; then
+  log_info "Creating ai_venv with Python 3.12..."
+  if command -v python3.12 &>/dev/null; then
+    python3.12 -m venv "$AI_VENV_DIR" \
+      && "$AI_VENV_DIR/bin/pip" install -q --upgrade pip \
+      && "$AI_VENV_DIR/bin/pip" install -q paddlepaddle paddleocr httpx pymupdf
+    log_success "PaddleOCR ai_venv ready (Apple ANE via Accelerate)"
+  else
+    log_warn "python3.12 not found — PaddleOCR will be unavailable"
+  fi
+else
+  log_success "PaddleOCR ai_venv already exists"
+fi
+export PADDLE_HOME
+
+# ── Step 3b: Ollama — ensure running and gemma4:12b is pulled ───────────────
+log_info "Checking Ollama (gemma4:12b)..."
+if command -v ollama &>/dev/null; then
+  # Start Ollama serve in background if it isn't already running
+  if ! curl -s -o /dev/null --max-time 2 "${OLLAMA_BASE_URL:-http://localhost:11434}/api/tags"; then
+    log_info "Starting Ollama server..."
+    ollama serve >/dev/null 2>&1 &
+    sleep 3  # give Ollama a moment to bind
+  fi
+
+  # Auto-pull gemma4:12b if not already downloaded
+  if ! ollama list 2>/dev/null | grep -q "${OLLAMA_MODEL}"; then
+    log_info "Pulling ${OLLAMA_MODEL} (this may take a few minutes on first run)..."
+    ollama pull "${OLLAMA_MODEL}" && log_success "${OLLAMA_MODEL} ready" || log_warn "Pull failed — AI analysis will degrade gracefully"
+  else
+    log_success "Ollama ${OLLAMA_MODEL} is ready"
+  fi
+else
+  log_warn "Ollama not found — install from https://ollama.com. AI analysis will be disabled."
+fi
+
 # ── Step 4: Start Backend (FastAPI + Database + AI) ─────────────────────────
 log_info "Starting Backend (FastAPI + SQLAlchemy + AI pipeline)..."
 
@@ -194,7 +246,9 @@ fi
 # Database & AI are part of the backend — if backend is up, they are too
 if [ "$BACKEND_OK" = true ]; then
   log_success "Database       ✅  SQLAlchemy auto-initialised"
-  log_success "AI Pipeline    ✅  /ai/process-pdf ready"
+  log_success "OCR Engine     ✅  PaddleOCR (Python 3.12 / Apple ANE)"
+  log_success "LLM Engine     ✅  Ollama ${OLLAMA_MODEL} @ ${OLLAMA_BASE_URL:-http://localhost:11434}"
+  log_success "AI Pipeline    ✅  /ai/process-pdf + /ai/health ready"
 fi
 
 # ── Final Status ────────────────────────────────────────────────────────────
@@ -206,10 +260,12 @@ if [ "$BACKEND_OK" = true ] && [ "$FRONTEND_OK" = true ]; then
   echo ""
   echo -e "  ${BOLD}Dashboard:${NC}  ${CYAN}http://localhost:$FRONTEND_PORT${NC}"
   echo -e "  ${BOLD}API Docs:${NC}   ${CYAN}http://localhost:$BACKEND_PORT/docs${NC}"
+  echo -e "  ${BOLD}AI Health:${NC}  ${CYAN}http://localhost:$BACKEND_PORT/ai/health${NC}"
   echo ""
   echo -e "  ${YELLOW}Press Ctrl+C to stop all services${NC}"
   echo ""
 else
+
   echo -e "${RED}${BOLD}  ⚠  Some services failed to start. Check logs:${NC}"
   echo -e "     Backend log:  $BACKEND_LOG"
   echo -e "     Frontend log: $FRONTEND_LOG"

@@ -1,143 +1,262 @@
+"""
+analyze_pyq.py
+--------------
+PYQ analysis pipeline.
+
+OCR:  PaddleOCR via ai_venv (Python 3.12) subprocess
+LLM:  Local Ollama  gemma4:12b  — real structured JSON analysis
+"""
+
 import os
 import glob
-# pyrefly: ignore [missing-import]
-import fitz  # PyMuPDF for PDF handling
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.naive_bayes import MultinomialNB
-from sklearn.pipeline import make_pipeline
+import json
+import httpx
+import subprocess
+import tempfile
+import fitz          # PyMuPDF — PDF → image conversion only
 
-def extract_text_from_pdf(pdf_path):
-    """Extracts text from a PDF file."""
-    text = ""
+_AI_DIR     = os.path.dirname(os.path.abspath(__file__))
+_AI_VENV_PY = os.path.join(os.path.dirname(_AI_DIR), "ai_venv", "bin", "python")
+if not os.path.exists(_AI_VENV_PY):
+    _AI_VENV_PY = "python3.12"
+
+# ---------------------------------------------------------------------------
+# Read settings (supports .env override)
+# ---------------------------------------------------------------------------
+try:
+    import sys
+    sys.path.insert(0, os.path.join(os.path.dirname(_AI_DIR), ".."))
+    from backend.config import settings
+    OLLAMA_BASE_URL = settings.ollama_base_url
+    OLLAMA_MODEL    = settings.ollama_model
+    PADDLE_HOME     = settings.paddle_home
+except Exception:
+    OLLAMA_BASE_URL = os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434")
+    OLLAMA_MODEL    = os.environ.get("OLLAMA_MODEL",    "gemma4:12b")
+    PADDLE_HOME     = os.environ.get("PADDLE_HOME",     os.path.join(os.path.expanduser("~"), ".paddleocr"))
+
+
+# ---------------------------------------------------------------------------
+# PDF → JPG (PyMuPDF, no changes needed)
+# ---------------------------------------------------------------------------
+
+def convert_pdf_to_jpg(pdf_path: str, output_dir: str) -> list[str]:
+    """Convert every page of a PDF to 200-DPI JPG images."""
     try:
         doc = fitz.open(pdf_path)
-        for page in doc:
-            text += page.get_text()
-    except Exception as e:
-        print(f"Error reading PDF {pdf_path}: {e}")
-    return text
-
-def convert_pdf_to_jpg(pdf_path, output_dir):
-    """Converts a PDF file into a series of JPG images (one per page)."""
-    try:
-        doc = fitz.open(pdf_path)
-        base_name = os.path.basename(pdf_path).split('.')[0]
+        base = os.path.basename(pdf_path).rsplit(".", 1)[0]
         os.makedirs(output_dir, exist_ok=True)
-        
-        saved_images = []
+        saved: list[str] = []
         for i, page in enumerate(doc):
-            pix = page.get_pixmap(dpi=150)
-            img_path = os.path.join(output_dir, f"{base_name}_page_{i+1}.jpg")
+            pix      = page.get_pixmap(dpi=200)
+            img_path = os.path.join(output_dir, f"{base}_page_{i + 1}.jpg")
             pix.save(img_path)
-            saved_images.append(img_path)
-            print(f"Saved {img_path}")
-        return saved_images
-    except Exception as e:
-        print(f"Error converting PDF to JPG {pdf_path}: {e}")
+            saved.append(img_path)
+        return saved
+    except Exception as exc:
+        print(f"[PDF→JPG] Error: {exc}")
         return []
 
-def analyze_image_with_nvidia_api(image_path):
-    """
-    Placeholder for NVIDIA API image analysis.
-    You can use the NVIDIA API (e.g., NeMo Multimodal or OCR models)
-    to extract text or analyze the contents of the generated JPGs.
-    """
-    print(f"Preparing to send {image_path} to NVIDIA API for analysis...")
-    api_key = os.environ.get("VITE_NVIDIA_API_KEY", "MISSING_KEY")
-    if api_key == "MISSING_KEY":
-        print("Warning: VITE_NVIDIA_API_KEY is not set in your environment.")
-    
-    # Example pseudo-code for API call:
-    # headers = {"Authorization": f"Bearer {api_key}"}
-    # files = {"image": open(image_path, "rb")}
-    # response = requests.post("https://api.nvidia.com/v1/vision/analyze", headers=headers, files=files)
-    
-    print(f"Simulated NVIDIA API result: Found technical diagrams and equations in {os.path.basename(image_path)}.")
-    return "Extracted simulated text from image."
 
-def load_data(resources_dir):
-    texts = []
-    labels = []
-    
-    # Process TXT files
-    txt_files = glob.glob(os.path.join(resources_dir, "*.txt"))
-    for file_path in txt_files:
-        basename = os.path.basename(file_path)
-        subject = basename.split('_')[0] if '_' in basename else 'unknown'
-        
-        with open(file_path, 'r', encoding='utf-8') as f:
-            content = f.read()
-            questions = [line.strip() for line in content.split('\n') if line.strip()]
-            for q in questions:
-                texts.append(q)
-                labels.append(subject)
+# ---------------------------------------------------------------------------
+# Inline PaddleOCR worker (runs in Python 3.12 ai_venv subprocess)
+# ---------------------------------------------------------------------------
+_PADDLE_OCR_WORKER = """
+import sys, os, json
+paddle_home = sys.argv[1]
+image_path  = sys.argv[2]
 
-    # Process PDF files
-    pdf_files = glob.glob(os.path.join(resources_dir, "*.pdf"))
-    for file_path in pdf_files:
+os.environ["PADDLE_HOME"]    = paddle_home
+os.environ["PADDLEOCR_HOME"] = paddle_home
+
+from paddleocr import PaddleOCR
+ocr = PaddleOCR(use_angle_cls=True, lang="en", show_log=False)
+result = ocr.ocr(image_path, cls=True)
+lines = []
+if result and result[0]:
+    for line in result[0]:
+        lines.append(line[1][0])
+print("\\n".join(lines))
+"""
+
+
+def extract_text_with_paddle(image_path: str) -> str:
+    """Run PaddleOCR on a single image via the ai_venv subprocess."""
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as tmp:
+        tmp.write(_PADDLE_OCR_WORKER)
+        tmp_path = tmp.name
+    try:
+        r = subprocess.run(
+            [_AI_VENV_PY, tmp_path, PADDLE_HOME, image_path],
+            capture_output=True, text=True, timeout=120
+        )
+        return r.stdout.strip() if r.returncode == 0 else ""
+    except Exception as exc:
+        print(f"[PaddleOCR] Error on {image_path}: {exc}")
+        return ""
+    finally:
+        os.unlink(tmp_path)
+
+
+# ---------------------------------------------------------------------------
+# Ollama gemma4:12b health check and analysis
+# ---------------------------------------------------------------------------
+
+def check_ollama_health() -> dict:
+    """Check if Ollama is running and gemma4:12b is available."""
+    try:
+        resp = httpx.get(f"{OLLAMA_BASE_URL}/api/tags", timeout=5.0)
+        resp.raise_for_status()
+        models = [m["name"] for m in resp.json().get("models", [])]
+        # Match both "gemma4:12b" and "gemma4:12b-it-qat" etc.
+        model_ready = any(OLLAMA_MODEL in m for m in models)
+        return {
+            "ollama_running":  True,
+            "model_available": model_ready,
+            "model":           OLLAMA_MODEL,
+            "pulled_models":   models,
+        }
+    except Exception:
+        return {
+            "ollama_running":  False,
+            "model_available": False,
+            "model":           OLLAMA_MODEL,
+            "pulled_models":   [],
+        }
+
+
+def pull_ollama_model(model: str = OLLAMA_MODEL) -> bool:
+    """
+    Auto-pull the model from Ollama if it is not already available.
+    Returns True on success.
+    """
+    print(f"[Ollama] Pulling model {model} (this may take a few minutes)…")
+    try:
+        with httpx.stream(
+            "POST",
+            f"{OLLAMA_BASE_URL}/api/pull",
+            json={"name": model},
+            timeout=600.0,
+        ) as resp:
+            for line in resp.iter_lines():
+                try:
+                    data = json.loads(line)
+                    status = data.get("status", "")
+                    if status:
+                        print(f"[Ollama pull] {status}")
+                except Exception:
+                    pass
+        return True
+    except Exception as exc:
+        print(f"[Ollama] Pull failed: {exc}")
+        return False
+
+
+ANALYSIS_PROMPT = """You are an academic question analyst. Analyse the following extracted exam-paper text and return a JSON object with exactly these keys:
+
+- "subject": primary subject (e.g. "Physics", "Mathematics")
+- "topics": list of up to 5 specific topics covered
+- "difficulty": one of "Easy", "Medium", "Hard"
+- "question_count": estimated number of distinct questions
+- "summary": one-sentence description of the paper
+
+Return ONLY valid JSON, nothing else.
+
+Text:
+\"\"\"
+{text}
+\"\"\"
+"""
+
+
+def analyze_with_ollama(text: str) -> dict:
+    """Send text to local Ollama gemma4:12b for structured JSON analysis."""
+    health = check_ollama_health()
+    if not health["ollama_running"]:
+        return {"error": f"Ollama not reachable at {OLLAMA_BASE_URL}"}
+    if not health["model_available"]:
+        print(f"[Ollama] {OLLAMA_MODEL} not found — auto-pulling…")
+        pull_ollama_model(OLLAMA_MODEL)
+
+    try:
+        resp = httpx.post(
+            f"{OLLAMA_BASE_URL}/api/generate",
+            json={
+                "model":  OLLAMA_MODEL,
+                "prompt": ANALYSIS_PROMPT.format(text=text[:4000]),
+                "stream": False,
+                "format": "json",
+            },
+            timeout=120.0,
+        )
+        resp.raise_for_status()
+        raw = resp.json().get("response", "{}")
+        return json.loads(raw)
+    except httpx.ConnectError:
+        return {"error": "Ollama not reachable", "model": OLLAMA_MODEL}
+    except (json.JSONDecodeError, KeyError) as exc:
+        return {"error": f"Invalid response from model: {exc}"}
+    except Exception as exc:
+        return {"error": str(exc)}
+
+
+# ---------------------------------------------------------------------------
+# Pipeline: load and analyse all files in resources directory
+# ---------------------------------------------------------------------------
+
+def load_data(resources_dir: str) -> tuple[list[str], list[str], list[dict]]:
+    texts:    list[str]  = []
+    labels:   list[str]  = []
+    analyses: list[dict] = []
+
+    for file_path in glob.glob(os.path.join(resources_dir, "*.txt")):
         basename = os.path.basename(file_path)
-        subject = basename.split('_')[0] if '_' in basename else 'unknown'
-        
-        print(f"\nProcessing PDF: {file_path}")
-        # 1. Extract text
-        content = extract_text_from_pdf(file_path)
-        questions = [line.strip() for line in content.split('\n') if len(line.strip()) > 10]
-        for q in questions:
+        subject  = basename.split("_")[0] if "_" in basename else "unknown"
+        with open(file_path, "r", encoding="utf-8") as fh:
+            content = fh.read()
+        for q in [ln.strip() for ln in content.split("\n") if ln.strip()]:
             texts.append(q)
             labels.append(subject)
-            
-        # 2. Convert to JPGs
-        print(f"Converting {file_path} to images for deep analysis...")
+        if content.strip():
+            analyses.append({"file": basename, **analyze_with_ollama(content)})
+
+    for file_path in glob.glob(os.path.join(resources_dir, "*.pdf")):
+        basename  = os.path.basename(file_path)
+        subject   = basename.split("_")[0] if "_" in basename else "unknown"
         images_dir = os.path.join(resources_dir, "images")
-        jpg_paths = convert_pdf_to_jpg(file_path, images_dir)
-        
-        # 3. Analyze images via Nvidia API
+        jpg_paths  = convert_pdf_to_jpg(file_path, images_dir)
+        page_texts: list[str] = []
         for img_path in jpg_paths:
-            analyze_image_with_nvidia_api(img_path)
+            pt = extract_text_with_paddle(img_path)
+            page_texts.append(pt)
+            for q in [ln.strip() for ln in pt.split("\n") if len(ln.strip()) > 10]:
+                texts.append(q)
+                labels.append(subject)
+        doc_text = "\n".join(page_texts)
+        if doc_text.strip():
+            analyses.append({"file": basename, **analyze_with_ollama(doc_text)})
 
-    return texts, labels
+    return texts, labels, analyses
 
-def train_model(texts, labels):
-    if not texts:
-        print("No training data found.")
-        return None
-        
-    model = make_pipeline(TfidfVectorizer(stop_words='english'), MultinomialNB())
-    model.fit(texts, labels)
-    return model
 
-def analyze_and_predict(model, new_questions):
-    if not model:
-        return
-        
-    print("\n--- Prediction Analysis ---")
-    predictions = model.predict(new_questions)
-    for q, p in zip(new_questions, predictions):
-        print(f"Question: {q[:50]}...")
-        print(f"Predicted Subject: {p}")
-        print("-" * 25)
+# ---------------------------------------------------------------------------
+# CLI entry point
+# ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    current_dir = os.path.dirname(os.path.abspath(__file__))
+    current_dir   = os.path.dirname(os.path.abspath(__file__))
     resources_dir = os.path.join(current_dir, "..", "resources")
-    
-    print(f"Loading previous year questions from {resources_dir}...")
-    texts, labels = load_data(resources_dir)
-    
-    if texts:
-        print(f"\nLoaded {len(texts)} text segments across {len(set(labels))} subjects.")
-        print("Training text categorization model...")
-        model = train_model(texts, labels)
-        
-        print("Model trained successfully.")
-        
-        # Test the prediction model
-        sample_pyq = [
-            "Calculate the kinetic energy of the projectile.",
-            "Explain the process of photosynthesis.",
-            "Solve the quadratic equation x^2 + 5x + 6 = 0."
-        ]
-        
-        analyze_and_predict(model, sample_pyq)
+
+    health = check_ollama_health()
+    print(f"[Health] Ollama running:    {health['ollama_running']}")
+    print(f"[Health] {OLLAMA_MODEL} ready: {health['model_available']}")
+    if not health["model_available"] and health["ollama_running"]:
+        pull_ollama_model()
+
+    texts, labels, analyses = load_data(resources_dir)
+    if analyses:
+        print("\n=== Ollama Analysis Results ===")
+        for a in analyses:
+            print(json.dumps(a, indent=2))
     else:
-        print("Please add some .txt or .pdf files to the resources folder.")
+        print("No files found. Add .txt or .pdf files to the resources folder.")

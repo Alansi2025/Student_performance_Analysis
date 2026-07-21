@@ -9,6 +9,7 @@ itsdangerous
 slowapi
 python-dotenv
 pymupdf
-pytesseract
-pillow
+paddleocr
+paddlepaddle
+httpx
 pydantic-settings
