@@ -9,6 +9,10 @@
   color-scheme: light dark;
 }
 
+html, body {
+  overscroll-behavior-y: none;
+}
+
 body {
   margin: 0;
   background-color: #f8fafc; /* Premium clean off-white background */

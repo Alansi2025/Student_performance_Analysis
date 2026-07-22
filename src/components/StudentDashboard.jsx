@@ -7,7 +7,7 @@ import {
   Paperclip, Mic, Send, ExternalLink, Zap, Play, Trophy,
   Globe, Network, Database, Cpu, Router, Scale, ChevronDown,
   User, Sliders, ShieldCheck, Mail, BookOpen,
-  Megaphone, PlayCircle, CheckCircle, Layers, Download, Timer, Check, Camera, Upload
+  Megaphone, PlayCircle, CheckCircle, Layers, Download, Timer, Check, Camera, Upload, BarChart2
 } from 'lucide-react';
 
 import alexRiversProfile from '../assets/alex_rivers_profile.png';
@@ -284,18 +284,14 @@ export default function StudentDashboard({ user, onLogout }) {
 
       {/* Bottom Actions */}
       <div className="space-y-5 pt-6 border-t border-slate-100 dark:border-slate-850/60">
-        <button className="w-full bg-white dark:bg-slate-900/50 hover:bg-slate-50 dark:hover:bg-slate-800/85 text-[#253df5] dark:text-white border border-[#253df5]/10 dark:border-slate-800 text-xs font-extrabold py-3.5 px-4 rounded-xl transition-all duration-200 tracking-wider flex items-center justify-center gap-2 shadow-xs">
-          <Trophy className="w-4 h-4 text-[#253df5] dark:text-brand-400 fill-current" />
-          <span>Upgrade to Pro</span>
-        </button>
         <div className="space-y-3 px-2">
           
           <button 
             onClick={onLogout}
-            className="flex items-center gap-3 text-xs font-bold text-slate-550 dark:text-gray-450 hover:text-rose-600 dark:hover:text-rose-400 transition-colors duration-250 w-full text-left"
+            title="Logout"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors flex justify-center w-full"
           >
-            <LogOut className="w-4 h-4 text-slate-400 dark:text-gray-500" />
-            <span>LOGOUT</span>
+            <LogOut className="w-5 h-5" />
           </button>
         </div>
       </div>

@@ -114,6 +114,7 @@ export default function MentorDashboard({ user, onLogout }) {
   const [selectedCohort, setSelectedCohort] = useState('Advanced Calculus - Sec A');
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isCreatingCohort, setIsCreatingCohort] = useState(false);
   
   // Settings & Connectivity State
   const [formName, setFormName] = useState(user?.name || 'Lead Educator');
@@ -571,16 +572,6 @@ export default function MentorDashboard({ user, onLogout }) {
             <Settings className={`w-4.5 h-4.5 ${activeNav === 'Settings' ? 'text-white' : 'text-slate-400 dark:text-gray-500'}`} />
             <span className="tracking-wider">Settings</span>
           </button>
-
-          {/* Logout link */}
-          <button
-            onClick={onLogout}
-            className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold rounded-xl transition-all duration-200 text-slate-605 dark:text-gray-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50/50 dark:hover:bg-rose-950/15"
-          >
-            <LogOut className="w-4.5 h-4.5 text-slate-400 dark:text-gray-500" />
-            <span className="tracking-wider">Logout</span>
-          </button>
-
           {/* Divider */}
           <div className="border-t border-slate-100 dark:border-slate-850/60 my-2" />
 
@@ -955,13 +946,50 @@ export default function MentorDashboard({ user, onLogout }) {
                   <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Active Cohorts</h1>
                   <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">Manage learning pathways and monitor students across your assigned sections.</p>
                 </div>
-                <button className="bg-[#253df5] hover:bg-[#1d2ae0] text-white text-xs font-black py-2.5 px-4 rounded-xl transition-all flex items-center gap-2 shadow-xs">
+                <button 
+                  onClick={() => setIsCreatingCohort(true)}
+                  className="bg-[#253df5] hover:bg-[#1d2ae0] text-white text-xs font-black py-2.5 px-4 rounded-xl transition-all flex items-center gap-2 shadow-xs"
+                >
                   <Plus size={14} />
                   <span>Create Cohort</span>
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {isCreatingCohort ? (
+                <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs animate-fadeIn">
+                  <div className="flex items-center justify-between mb-6 border-b border-slate-100 dark:border-slate-850 pb-4">
+                    <h2 className="text-lg font-bold text-slate-900 dark:text-white">Create New Cohort</h2>
+                    <button 
+                      onClick={() => setIsCreatingCohort(false)}
+                      className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+                    >
+                      <X size={20} />
+                    </button>
+                  </div>
+                  <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); setIsCreatingCohort(false); }}>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2 text-left">
+                        <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Cohort Name</label>
+                        <input type="text" className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#253df5]" placeholder="e.g. Advanced Calculus - Sec B" required />
+                      </div>
+                      <div className="space-y-2 text-left">
+                        <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Subject Area</label>
+                        <input type="text" className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#253df5]" placeholder="e.g. Mathematics" required />
+                      </div>
+                      <div className="space-y-2 md:col-span-2 text-left">
+                        <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Student Details (CSV or Emails)</label>
+                        <textarea className="w-full h-32 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#253df5] resize-none" placeholder="Paste student emails separated by commas, or upload a CSV format containing student details..." required></textarea>
+                      </div>
+                    </div>
+                    <div className="flex justify-end pt-4">
+                      <button type="button" onClick={() => setIsCreatingCohort(false)} className="px-6 py-2.5 rounded-xl font-bold text-sm text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 mr-3 transition-colors">Cancel</button>
+                      <button type="submit" className="px-6 py-2.5 rounded-xl font-bold text-sm text-white bg-[#253df5] hover:bg-[#1d2ae0] transition-colors shadow-sm">Create Cohort</button>
+                    </div>
+                  </form>
+                </div>
+              ) : (
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {Object.keys(cohortsList).map(name => {
                   const cohort = cohortsList[name];
                   const isSelected = selectedCohort === name;
@@ -1085,8 +1113,10 @@ export default function MentorDashboard({ user, onLogout }) {
                   </table>
                 </div>
               </div>
-            </div>
+            </>
           )}
+        </div>
+      )}
 
           {/* ================= VIEW: ANALYTICS & REPORTS ================= */}
           {activeNav === 'Analytics & Reports' && (
@@ -2815,7 +2845,8 @@ export default function MentorDashboard({ user, onLogout }) {
                 <button
                   onClick={() => {
                     setIsMobileSidebarOpen(false);
-                    alert('Create New Cohort feature coming soon!');
+                    setActiveNav('My Cohorts');
+                    setIsCreatingCohort(true);
                   }}
                   className="w-full flex items-center justify-center gap-2 py-3 bg-[#253df5] hover:bg-blue-650 text-white rounded-xl text-xs font-black tracking-wide transition-all"
                 >
