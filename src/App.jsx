@@ -1,6 +1,6 @@
 import MentorDashboard from './components/MentorDashboard';
 import OverseerDashboard from './components/OverseerDashboard';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import StudentDashboard from './components/StudentDashboard';
 import agiStage from './assets/agi_stage.png';
 import alexChenAvatar from './assets/julian_vance_profile.png';
@@ -14,6 +14,104 @@ import quantumScientist from './assets/quantum_scientist.png';
 import sarahJenkinsAvatar from './assets/sarah_profile.png';
 import { Activity, AlertCircle, ArrowRight, Award, BarChart2, Bell, Bot, Brain, BrainCircuit, Building2, Calendar, Camera, CameraOff, Check, CheckCircle, CheckCircle2, ChevronDown, ChevronRight, Clock, Code2, Cpu, Database, ExternalLink, Eye, EyeOff, FileText, Globe, GraduationCap, ImageIcon, KeyRound, Link, Loader2, Lock, Mail, Map, Menu, MessageSquare, Mic, MicOff, Moon, Play, School, Search, Send, Share2, Shield, Sliders, Sparkles, Star, Sun, Target, TrendingUp, User, UserCheck, Users, Video, Volume2, VolumeX, Waves, Wifi, WifiOff, X } from 'lucide-react';
 
+// --- Starfield Background (Animated blue particles on deep black) ---
+function StarfieldBackground() {
+  const canvasRef = useRef(null);
+  const particlesRef = useRef([]);
+  const animFrameRef = useRef(null);
+
+  const initParticles = useCallback((width, height) => {
+    const count = Math.floor((width * height) / 4500); // density scales with screen
+    const particles = [];
+    for (let i = 0; i < count; i++) {
+      particles.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        size: Math.random() * 1.8 + 0.4,
+        speedX: (Math.random() - 0.5) * 0.25,
+        speedY: (Math.random() - 0.5) * 0.15 + 0.05,
+        opacity: Math.random() * 0.6 + 0.15,
+        // Blue hue range: 200-240
+        hue: 210 + Math.random() * 30,
+        twinkleSpeed: Math.random() * 0.015 + 0.005,
+        twinkleOffset: Math.random() * Math.PI * 2,
+      });
+    }
+    particlesRef.current = particles;
+  }, []);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    const resize = () => {
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+      ctx.scale(dpr, dpr);
+      initParticles(window.innerWidth, window.innerHeight);
+    };
+
+    resize();
+    window.addEventListener('resize', resize);
+
+    let time = 0;
+    const animate = () => {
+      time += 1;
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+      const particles = particlesRef.current;
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        p.x += p.speedX;
+        p.y += p.speedY;
+
+        // Wrap around edges
+        if (p.x < -5) p.x = window.innerWidth + 5;
+        if (p.x > window.innerWidth + 5) p.x = -5;
+        if (p.y < -5) p.y = window.innerHeight + 5;
+        if (p.y > window.innerHeight + 5) p.y = -5;
+
+        // Twinkle effect
+        const twinkle = Math.sin(time * p.twinkleSpeed + p.twinkleOffset);
+        const alpha = p.opacity * (0.6 + 0.4 * twinkle);
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = `hsla(${p.hue}, 85%, 62%, ${alpha})`;
+        ctx.fill();
+
+        // Subtle glow for larger particles
+        if (p.size > 1.2) {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size * 2.5, 0, Math.PI * 2);
+          ctx.fillStyle = `hsla(${p.hue}, 80%, 55%, ${alpha * 0.12})`;
+          ctx.fill();
+        }
+      }
+      animFrameRef.current = requestAnimationFrame(animate);
+    };
+
+    animFrameRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      window.removeEventListener('resize', resize);
+      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+    };
+  }, [initParticles]);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="fixed inset-0 w-full h-full pointer-events-none z-0"
+      style={{ background: 'transparent' }}
+      aria-hidden="true"
+    />
+  );
+}
 
 // --- Component: Navbar.jsx ---
 function Navbar({ activeTab, setActiveTab, isLoggedIn, currentUser, onLogout }) {
@@ -60,7 +158,7 @@ function Navbar({ activeTab, setActiveTab, isLoggedIn, currentUser, onLogout }) 
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white/80 dark:bg-[#0b0f19]/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 transition-all duration-300">
+    <header className="sticky top-0 z-50 w-full bg-white/80 dark:bg-[#050505]/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20 gap-4">
           
@@ -117,7 +215,7 @@ function Navbar({ activeTab, setActiveTab, isLoggedIn, currentUser, onLogout }) 
             <div 
               className={`relative flex items-center transition-all duration-300 rounded-full bg-slate-100/80 dark:bg-slate-900/90 border ${
                 searchFocused 
-                  ? 'border-brand-500/60 ring-2 ring-brand-500/10 w-36 sm:w-48 md:w-52 lg:w-60 bg-white dark:bg-[#0d1326]' 
+                  ? 'border-brand-500/60 ring-2 ring-brand-500/10 w-36 sm:w-48 md:w-52 lg:w-60 bg-white dark:bg-[#0c0c0c]' 
                   : 'border-slate-200/80 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 w-24 sm:w-36 md:w-40 lg:w-48'
               }`}
             >
@@ -163,7 +261,7 @@ function Navbar({ activeTab, setActiveTab, isLoggedIn, currentUser, onLogout }) 
               </button>
               
               {showNotifications && (
-                <div className="absolute right-0 mt-3 w-60 bg-white dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl py-6 px-4 z-50 animate-fade-in-up">
+                <div className="absolute right-0 mt-3 w-60 bg-white dark:bg-[#050505] border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl py-6 px-4 z-50 animate-fade-in-up">
                   <div className="flex flex-col items-center justify-center text-center gap-2">
                     <Bell className="w-8 h-8 text-slate-300 dark:text-slate-700" />
                     <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">No new notifications</p>
@@ -225,7 +323,7 @@ function Navbar({ activeTab, setActiveTab, isLoggedIn, currentUser, onLogout }) 
       {isMobileMenuOpen && (
         <div
           id="mobile-navigation-menu"
-          className="lg:hidden border-t border-b border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0b0f19] transition-all duration-300 ease-in-out"
+          className="lg:hidden border-t border-b border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#050505] transition-all duration-300 ease-in-out"
         >
           <div className="px-4 pt-2 pb-6 space-y-3 shadow-inner">
             <div className="space-y-1">
@@ -344,7 +442,7 @@ function SubscribeForm() {
 
 function Footer({ setActiveTab, isLoggedIn, onLogout }) {
   return (
-    <footer className="w-full bg-white dark:bg-[#0b0f19] text-slate-600 dark:text-slate-400 border-t border-slate-200/80 dark:border-slate-800/80 py-12 sm:py-16 px-4 sm:px-6 lg:px-8 transition-all duration-300">
+    <footer className="w-full bg-white dark:bg-[#050505] text-slate-600 dark:text-slate-400 border-t border-slate-200/80 dark:border-slate-800/80 py-12 sm:py-16 px-4 sm:px-6 lg:px-8 transition-all duration-300">
       <div className="max-w-7xl mx-auto">
         {/* Main Footer Content Grid */}
         <div className="grid grid-cols-12 gap-y-10 gap-x-6 sm:gap-x-8 pb-12 border-b border-slate-200/60 dark:border-slate-800/60">
@@ -705,7 +803,7 @@ function LoginPage({ onBackToHome, onLoginSuccess }) {
   };
 
   return (
-    <div className="w-full min-h-screen flex flex-col items-center justify-center pt-8 pb-6 px-4 sm:px-6 lg:px-8 bg-slate-50 dark:bg-[#0b0f19] transition-colors duration-300">
+    <div className="w-full min-h-screen flex flex-col items-center justify-center pt-8 pb-6 px-4 sm:px-6 lg:px-8 bg-slate-50 dark:bg-[#050505] transition-colors duration-300">
       
       {/* Top Header Controls with Theme Toggle and Back button */}
       <div className="w-full flex items-center justify-between mb-4 max-w-md">
@@ -728,7 +826,7 @@ function LoginPage({ onBackToHome, onLoginSuccess }) {
       </div>
 
       {/* ==================== LOGIN CARD CONTAINER ==================== */}
-      <div className="w-full max-w-md bg-white dark:bg-[#0d1326] border border-slate-200 dark:border-slate-800/80 rounded-3xl shadow-xl dark:shadow-black/30 p-8 sm:p-10 transition-all duration-300 animate-fade-in">
+      <div className="w-full max-w-md bg-white dark:bg-[#0c0c0c] border border-slate-200 dark:border-slate-800/80 rounded-3xl shadow-xl dark:shadow-black/30 p-8 sm:p-10 transition-all duration-300 animate-fade-in">
           
           {viewState === 'signIn' ? (
             /* ==================== SIGN IN VIEW ==================== */
@@ -850,7 +948,7 @@ function LoginPage({ onBackToHome, onLoginSuccess }) {
                   <div className="absolute inset-0 flex items-center">
                     <div className="w-full border-t border-slate-200/80 dark:border-slate-850" />
                   </div>
-                  <span className="relative px-3 bg-white dark:bg-[#0d1326] text-[10px] font-black tracking-widest text-slate-400 dark:text-gray-500 uppercase font-mono">
+                  <span className="relative px-3 bg-white dark:bg-[#0c0c0c] text-[10px] font-black tracking-widest text-slate-400 dark:text-gray-500 uppercase font-mono">
                     Or continue with
                   </span>
                 </div>
@@ -1162,7 +1260,7 @@ function LoginPage({ onBackToHome, onLoginSuccess }) {
       {/* Account Already Exists Modal */}
       {showExistsModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-md p-4 animate-fade-in">
-          <div className="bg-white dark:bg-[#0d1326] border border-slate-200 dark:border-slate-800/80 rounded-3xl p-8 max-w-md w-full shadow-2xl text-center space-y-6 transform scale-100 transition-all duration-300">
+          <div className="bg-white dark:bg-[#0c0c0c] border border-slate-200 dark:border-slate-800/80 rounded-3xl p-8 max-w-md w-full shadow-2xl text-center space-y-6 transform scale-100 transition-all duration-300">
             
             {/* Warning Icon Container */}
             <div className="w-16 h-16 rounded-full bg-amber-50 dark:bg-amber-950/30 text-amber-500 dark:text-amber-400 flex items-center justify-center mx-auto shadow-inner">
@@ -1256,7 +1354,7 @@ function Hero() {
         <div className="lg:col-span-6 flex justify-center items-center relative">
           
           {/* Card Wrapper */}
-          <div className="relative bg-white dark:bg-[#0d1326]/60 border border-slate-100 dark:border-slate-800 shadow-2xl shadow-slate-200/80 dark:shadow-black/40 rounded-3xl p-6 sm:p-8 flex flex-col gap-6 w-[100%] max-w-[32rem] transition-all duration-300 animate-slideInRight">
+          <div className="relative bg-white dark:bg-[#0c0c0c]/60 border border-slate-100 dark:border-slate-800 shadow-2xl shadow-slate-200/80 dark:shadow-black/40 rounded-3xl p-6 sm:p-8 flex flex-col gap-6 w-[100%] max-w-[32rem] transition-all duration-300 animate-slideInRight">
             
             {/* Header info */}
             <div className="flex items-center justify-between">
@@ -1269,7 +1367,7 @@ function Hero() {
             </div>
 
             {/* Neural graphic block (inner dark visual box) */}
-            <div className="relative bg-[#0d1326] border border-slate-800/80 rounded-2xl p-4 sm:p-6 overflow-hidden aspect-[4/3] flex items-center justify-center shadow-inner">
+            <div className="relative bg-[#0c0c0c] border border-slate-800/80 rounded-2xl p-4 sm:p-6 overflow-hidden aspect-[4/3] flex items-center justify-center shadow-inner">
               {/* Radial glow background */}
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,92,250,0.15),transparent_70%)] pointer-events-none" />
 
@@ -1324,7 +1422,7 @@ function Hero() {
               </svg>
 
               {/* FLOATING AI TUTOR POPOVER CARD */}
-              <div className="absolute left-4 top-1/4 z-20 bg-white/95 dark:bg-[#0d1326]/95 backdrop-blur border border-slate-200/80 dark:border-slate-800/80 shadow-lg rounded-2xl p-3 flex items-center gap-3 hover:scale-102 transition-all duration-300">
+              <div className="absolute left-4 top-1/4 z-20 bg-white/95 dark:bg-[#0c0c0c]/95 backdrop-blur border border-slate-200/80 dark:border-slate-800/80 shadow-lg rounded-2xl p-3 flex items-center gap-3 hover:scale-102 transition-all duration-300">
                 <div className="w-9 h-9 rounded-full bg-indigo-650 flex items-center justify-center text-white shadow-md shadow-indigo-650/20">
                   <BrainCircuit size={18} />
                 </div>
@@ -1481,10 +1579,10 @@ function NeuralAdvantage() {
         <div className="lg:col-span-6 flex justify-center items-center relative order-2 lg:order-1">
           
           {/* Main Visual Card */}
-          <div className="relative bg-white dark:bg-[#0d1326]/60 border border-slate-100 dark:border-slate-800 shadow-2xl shadow-slate-200/80 dark:shadow-black/40 rounded-3xl p-6 sm:p-8 flex flex-col gap-6 w-full max-w-lg transition-all duration-300">
+          <div className="relative bg-white dark:bg-[#0c0c0c]/60 border border-slate-100 dark:border-slate-800 shadow-2xl shadow-slate-200/80 dark:shadow-black/40 rounded-3xl p-6 sm:p-8 flex flex-col gap-6 w-full max-w-lg transition-all duration-300">
             
             {/* Visual Screen Container */}
-            <div className="relative bg-[#0d1326] border border-slate-800/85 rounded-2xl p-4 sm:p-6 overflow-hidden aspect-[4/3] flex items-center justify-center shadow-inner">
+            <div className="relative bg-[#0c0c0c] border border-slate-800/85 rounded-2xl p-4 sm:p-6 overflow-hidden aspect-[4/3] flex items-center justify-center shadow-inner">
               
               {/* Radial glow background */}
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(6,182,212,0.18),transparent_70%)] pointer-events-none" />
@@ -1626,7 +1724,7 @@ function CoreCapabilities() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
         
         {/* CARD 1: AI Performance Prediction */}
-        <div className="relative bg-white dark:bg-[#0d1326]/60 border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/40 dark:shadow-black/20 rounded-3xl p-6 sm:p-8 flex flex-col items-start gap-4 overflow-hidden transition-all duration-300 hover:border-slate-250 dark:hover:border-slate-700 hover:shadow-2xl hover:scale-[1.005]">
+        <div className="relative bg-white dark:bg-[#0c0c0c]/60 border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/40 dark:shadow-black/20 rounded-3xl p-6 sm:p-8 flex flex-col items-start gap-4 overflow-hidden transition-all duration-300 hover:border-slate-250 dark:hover:border-slate-700 hover:shadow-2xl hover:scale-[1.005]">
           {/* Subtle background glow */}
           <div className="absolute right-[-10%] bottom-[-20%] w-48 h-48 rounded-full bg-brand-500/5 dark:bg-brand-500/10 pointer-events-none blur-3xl transition-colors duration-300" />
           
@@ -1645,7 +1743,7 @@ function CoreCapabilities() {
         </div>
 
         {/* CARD 2: Smart Analytics */}
-        <div className="bg-white dark:bg-[#0d1326]/60 border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/40 dark:shadow-black/20 rounded-3xl p-6 sm:p-8 flex flex-col items-start gap-4 transition-all duration-300 hover:border-slate-250 dark:hover:border-slate-700 hover:shadow-2xl hover:scale-[1.005]">
+        <div className="bg-white dark:bg-[#0c0c0c]/60 border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/40 dark:shadow-black/20 rounded-3xl p-6 sm:p-8 flex flex-col items-start gap-4 transition-all duration-300 hover:border-slate-250 dark:hover:border-slate-700 hover:shadow-2xl hover:scale-[1.005]">
           
           <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center border border-emerald-100/50 dark:border-emerald-900/30 transition-all duration-300 flex-shrink-0">
             <BarChart2 size={18} />
@@ -1662,7 +1760,7 @@ function CoreCapabilities() {
         </div>
 
         {/* CARD 3: Focus Mode */}
-        <div className="bg-white dark:bg-[#0d1326]/60 border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/40 dark:shadow-black/20 rounded-3xl p-6 sm:p-8 flex flex-col items-start gap-4 transition-all duration-300 hover:border-slate-250 dark:hover:border-slate-700 hover:shadow-2xl hover:scale-[1.005]">
+        <div className="bg-white dark:bg-[#0c0c0c]/60 border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/40 dark:shadow-black/20 rounded-3xl p-6 sm:p-8 flex flex-col items-start gap-4 transition-all duration-300 hover:border-slate-250 dark:hover:border-slate-700 hover:shadow-2xl hover:scale-[1.005]">
           
           <div className="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400 flex items-center justify-center border border-purple-100/50 dark:border-purple-900/30 transition-all duration-300 flex-shrink-0">
             <Target size={18} />
@@ -1679,7 +1777,7 @@ function CoreCapabilities() {
         </div>
 
         {/* CARD 4: Peer Comparison Matrix */}
-        <div className="bg-white dark:bg-[#0d1326]/60 border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/40 dark:shadow-black/20 rounded-3xl p-6 sm:p-8 flex flex-col items-start gap-4 transition-all duration-300 hover:border-slate-250 dark:hover:border-slate-700 hover:shadow-2xl hover:scale-[1.005]">
+        <div className="bg-white dark:bg-[#0c0c0c]/60 border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/40 dark:shadow-black/20 rounded-3xl p-6 sm:p-8 flex flex-col items-start gap-4 transition-all duration-300 hover:border-slate-250 dark:hover:border-slate-700 hover:shadow-2xl hover:scale-[1.005]">
           
           <div className="w-10 h-10 rounded-xl bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-455 flex items-center justify-center border border-rose-100/50 dark:border-rose-900/30 transition-all duration-300 flex-shrink-0">
             <Users size={18} />
@@ -1726,7 +1824,7 @@ function Ecosystem() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-5xl mx-auto items-stretch">
         
         {/* CARD 1: For Students */}
-        <div className="bg-white dark:bg-[#0d1326]/60 border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/40 dark:shadow-black/25 rounded-3xl p-8 flex flex-col items-center text-center gap-5 transition-all duration-305 hover:border-slate-200 dark:hover:border-slate-700 hover:shadow-2xl hover:scale-[1.01]">
+        <div className="bg-white dark:bg-[#0c0c0c]/60 border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/40 dark:shadow-black/25 rounded-3xl p-8 flex flex-col items-center text-center gap-5 transition-all duration-305 hover:border-slate-200 dark:hover:border-slate-700 hover:shadow-2xl hover:scale-[1.01]">
           <div className="w-12 h-12 rounded-2xl bg-brand-50 dark:bg-brand-950/40 text-brand-650 dark:text-brand-400 flex items-center justify-center border border-brand-100/50 dark:border-brand-900/30 transition-all duration-300 flex-shrink-0">
             <GraduationCap size={22} />
           </div>
@@ -1742,7 +1840,7 @@ function Ecosystem() {
         </div>
 
         {/* CARD 2: For Mentors (Highlighted Premium Card!) */}
-        <div className="relative bg-white dark:bg-[#0d1326]/85 border-2 border-brand-500/60 dark:border-brand-500/50 shadow-2xl rounded-3xl p-8 flex flex-col items-center text-center gap-5 transition-all duration-305 hover:scale-[1.015]">
+        <div className="relative bg-white dark:bg-[#0c0c0c]/85 border-2 border-brand-500/60 dark:border-brand-500/50 shadow-2xl rounded-3xl p-8 flex flex-col items-center text-center gap-5 transition-all duration-305 hover:scale-[1.015]">
           
           {/* Absolute Hovering Badge on Top Border */}
           <div className="absolute top-[-12px] left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-brand-600 to-indigo-650 dark:from-brand-550 dark:to-indigo-500 text-white text-[9px] font-extrabold tracking-widest uppercase px-3.5 py-1 rounded-full shadow-md shadow-brand-500/20 font-mono transition-all duration-300">
@@ -1764,7 +1862,7 @@ function Ecosystem() {
         </div>
 
         {/* CARD 3: For Administrators */}
-        <div className="bg-white dark:bg-[#0d1326]/60 border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/40 dark:shadow-black/25 rounded-3xl p-8 flex flex-col items-center text-center gap-5 transition-all duration-305 hover:border-slate-200 dark:hover:border-slate-700 hover:shadow-2xl hover:scale-[1.01]">
+        <div className="bg-white dark:bg-[#0c0c0c]/60 border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/40 dark:shadow-black/25 rounded-3xl p-8 flex flex-col items-center text-center gap-5 transition-all duration-305 hover:border-slate-200 dark:hover:border-slate-700 hover:shadow-2xl hover:scale-[1.01]">
           <div className="w-12 h-12 rounded-2xl bg-purple-50 dark:bg-purple-950/40 text-purple-650 dark:text-purple-400 flex items-center justify-center border border-purple-100/50 dark:border-purple-900/30 transition-all duration-300 flex-shrink-0">
             <Shield size={20} />
           </div>
@@ -2017,7 +2115,7 @@ function IntegrationSafety() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto items-stretch">
         
         {/* CARD 1: Deep Integration */}
-        <div className="bg-white dark:bg-[#0d1326]/60 border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/40 dark:shadow-black/25 rounded-3xl p-8 flex flex-col justify-between gap-6 transition-all duration-300 hover:border-slate-200 dark:hover:border-slate-700 hover:shadow-2xl hover:scale-[1.005]">
+        <div className="bg-white dark:bg-[#0c0c0c]/60 border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/40 dark:shadow-black/25 rounded-3xl p-8 flex flex-col justify-between gap-6 transition-all duration-300 hover:border-slate-200 dark:hover:border-slate-700 hover:shadow-2xl hover:scale-[1.005]">
           
           <div className="space-y-4">
             <div className="w-10 h-10 rounded-xl bg-brand-50 dark:bg-brand-950/40 text-brand-650 dark:text-brand-400 flex items-center justify-center border border-brand-100/50 dark:border-brand-900/30 transition-all duration-300 flex-shrink-0">
@@ -2054,7 +2152,7 @@ function IntegrationSafety() {
         </div>
 
         {/* CARD 2: Safety & Ethics First */}
-        <div className="bg-white dark:bg-[#0d1326]/60 border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/40 dark:shadow-black/25 rounded-3xl p-8 flex flex-col justify-between gap-6 transition-all duration-300 hover:border-slate-200 dark:hover:border-slate-700 hover:shadow-2xl hover:scale-[1.005]">
+        <div className="bg-white dark:bg-[#0c0c0c]/60 border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/40 dark:shadow-black/25 rounded-3xl p-8 flex flex-col justify-between gap-6 transition-all duration-300 hover:border-slate-200 dark:hover:border-slate-700 hover:shadow-2xl hover:scale-[1.005]">
           
           <div className="space-y-4">
             <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-650 dark:text-emerald-400 flex items-center justify-center border border-emerald-100/50 dark:border-emerald-900/30 transition-all duration-300 flex-shrink-0">
@@ -2132,7 +2230,7 @@ function MeasurableEvolution() {
           <div className="grid grid-cols-2 gap-4 pt-2">
             
             {/* Stat 1 */}
-            <div className="bg-white dark:bg-[#0d1326]/60 border border-slate-100 dark:border-slate-800/80 border-l-4 border-l-emerald-500 dark:border-l-emerald-500 shadow-xl dark:shadow-black/15 rounded-3xl p-6 text-left transition-all duration-300 hover:border-slate-250 dark:hover:border-slate-700 hover:shadow-2xl">
+            <div className="bg-white dark:bg-[#0c0c0c]/60 border border-slate-100 dark:border-slate-800/80 border-l-4 border-l-emerald-500 dark:border-l-emerald-500 shadow-xl dark:shadow-black/15 rounded-3xl p-6 text-left transition-all duration-300 hover:border-slate-250 dark:hover:border-slate-700 hover:shadow-2xl">
               <span className="text-3xl sm:text-4xl font-black text-emerald-600 dark:text-emerald-400 leading-none block mb-1">
                 3.4x
               </span>
@@ -2142,7 +2240,7 @@ function MeasurableEvolution() {
             </div>
 
             {/* Stat 2 */}
-            <div className="bg-white dark:bg-[#0d1326]/60 border border-slate-100 dark:border-slate-800/80 border-l-4 border-l-emerald-500 dark:border-l-emerald-500 shadow-xl dark:shadow-black/15 rounded-3xl p-6 text-left transition-all duration-300 hover:border-slate-250 dark:hover:border-slate-700 hover:shadow-2xl">
+            <div className="bg-white dark:bg-[#0c0c0c]/60 border border-slate-100 dark:border-slate-800/80 border-l-4 border-l-emerald-500 dark:border-l-emerald-500 shadow-xl dark:shadow-black/15 rounded-3xl p-6 text-left transition-all duration-300 hover:border-slate-250 dark:hover:border-slate-700 hover:shadow-2xl">
               <span className="text-3xl sm:text-4xl font-black text-emerald-600 dark:text-emerald-400 leading-none block mb-1">
                 89%
               </span>
@@ -2159,13 +2257,13 @@ function MeasurableEvolution() {
         <div className="lg:col-span-6 flex justify-center items-center">
           
           {/* Testimonial card wrapper */}
-          <div className="relative bg-white dark:bg-[#0d1326]/65 border border-slate-100 dark:border-slate-800/80 shadow-2xl shadow-slate-200/80 dark:shadow-black/30 rounded-3xl p-6 sm:p-8 flex flex-col gap-6 w-full max-w-md text-left transition-all duration-300 hover:border-slate-250 dark:hover:border-slate-700 hover:shadow-2xl">
+          <div className="relative bg-white dark:bg-[#0c0c0c]/65 border border-slate-100 dark:border-slate-800/80 shadow-2xl shadow-slate-200/80 dark:shadow-black/30 rounded-3xl p-6 sm:p-8 flex flex-col gap-6 w-full max-w-md text-left transition-all duration-300 hover:border-slate-250 dark:hover:border-slate-700 hover:shadow-2xl">
             
             {/* Card Header (User profile details + Quote mark) */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 {/* Profile Photo */}
-                <div className="w-16 h-16 rounded-full overflow-hidden border-4 border-white dark:border-[#0b0f19] shadow-lg">
+                <div className="w-16 h-16 rounded-full overflow-hidden border-4 border-white dark:border-[#050505] shadow-lg">
                     <img 
                     src={sarahJenkinsAvatar} 
                     alt="Reviewer" 
@@ -2356,7 +2454,7 @@ function LiveSessions() {
   });
 
   return (
-    <div className="w-full bg-slate-50 dark:bg-[#0b0f19] py-8 sm:py-12 transition-colors duration-300 animate-fadeIn">
+    <div className="w-full bg-slate-50 dark:bg-[#050505] py-8 sm:py-12 transition-colors duration-300 animate-fadeIn">
       
       {/* Toast Notification alert */}
       {classAlert && (
@@ -2369,7 +2467,7 @@ function LiveSessions() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 sm:space-y-16">
         
         {/* ================= HERO SECTION ================= */}
-        <section className="bg-white dark:bg-[#0d1326]/60 border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 lg:p-10 shadow-xs flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12 text-left relative overflow-hidden transition-all duration-300 hover:shadow-md">
+        <section className="bg-white dark:bg-[#0c0c0c]/60 border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 lg:p-10 shadow-xs flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12 text-left relative overflow-hidden transition-all duration-300 hover:shadow-md">
           <div className="space-y-4 max-w-xl">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black bg-blue-50 dark:bg-blue-950/20 text-brand-600 dark:text-brand-400 border border-blue-100 dark:border-brand-500/20 uppercase tracking-widest font-mono">
               <Sparkles size={11} className="text-brand-500 animate-pulse" />
@@ -2428,7 +2526,7 @@ function LiveSessions() {
                 return (
                   <div 
                     key={session.id} 
-                    className="bg-white dark:bg-[#0d1326]/60 border border-slate-200/60 dark:border-slate-800/80 shadow-sm hover:shadow-lg dark:hover:shadow-black/20 rounded-3xl p-6 flex flex-col justify-between gap-5 text-left transition-all duration-300 hover:-translate-y-1 hover:border-brand-500/40 group relative overflow-hidden"
+                    className="bg-white dark:bg-[#0c0c0c]/60 border border-slate-200/60 dark:border-slate-800/80 shadow-sm hover:shadow-lg dark:hover:shadow-black/20 rounded-3xl p-6 flex flex-col justify-between gap-5 text-left transition-all duration-300 hover:-translate-y-1 hover:border-brand-500/40 group relative overflow-hidden"
                   >
                     <div className="space-y-4">
                       {/* Top Badges */}
@@ -2524,7 +2622,7 @@ function LiveSessions() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             
             {/* Masterclass 1 */}
-            <div className="bg-white dark:bg-[#0d1326]/60 border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl overflow-hidden shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col md:flex-row group">
+            <div className="bg-white dark:bg-[#0c0c0c]/60 border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl overflow-hidden shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col md:flex-row group">
               <div className="w-full md:w-[42%] aspect-video md:aspect-auto relative overflow-hidden flex-shrink-0">
                 <img 
                   src={quantumScientist} 
@@ -2561,7 +2659,7 @@ function LiveSessions() {
             </div>
 
             {/* Masterclass 2 */}
-            <div className="bg-white dark:bg-[#0d1326]/60 border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl overflow-hidden shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col md:flex-row group">
+            <div className="bg-white dark:bg-[#0c0c0c]/60 border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl overflow-hidden shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col md:flex-row group">
               <div className="w-full md:w-[42%] aspect-video md:aspect-auto relative overflow-hidden flex-shrink-0">
                 <img 
                   src={agiStage} 
@@ -2758,7 +2856,7 @@ function LiveSessions() {
               <div className="flex-1 bg-slate-950 p-6 flex flex-col justify-center items-center relative overflow-hidden border-r border-slate-900 h-1/2 lg:h-full">
                 
                 {/* Simulated Screen Share Slide */}
-                <div className="w-full max-w-3xl aspect-video bg-[#0d1326] border border-slate-850 rounded-2xl p-6 shadow-2xl flex flex-col justify-between relative overflow-hidden group">
+                <div className="w-full max-w-3xl aspect-video bg-[#0c0c0c] border border-slate-850 rounded-2xl p-6 shadow-2xl flex flex-col justify-between relative overflow-hidden group">
                   
                   {/* Floating slide watermarks */}
                   <div className="flex justify-between items-start text-[9px] font-mono text-slate-500/60 uppercase tracking-wider">
@@ -3034,7 +3132,7 @@ function MentorsList() {
   };
 
   return (
-    <div className="w-full bg-slate-50 dark:bg-[#0b0f19] py-8 sm:py-12 transition-colors duration-300 animate-fadeIn text-slate-900 dark:text-white">
+    <div className="w-full bg-slate-50 dark:bg-[#050505] py-8 sm:py-12 transition-colors duration-300 animate-fadeIn text-slate-900 dark:text-white">
       
       {/* Toast Alert popup */}
       {toastMessage && (
@@ -3057,7 +3155,7 @@ function MentorsList() {
 
           {/* Centered Search Bar */}
           <div className="max-w-xl mx-auto pt-2">
-            <div className="relative flex items-center bg-white dark:bg-[#0d1326] border border-slate-200 dark:border-slate-800/80 rounded-2xl overflow-hidden shadow-xs focus-within:border-brand-500 transition-colors pl-4 pr-2.5 py-1.5 gap-2.5">
+            <div className="relative flex items-center bg-white dark:bg-[#0c0c0c] border border-slate-200 dark:border-slate-800/80 rounded-2xl overflow-hidden shadow-xs focus-within:border-brand-500 transition-colors pl-4 pr-2.5 py-1.5 gap-2.5">
               <Search size={16} className="text-slate-400 flex-shrink-0" />
               <input 
                 type="text" 
@@ -3083,7 +3181,7 @@ function MentorsList() {
               filteredMentors.map((mentor) => (
                 <div 
                   key={mentor.id}
-                  className="bg-white dark:bg-[#0d1326]/60 border border-slate-200/60 dark:border-slate-800/80 shadow-xs hover:shadow-lg dark:hover:shadow-black/20 rounded-3xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-brand-500/40 flex flex-col text-left group relative"
+                  className="bg-white dark:bg-[#0c0c0c]/60 border border-slate-200/60 dark:border-slate-800/80 shadow-xs hover:shadow-lg dark:hover:shadow-black/20 rounded-3xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-brand-500/40 flex flex-col text-left group relative"
                 >
                   {/* Top Image banner with Rating badge */}
                   <div className="h-52 sm:h-56 relative w-full overflow-hidden bg-slate-100 dark:bg-slate-900 flex-shrink-0">
@@ -3173,7 +3271,7 @@ function MentorsList() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             
             {/* Advantage 1 */}
-            <div className="bg-white dark:bg-[#0d1326]/60 border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 flex flex-col items-start gap-4 text-left transition-all duration-300 shadow-xs hover:shadow-md hover:border-brand-500/30">
+            <div className="bg-white dark:bg-[#0c0c0c]/60 border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 flex flex-col items-start gap-4 text-left transition-all duration-300 shadow-xs hover:shadow-md hover:border-brand-500/30">
               <div className="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-950/20 text-[#253df5] dark:text-blue-400 flex items-center justify-center flex-shrink-0">
                 <BarChart2 size={20} />
               </div>
@@ -3186,7 +3284,7 @@ function MentorsList() {
             </div>
 
             {/* Advantage 2 */}
-            <div className="bg-white dark:bg-[#0d1326]/60 border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 flex flex-col items-start gap-4 text-left transition-all duration-300 shadow-xs hover:shadow-md hover:border-brand-500/30">
+            <div className="bg-white dark:bg-[#0c0c0c]/60 border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 flex flex-col items-start gap-4 text-left transition-all duration-300 shadow-xs hover:shadow-md hover:border-brand-500/30">
               <div className="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-950/20 text-[#253df5] dark:text-blue-400 flex items-center justify-center flex-shrink-0">
                 <Sliders size={20} />
               </div>
@@ -3199,7 +3297,7 @@ function MentorsList() {
             </div>
 
             {/* Advantage 3 */}
-            <div className="bg-white dark:bg-[#0d1326]/60 border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 flex flex-col items-start gap-4 text-left transition-all duration-300 shadow-xs hover:shadow-md hover:border-brand-500/30">
+            <div className="bg-white dark:bg-[#0c0c0c]/60 border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 flex flex-col items-start gap-4 text-left transition-all duration-300 shadow-xs hover:shadow-md hover:border-brand-500/30">
               <div className="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-950/20 text-[#253df5] dark:text-blue-400 flex items-center justify-center flex-shrink-0">
                 <Brain size={20} />
               </div>
@@ -3219,7 +3317,7 @@ function MentorsList() {
       {/* ================= BOOKING MODAL OVERLAY ================= */}
       {bookingMentor && (
         <div className="fixed inset-0 z-50 overflow-hidden bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-[#0d1326] border border-slate-200 dark:border-slate-800 rounded-3xl w-full max-w-md shadow-2xl relative animate-scaleUp p-6 space-y-5 text-left">
+          <div className="bg-white dark:bg-[#0c0c0c] border border-slate-200 dark:border-slate-800 rounded-3xl w-full max-w-md shadow-2xl relative animate-scaleUp p-6 space-y-5 text-left">
             
             {/* Header */}
             <div className="flex justify-between items-center pb-3 border-b border-slate-100 dark:border-slate-850">
@@ -3330,7 +3428,7 @@ function MentorsList() {
       {/* ================= VIEW PROFILE DETAIL MODAL ================= */}
       {selectedProfile && (
         <div className="fixed inset-0 z-50 overflow-hidden bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-[#0d1326] border border-slate-200 dark:border-slate-800 rounded-3xl w-full max-w-2xl shadow-2xl relative animate-scaleUp p-6 sm:p-8 flex flex-col justify-between max-h-[85vh] overflow-y-auto text-left gap-6">
+          <div className="bg-white dark:bg-[#0c0c0c] border border-slate-200 dark:border-slate-800 rounded-3xl w-full max-w-2xl shadow-2xl relative animate-scaleUp p-6 sm:p-8 flex flex-col justify-between max-h-[85vh] overflow-y-auto text-left gap-6">
             
             {/* Header info */}
             <div className="flex flex-col sm:flex-row gap-5 items-start justify-between border-b border-slate-100 dark:border-slate-850 pb-5">
@@ -3769,6 +3867,16 @@ function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [activeTab, setActiveTab] = useState('Curriculum');
   const [isInitializing, setIsInitializing] = useState(true);
+  const [isDark, setIsDark] = useState(() => document.documentElement.classList.contains('dark'));
+
+  // Track theme changes from Navbar's toggle via MutationObserver
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setIsDark(document.documentElement.classList.contains('dark'));
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
 
   // Check backend session on mount
   useEffect(() => {
@@ -3813,14 +3921,18 @@ function App() {
 
   if (isInitializing) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-[#0b0f19] flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 dark:bg-[#050505] flex items-center justify-center">
+        {isDark && <StarfieldBackground />}
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0b0f19] text-slate-900 dark:text-slate-100 flex flex-col font-sans antialiased selection:bg-brand-500/10 dark:selection:bg-brand-500/30 selection:text-brand-600 dark:selection:text-brand-450 transition-colors duration-300 overflow-x-hidden">
+    <div className="relative min-h-screen bg-slate-50 dark:bg-[#050505] text-slate-900 dark:text-slate-100 flex flex-col font-sans antialiased selection:bg-brand-500/10 dark:selection:bg-brand-500/30 selection:text-brand-600 dark:selection:text-brand-450 transition-colors duration-300 overflow-x-hidden">
+      {/* Animated starfield particles — only in dark mode */}
+      {isDark && <StarfieldBackground />}
+
       {activeTab !== 'Login' && activeTab !== 'Dashboard' && (
         <Navbar 
           activeTab={activeTab} 
@@ -3831,7 +3943,7 @@ function App() {
         />
       )}
       
-      <main className="flex-grow flex flex-col items-center justify-center">
+      <main className="relative z-10 flex-grow flex flex-col items-center justify-center">
         {activeTab === 'Dashboard' && isLoggedIn && (
           currentUser?.role === 'Overseer' ? (
             <OverseerDashboard user={currentUser} onLogout={handleLogout} />

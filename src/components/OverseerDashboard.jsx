@@ -195,7 +195,7 @@ const OverseerDashboard = ({ user, onLogout }) => {
   };
 
   return (
-    <div className="w-full min-h-screen bg-slate-50 dark:bg-[#0b0f19] pt-20 pb-12 px-4 sm:px-6 lg:px-8">
+    <div className="w-full min-h-screen bg-slate-50 dark:bg-[#050505] pt-20 pb-12 px-4 sm:px-6 lg:px-8">
       <div className="fluid-container animate-fade-in-up">
         
         {/* Header */}

@@ -331,7 +331,7 @@ export default function StudentDashboard({ user, onLogout }) {
         </div>
 
         {/* AI Document Processing Panel (PaddleOCR + Ollama LLM) */}
-        <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs text-left space-y-4">
+        <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs text-left space-y-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-850">
             <div className="flex items-center gap-2.5">
               <Cpu className="w-5 h-5 text-[#253df5]" />
@@ -432,7 +432,7 @@ export default function StudentDashboard({ user, onLogout }) {
         {/* Past Year Question Vault Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-10 gap-6 items-stretch">
           {/* Left Column: GENERATION PARAMETERS (6 cols) */}
-          <div className="lg:col-span-6 bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col justify-between text-left space-y-5">
+          <div className="lg:col-span-6 bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col justify-between text-left space-y-5">
             <div className="space-y-4">
               <div className="flex items-center gap-3 border-b border-slate-100 dark:border-slate-850 pb-3">
                 <Sliders size={18} className="text-[#253df5] dark:text-brand-400" />
@@ -615,7 +615,7 @@ export default function StudentDashboard({ user, onLogout }) {
             </div>
 
             {/* Topic Frequency Map Card */}
-            <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-5 shadow-xs text-left space-y-4">
+            <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-5 shadow-xs text-left space-y-4">
               <div className="border-b border-slate-100 dark:border-slate-850 pb-2">
                 <h4 className="font-extrabold text-xs text-slate-900 dark:text-white">
                   Topic Frequency Map ({pastYearStart}-{pastYearEnd})
@@ -656,7 +656,7 @@ export default function StudentDashboard({ user, onLogout }) {
             </div>
 
             {/* Recent Sets Card */}
-            <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-5 shadow-xs text-left space-y-4 flex-grow flex flex-col justify-between">
+            <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-5 shadow-xs text-left space-y-4 flex-grow flex flex-col justify-between">
               <div className="space-y-3">
                 <div className="flex justify-between items-center border-b border-slate-100 dark:border-slate-850 pb-2">
                   <h4 className="font-extrabold text-xs text-slate-900 dark:text-white">
@@ -771,10 +771,10 @@ export default function StudentDashboard({ user, onLogout }) {
     const activeModule = modulesList.find(m => m.id === selectedModuleId) || modulesList[1];
 
     return (
-      <div className="w-full h-screen bg-[#f4f6fa] dark:bg-[#0b0f19] text-slate-900 dark:text-white flex overflow-hidden transition-colors duration-300">
+      <div className="w-full h-screen bg-[#f4f6fa] dark:bg-[#050505] text-slate-900 dark:text-white flex overflow-hidden transition-colors duration-300">
         
         {/* ================= COURSE EXPLORER SIDEBAR ================= */}
-        <aside className="hidden lg:block w-68 bg-white dark:bg-[#0d1326] border-r border-[#eef2f6] dark:border-slate-850/60 p-6 h-full flex-shrink-0 z-20 text-left">
+        <aside className="hidden lg:block w-68 bg-white dark:bg-[#0c0c0c] border-r border-[#eef2f6] dark:border-slate-850/60 p-6 h-full flex-shrink-0 z-20 text-left">
           <div className="flex flex-col h-full justify-between">
             <div className="space-y-8">
               {/* Logo */}
@@ -871,12 +871,12 @@ export default function StudentDashboard({ user, onLogout }) {
         <div className="flex-grow flex flex-col h-full overflow-y-auto overflow-x-hidden">
           
           {/* Top Header */}
-          <header className="w-full bg-white dark:bg-[#0d1326] border-b border-[#eef2f6] dark:border-slate-855/60 py-4 px-4 sm:px-6 lg:px-8 flex items-center justify-between sticky top-0 z-10">
+          <header className="w-full bg-white dark:bg-[#0c0c0c] border-b border-[#eef2f6] dark:border-slate-855/60 py-4 px-4 sm:px-6 lg:px-8 flex items-center justify-between sticky top-0 z-10">
              {/* Left: Course Title and ID */}
              <div className="flex items-center gap-3.5 text-left">
                <button 
                  onClick={() => setSelectedCourse(null)}
-                 className="p-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0d1326] text-slate-500 dark:text-gray-400 hover:text-[#253df5] dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 transition-all shadow-xs"
+                 className="p-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c0c0c] text-slate-500 dark:text-gray-400 hover:text-[#253df5] dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 transition-all shadow-xs"
                  aria-label="Back to dashboard"
                >
                  <ArrowLeft size={15} />
@@ -928,7 +928,7 @@ export default function StudentDashboard({ user, onLogout }) {
                 {/* Quizzes Split Grid panel */}
                 <div className="grid grid-cols-1 lg:grid-cols-10 gap-6 items-stretch">
                   {/* Left Column: GENERATION PARAMETERS (40%) */}
-                  <div className="lg:col-span-4 bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col justify-between text-left space-y-5">
+                  <div className="lg:col-span-4 bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col justify-between text-left space-y-5">
                     <div className="space-y-4">
                       {/* Header */}
                       <div className="text-left border-b border-slate-100 dark:border-slate-850 pb-3">
@@ -1002,7 +1002,7 @@ export default function StudentDashboard({ user, onLogout }) {
                                 onClick={() => setSessionMode(mode)}
                                 className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all duration-200 ${
                                   isSelected
-                                    ? 'bg-white dark:bg-[#0d1326] border border-slate-200/80 dark:border-slate-800 text-[#253df5] dark:text-brand-400 shadow-xs'
+                                    ? 'bg-white dark:bg-[#0c0c0c] border border-slate-200/80 dark:border-slate-800 text-[#253df5] dark:text-brand-400 shadow-xs'
                                     : 'text-slate-550 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                                 }`}
                               >
@@ -1026,7 +1026,7 @@ export default function StudentDashboard({ user, onLogout }) {
                                 onClick={() => setDifficultyLevel(level)}
                                 className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all duration-200 ${
                                   isSelected
-                                    ? 'bg-white dark:bg-[#0d1326] border border-slate-200/80 dark:border-slate-800 text-[#253df5] dark:text-brand-400 shadow-xs'
+                                    ? 'bg-white dark:bg-[#0c0c0c] border border-slate-200/80 dark:border-slate-800 text-[#253df5] dark:text-brand-400 shadow-xs'
                                     : 'text-slate-550 dark:text-slate-405 hover:text-slate-900 dark:hover:text-white'
                                 }`}
                               >
@@ -1066,7 +1066,7 @@ export default function StudentDashboard({ user, onLogout }) {
                   </div>
 
                   {/* Right Column: AI-RECOMMENDED FOCUS & RECENT QUIZ PERFORMANCE (60%) */}
-                  <div className="lg:col-span-6 bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col justify-between text-left space-y-6">
+                  <div className="lg:col-span-6 bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col justify-between text-left space-y-6">
                     <div className="space-y-6 flex-grow">
                       {/* AI-Recommended Focus Header */}
                       <div className="flex justify-between items-center pb-4 border-b border-slate-100 dark:border-slate-850">
@@ -1185,7 +1185,7 @@ export default function StudentDashboard({ user, onLogout }) {
                 {/* Assignments Grid */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
                   {/* Left Column: UPCOMING ASSIGNMENTS (7 cols) */}
-                  <div className="lg:col-span-7 bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col justify-between text-left space-y-6">
+                  <div className="lg:col-span-7 bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col justify-between text-left space-y-6">
                     <div className="space-y-4 w-full">
                       <div className="text-left border-b border-slate-100 dark:border-slate-850 pb-3">
                         <h3 className="font-extrabold text-[12px] text-slate-500 dark:text-slate-400 uppercase tracking-wider">
@@ -1227,7 +1227,7 @@ export default function StudentDashboard({ user, onLogout }) {
                   </div>
 
                   {/* Right Column: GRADING & COMPLETED (5 cols) */}
-                  <div className="lg:col-span-5 bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col justify-between text-left space-y-6">
+                  <div className="lg:col-span-5 bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col justify-between text-left space-y-6">
                     <div className="space-y-4 w-full">
                       <div className="text-left border-b border-slate-100 dark:border-slate-850 pb-3">
                         <h3 className="font-extrabold text-[12px] text-slate-500 dark:text-slate-400 uppercase tracking-wider">
@@ -1275,7 +1275,7 @@ export default function StudentDashboard({ user, onLogout }) {
                 {/* Discussions Grid */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
                   {/* Left Column: Channels List (4 cols) */}
-                  <div className="lg:col-span-4 bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col justify-between text-left space-y-6">
+                  <div className="lg:col-span-4 bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col justify-between text-left space-y-6">
                     <div className="space-y-4 w-full">
                       <div className="text-left border-b border-slate-100 dark:border-slate-850 pb-3">
                         <h3 className="font-extrabold text-[12px] text-slate-505 dark:text-slate-400 uppercase tracking-wider">
@@ -1310,7 +1310,7 @@ export default function StudentDashboard({ user, onLogout }) {
                   </div>
 
                   {/* Right Column: Active Threads (8 cols) */}
-                  <div className="lg:col-span-8 bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col justify-between text-left space-y-6">
+                  <div className="lg:col-span-8 bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col justify-between text-left space-y-6">
                     <div className="space-y-4 w-full">
                       <div className="flex justify-between items-center border-b border-slate-100 dark:border-slate-850 pb-3">
                         <h3 className="font-extrabold text-[12px] text-slate-505 dark:text-slate-400 uppercase tracking-wider">
@@ -1380,7 +1380,7 @@ export default function StudentDashboard({ user, onLogout }) {
                   </div>
 
                   {/* Progress Card (Top Right) */}
-                  <div className="w-full md:w-52 bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-2xl p-4 shadow-2xs flex flex-col justify-between h-16 flex-shrink-0">
+                  <div className="w-full md:w-52 bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-2xl p-4 shadow-2xs flex flex-col justify-between h-16 flex-shrink-0">
                     <div className="flex justify-between items-center text-[11px] font-bold">
                       <span className="text-slate-455 dark:text-slate-400">Course Progress</span>
                       <span className="text-[#253df5] dark:text-brand-400 text-xs font-black">{selectedCourse.progress}%</span>
@@ -1396,7 +1396,7 @@ export default function StudentDashboard({ user, onLogout }) {
                   {/* Left Column: UP NEXT + ANNOUNCEMENTS (70%) */}
                   <div className="lg:col-span-7 space-y-6 flex flex-col">
                     {/* UP NEXT Card */}
-                    <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl overflow-hidden shadow-xs flex flex-col">
+                    <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl overflow-hidden shadow-xs flex flex-col">
                       {/* UP NEXT Header row */}
                       <div className="flex items-center justify-between p-5 border-b border-slate-100 dark:border-slate-850 flex-shrink-0">
                         <div className="flex items-center gap-2 text-xs font-black tracking-wider text-[#253df5] dark:text-brand-400 uppercase font-sans">
@@ -1475,7 +1475,7 @@ export default function StudentDashboard({ user, onLogout }) {
                     </div>
 
                     {/* Course Announcements Card */}
-                    <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs text-left">
+                    <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs text-left">
                       <div className="flex items-center gap-2 text-xs font-black tracking-wider text-slate-700 dark:text-slate-300 uppercase font-sans border-b border-slate-100 dark:border-slate-850 pb-4">
                         <Megaphone size={16} className="text-[#253df5] dark:text-brand-400" />
                         <span>Course Announcements</span>
@@ -1496,7 +1496,7 @@ export default function StudentDashboard({ user, onLogout }) {
                   </div>
 
                   {/* Right Column: MODULES LIST (30%) */}
-                  <div className="lg:col-span-3 bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-5 shadow-xs flex flex-col justify-between min-h-[460px]">
+                  <div className="lg:col-span-3 bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-5 shadow-xs flex flex-col justify-between min-h-[460px]">
                     <div className="space-y-4">
                       {/* Heading */}
                       <div className="text-left border-b border-slate-100 dark:border-slate-850 pb-3">
@@ -1520,7 +1520,7 @@ export default function StudentDashboard({ user, onLogout }) {
                               onClick={() => setSelectedModuleId(mod.id)}
                               className={`p-4 rounded-2xl flex flex-col gap-3 text-left transition-all duration-200 cursor-pointer ${
                                 isSelected
-                                  ? 'bg-white dark:bg-[#0d1326] border-2 border-[#253df5] shadow-2xs relative overflow-hidden'
+                                  ? 'bg-white dark:bg-[#0c0c0c] border-2 border-[#253df5] shadow-2xs relative overflow-hidden'
                                   : isCompleted
                                   ? 'bg-slate-50/50 dark:bg-slate-900/40 border border-[#eef2f6] dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700'
                                   : 'bg-slate-50/20 dark:bg-slate-900/10 border border-slate-105 dark:border-slate-850/50 hover:border-slate-350 dark:hover:border-slate-705'
@@ -1581,7 +1581,7 @@ export default function StudentDashboard({ user, onLogout }) {
                 </div>
               </>
             ) : (
-              <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-12 text-center space-y-4 shadow-xs">
+              <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-12 text-center space-y-4 shadow-xs">
                 <h3 className="text-xl font-bold text-slate-900 dark:text-white">Coming Soon</h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400">The {explorerTab} feature is under development.</p>
               </div>
@@ -1590,7 +1590,7 @@ export default function StudentDashboard({ user, onLogout }) {
           </main>
 
           {/* Footer */}
-          <footer className="w-full mt-auto py-8 px-4 sm:px-6 lg:px-8 border-t border-[#eef2f6] dark:border-slate-855/20 bg-white dark:bg-[#0b0f19] flex flex-col md:flex-row items-center justify-between gap-4">
+          <footer className="w-full mt-auto py-8 px-4 sm:px-6 lg:px-8 border-t border-[#eef2f6] dark:border-slate-855/20 bg-white dark:bg-[#050505] flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex flex-col md:flex-row items-center gap-3 text-left">
               <span className="text-sm font-black tracking-wider text-[#253df5] dark:text-white">
                 AetherLearn
@@ -1614,10 +1614,10 @@ export default function StudentDashboard({ user, onLogout }) {
   }
 
   return (
-    <div className="w-full h-screen bg-[#f4f6fa] dark:bg-[#0b0f19] text-slate-905 dark:text-white flex overflow-hidden transition-colors duration-300">
+    <div className="w-full h-screen bg-[#f4f6fa] dark:bg-[#050505] text-slate-905 dark:text-white flex overflow-hidden transition-colors duration-300">
       
       {/* ================= DESKTOP SIDEBAR ================= */}
-      <aside className="hidden lg:block w-68 bg-white dark:bg-[#0d1326] border-r border-[#eef2f6] dark:border-slate-850/60 p-6 h-full flex-shrink-0 z-20">
+      <aside className="hidden lg:block w-68 bg-white dark:bg-[#0c0c0c] border-r border-[#eef2f6] dark:border-slate-850/60 p-6 h-full flex-shrink-0 z-20">
         <SidebarContent />
       </aside>
 
@@ -1630,7 +1630,7 @@ export default function StudentDashboard({ user, onLogout }) {
       )}
 
       {/* ================= MOBILE SLIDING SIDEBAR ================= */}
-      <aside className={`lg:hidden fixed top-0 bottom-0 left-0 w-64 bg-white dark:bg-[#0d1326] border-r border-[#eef2f6] dark:border-slate-800 p-6 z-50 transition-transform duration-300 transform ${
+      <aside className={`lg:hidden fixed top-0 bottom-0 left-0 w-64 bg-white dark:bg-[#0c0c0c] border-r border-[#eef2f6] dark:border-slate-800 p-6 z-50 transition-transform duration-300 transform ${
         isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
         {/* Mobile close button */}
@@ -1648,7 +1648,7 @@ export default function StudentDashboard({ user, onLogout }) {
       <div className={`flex-grow flex flex-col h-full overflow-y-auto overflow-x-hidden`}>
         
         {/* ================= TOP HEADER ================= */}
-        <header className="w-full bg-white dark:bg-[#0d1326] border-b border-[#eef2f6] dark:border-slate-855/60 py-4 px-4 sm:px-6 lg:px-8 flex items-center justify-between sticky top-0 z-10">
+        <header className="w-full bg-white dark:bg-[#0c0c0c] border-b border-[#eef2f6] dark:border-slate-855/60 py-4 px-4 sm:px-6 lg:px-8 flex items-center justify-between sticky top-0 z-10">
           <div className="flex items-center gap-3 text-left">
             <button 
               onClick={() => setIsMobileSidebarOpen(true)}
@@ -1670,7 +1670,7 @@ export default function StudentDashboard({ user, onLogout }) {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search resources, topics..."
-                className="w-full pl-10 pr-4 py-2 bg-slate-55/50 dark:bg-[#0b0f19] border border-slate-205 dark:border-slate-800 rounded-full text-xs font-semibold text-slate-855 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#253df5] focus:border-[#253df5] transition-all placeholder:text-slate-400 shadow-xs"
+                className="w-full pl-10 pr-4 py-2 bg-slate-55/50 dark:bg-[#050505] border border-slate-205 dark:border-slate-800 rounded-full text-xs font-semibold text-slate-855 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#253df5] focus:border-[#253df5] transition-all placeholder:text-slate-400 shadow-xs"
               />
             </div>
           </div>
@@ -1727,7 +1727,7 @@ export default function StudentDashboard({ user, onLogout }) {
                   Welcome back, {getFirstName(user?.name)}.
                 </h1>
               </div>
-              <div className="bg-white dark:bg-[#0d1326] rounded-3xl p-8 sm:p-10 border border-[#eef2f6] dark:border-slate-800/80 shadow-xs relative overflow-hidden flex flex-col justify-center text-left">
+              <div className="bg-white dark:bg-[#0c0c0c] rounded-3xl p-8 sm:p-10 border border-[#eef2f6] dark:border-slate-800/80 shadow-xs relative overflow-hidden flex flex-col justify-center text-left">
             <div>
               <span className="inline-flex items-center gap-1.5 text-[9px] font-black tracking-wider text-[#253df5] dark:text-[#7f7eff] bg-[#253df5]/10 dark:bg-[#1f1e4d] px-3.5 py-1.5 rounded-full font-mono uppercase">
                 <Sparkles className="w-3.5 h-3.5" />
@@ -1745,7 +1745,7 @@ export default function StudentDashboard({ user, onLogout }) {
           </div>
 
           {/* Card 2: Lead Professor (Full Width) */}
-          <div className="bg-white dark:bg-[#0d1326] rounded-3xl p-5 sm:p-6 border border-[#eef2f6] dark:border-slate-800/80 shadow-xs flex flex-col sm:flex-row sm:items-center gap-5 sm:gap-6 text-left">
+          <div className="bg-white dark:bg-[#0c0c0c] rounded-3xl p-5 sm:p-6 border border-[#eef2f6] dark:border-slate-800/80 shadow-xs flex flex-col sm:flex-row sm:items-center gap-5 sm:gap-6 text-left">
             {/* Professor headshot */}
             <div className="w-24 h-24 rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-800 shadow-sm flex-shrink-0">
               <img loading="lazy" src={julianVanceProfile} 
@@ -1793,7 +1793,7 @@ export default function StudentDashboard({ user, onLogout }) {
             <div className="lg:col-span-8 space-y-6">
               
               {/* Card 3: Latest Updates */}
-              <div className="bg-white dark:bg-[#0d1326] rounded-3xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-xs space-y-5 text-left">
+              <div className="bg-white dark:bg-[#0c0c0c] rounded-3xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-xs space-y-5 text-left">
                 <div className="flex items-center justify-between">
                   <h3 className="font-extrabold text-base text-slate-900 dark:text-white tracking-wide">
                     Latest Updates
@@ -1901,7 +1901,7 @@ export default function StudentDashboard({ user, onLogout }) {
             <div className="lg:col-span-4 space-y-6">
               
                 {/* Card 1: Current Focus */}
-                <div className="bg-white dark:bg-[#0d1326] rounded-3xl p-6 border border-[#eef2f6] dark:border-slate-800/80 shadow-xs flex flex-col items-center gap-5 text-center">
+                <div className="bg-white dark:bg-[#0c0c0c] rounded-3xl p-6 border border-[#eef2f6] dark:border-slate-800/80 shadow-xs flex flex-col items-center gap-5 text-center">
                   <h3 className="font-extrabold text-sm text-slate-900 dark:text-white self-start tracking-wide">
                     Current Focus
                   </h3>
@@ -1957,7 +1957,7 @@ export default function StudentDashboard({ user, onLogout }) {
                 </div>
 
                 {/* Card 2: Pending Quizzes */}
-                <div className="bg-white dark:bg-[#0d1326] rounded-3xl p-6 border border-[#eef2f6] dark:border-slate-800/80 shadow-xs space-y-4 text-left">
+                <div className="bg-white dark:bg-[#0c0c0c] rounded-3xl p-6 border border-[#eef2f6] dark:border-slate-800/80 shadow-xs space-y-4 text-left">
                   <h3 className="font-extrabold text-sm text-slate-900 dark:text-white tracking-wide">
                     Pending Quizzes
                   </h3>
@@ -2202,7 +2202,7 @@ export default function StudentDashboard({ user, onLogout }) {
                       <select
                         value={semesterFilter}
                         onChange={(e) => setSemesterFilter(e.target.value)}
-                        className="appearance-none pl-4 pr-10 py-2 bg-white dark:bg-[#0d1326] border border-slate-200 dark:border-slate-800 rounded-full text-xs font-bold text-slate-700 dark:text-slate-200 focus:outline-none cursor-pointer shadow-2xs"
+                        className="appearance-none pl-4 pr-10 py-2 bg-white dark:bg-[#0c0c0c] border border-slate-200 dark:border-slate-800 rounded-full text-xs font-bold text-slate-700 dark:text-slate-200 focus:outline-none cursor-pointer shadow-2xs"
                       >
                         <option value="All">All Semesters</option>
                         <option value="Semester 5">Semester 5</option>
@@ -2225,7 +2225,7 @@ export default function StudentDashboard({ user, onLogout }) {
                       return (
                         <div 
                           key={course.id}
-                          className="lg:col-span-2 bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl overflow-hidden shadow-xs flex flex-col sm:flex-row h-full"
+                          className="lg:col-span-2 bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl overflow-hidden shadow-xs flex flex-col sm:flex-row h-full"
                         >
                           {/* Left: Image with badge overlay */}
                           <div className="relative w-full sm:w-[32%] h-48 sm:h-auto flex-shrink-0">
@@ -2233,7 +2233,7 @@ export default function StudentDashboard({ user, onLogout }) {
                               alt={course.title}
                               className="w-full h-full object-cover"
                             />
-                            <span className="absolute top-4 left-4 bg-white/90 dark:bg-[#0d1326]/90 text-[#253df5] dark:text-brand-400 px-3 py-1.5 rounded-lg text-xs font-bold tracking-wide shadow-2xs">
+                            <span className="absolute top-4 left-4 bg-white/90 dark:bg-[#0c0c0c]/90 text-[#253df5] dark:text-brand-400 px-3 py-1.5 rounded-lg text-xs font-bold tracking-wide shadow-2xs">
                               {course.semester}
                             </span>
                           </div>
@@ -2279,7 +2279,7 @@ export default function StudentDashboard({ user, onLogout }) {
                       return (
                         <div 
                           key={course.id}
-                          className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-5 shadow-xs flex flex-col justify-between text-left"
+                          className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-5 shadow-xs flex flex-col justify-between text-left"
                         >
                           {/* Top row: Icon and Semester */}
                           <div className="flex justify-between items-start">
@@ -2321,14 +2321,14 @@ export default function StudentDashboard({ user, onLogout }) {
                             {course.progress < 100 ? (
                               <button 
                                 onClick={() => setSelectedCourse(course)}
-                                className="w-full bg-white dark:bg-[#0d1326] border border-[#253df5] dark:border-brand-400/50 text-[#253df5] dark:text-brand-400 text-xs font-extrabold py-2.5 rounded-xl transition-all duration-200 tracking-wider text-center hover:bg-[#253df5] hover:text-white dark:hover:bg-brand-400 dark:hover:text-[#0d1326]"
+                                className="w-full bg-white dark:bg-[#0c0c0c] border border-[#253df5] dark:border-brand-400/50 text-[#253df5] dark:text-brand-400 text-xs font-extrabold py-2.5 rounded-xl transition-all duration-200 tracking-wider text-center hover:bg-[#253df5] hover:text-white dark:hover:bg-brand-400 dark:hover:text-[#0c0c0c]"
                               >
                                 Continue Learning
                               </button>
                             ) : (
                               <button 
                                 onClick={() => setSelectedCourse(course)}
-                                className="w-full bg-white dark:bg-[#0d1326] border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 text-xs font-extrabold py-2.5 rounded-xl transition-all duration-200 tracking-wider text-center hover:bg-slate-50 dark:hover:bg-slate-800/50"
+                                className="w-full bg-white dark:bg-[#0c0c0c] border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 text-xs font-extrabold py-2.5 rounded-xl transition-all duration-200 tracking-wider text-center hover:bg-slate-50 dark:hover:bg-slate-800/50"
                               >
                                 Review Materials
                               </button>
@@ -2387,7 +2387,7 @@ export default function StudentDashboard({ user, onLogout }) {
                   <div className="flex items-center gap-3">
                     <div className="relative">
                       <select 
-                        className="appearance-none pl-4 pr-10 py-2.5 bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800 rounded-2xl text-xs font-extrabold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors shadow-xs focus:outline-none focus:ring-2 focus:ring-brand-500"
+                        className="appearance-none pl-4 pr-10 py-2.5 bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800 rounded-2xl text-xs font-extrabold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors shadow-xs focus:outline-none focus:ring-2 focus:ring-brand-500"
                         value={selectedSubject}
                         onChange={(e) => setSelectedSubject(e.target.value)}
                       >
@@ -2408,7 +2408,7 @@ export default function StudentDashboard({ user, onLogout }) {
                 {/* KPI Cards Row */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                   {/* Rank KPI */}
-                  <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col relative overflow-hidden">
+                  <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col relative overflow-hidden">
                     <div className="absolute top-0 right-0 p-4 opacity-10">
                       <Award size={48} className="text-brand-500" />
                     </div>
@@ -2421,7 +2421,7 @@ export default function StudentDashboard({ user, onLogout }) {
                   </div>
 
                   {/* Marks KPI */}
-                  <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col relative overflow-hidden">
+                  <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col relative overflow-hidden">
                     <div className="absolute top-0 right-0 p-4 opacity-10">
                       <Target size={48} className="text-blue-500" />
                     </div>
@@ -2434,7 +2434,7 @@ export default function StudentDashboard({ user, onLogout }) {
                   </div>
 
                   {/* Hours KPI */}
-                  <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col relative overflow-hidden">
+                  <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col relative overflow-hidden">
                     <div className="absolute top-0 right-0 p-4 opacity-10">
                       <Clock size={48} className="text-purple-500" />
                     </div>
@@ -2451,7 +2451,7 @@ export default function StudentDashboard({ user, onLogout }) {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
                   
                   {/* Skill Balancing Radar Card */}
-                  <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs space-y-4">
+                  <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs space-y-4">
                     <div className="flex justify-between items-center border-b border-slate-105 dark:border-slate-850 pb-3">
                       <div>
                         <h3 className="font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-2">
@@ -2515,7 +2515,7 @@ export default function StudentDashboard({ user, onLogout }) {
                   </div>
 
                   {/* Focus Period Pie Chart Card */}
-                  <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs space-y-4">
+                  <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs space-y-4">
                     <div className="flex justify-between items-center border-b border-slate-105 dark:border-slate-850 pb-3">
                       <div>
                         <h3 className="font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-2">
@@ -2541,7 +2541,7 @@ export default function StudentDashboard({ user, onLogout }) {
                           <circle cx="50" cy="50" r="40" fill="transparent" stroke="#f59e0b" strokeWidth="20" strokeDasharray={`${pQuiz * 2.51} 251`} strokeDashoffset={`-${(pLectures + pPractice + pRevision) * 2.51}`} />
                         </svg>
                         {/* Center Hole for Doughnut Look */}
-                        <div className="absolute inset-0 m-auto w-24 h-24 bg-white dark:bg-[#0d1326] rounded-full flex items-center justify-center shadow-inner">
+                        <div className="absolute inset-0 m-auto w-24 h-24 bg-white dark:bg-[#0c0c0c] rounded-full flex items-center justify-center shadow-inner">
                           <div className="text-center">
                             <span className="text-xl font-black text-slate-900 dark:text-white block">{selectedSubjectData.hours}</span>
                             <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Total</span>
@@ -2573,7 +2573,7 @@ export default function StudentDashboard({ user, onLogout }) {
                 </div>
 
                 {/* Subject-wise Mastery Trend Card */}
-                <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs space-y-4">
+                <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs space-y-4">
                   <div className="border-b border-slate-105 dark:border-slate-850 pb-3 text-left">
                     <h3 className="font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-2">
                       <span className="w-5 h-5 rounded-full bg-blue-500/10 text-blue-500 flex items-center justify-center">
@@ -2683,7 +2683,7 @@ export default function StudentDashboard({ user, onLogout }) {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-2">
                   
                   {/* Left panel: Form details (Featured 2-column card) */}
-                  <div className="lg:col-span-2 bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-xs flex flex-col justify-between">
+                  <div className="lg:col-span-2 bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-xs flex flex-col justify-between">
                     
                     {settingsTab === 'Profile' && (
                       <form onSubmit={handleSaveSettings} className="space-y-6">
@@ -2728,7 +2728,7 @@ export default function StudentDashboard({ user, onLogout }) {
                                 type="text"
                                 value={formName}
                                 onChange={(e) => setFormName(e.target.value)}
-                                className="w-full pl-4 pr-4 py-3 bg-slate-50/50 dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800 rounded-2xl text-xs font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#253df5] focus:border-[#253df5] transition-all"
+                                className="w-full pl-4 pr-4 py-3 bg-slate-50/50 dark:bg-[#050505] border border-slate-200 dark:border-slate-800 rounded-2xl text-xs font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#253df5] focus:border-[#253df5] transition-all"
                               />
                             </div>
                           </div>
@@ -2741,7 +2741,7 @@ export default function StudentDashboard({ user, onLogout }) {
                                 type="email"
                                 value={formEmail}
                                 onChange={(e) => setFormEmail(e.target.value)}
-                                className="w-full pl-4 pr-4 py-3 bg-slate-50/50 dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800 rounded-2xl text-xs font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#253df5] focus:border-[#253df5] transition-all"
+                                className="w-full pl-4 pr-4 py-3 bg-slate-50/50 dark:bg-[#050505] border border-slate-200 dark:border-slate-800 rounded-2xl text-xs font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#253df5] focus:border-[#253df5] transition-all"
                               />
                             </div>
                           </div>
@@ -2754,7 +2754,7 @@ export default function StudentDashboard({ user, onLogout }) {
                                 type="text"
                                 value={formInstitution}
                                 onChange={(e) => setFormInstitution(e.target.value)}
-                                className="w-full pl-4 pr-4 py-3 bg-slate-50/50 dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800 rounded-2xl text-xs font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#253df5] focus:border-[#253df5] transition-all"
+                                className="w-full pl-4 pr-4 py-3 bg-slate-50/50 dark:bg-[#050505] border border-slate-200 dark:border-slate-800 rounded-2xl text-xs font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#253df5] focus:border-[#253df5] transition-all"
                               />
                             </div>
                           </div>
@@ -2767,7 +2767,7 @@ export default function StudentDashboard({ user, onLogout }) {
                                 type="text"
                                 value={formCity}
                                 onChange={(e) => setFormCity(e.target.value)}
-                                className="w-full pl-4 pr-4 py-3 bg-slate-50/50 dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800 rounded-2xl text-xs font-semibold text-slate-805 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#253df5] focus:border-[#253df5] transition-all"
+                                className="w-full pl-4 pr-4 py-3 bg-slate-50/50 dark:bg-[#050505] border border-slate-200 dark:border-slate-800 rounded-2xl text-xs font-semibold text-slate-805 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#253df5] focus:border-[#253df5] transition-all"
                               />
                             </div>
                             <div className="space-y-2">
@@ -2776,7 +2776,7 @@ export default function StudentDashboard({ user, onLogout }) {
                                 type="text"
                                 value={formState}
                                 onChange={(e) => setFormState(e.target.value)}
-                                className="w-full pl-4 pr-4 py-3 bg-slate-50/50 dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800 rounded-2xl text-xs font-semibold text-slate-805 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#253df5] focus:border-[#253df5] transition-all"
+                                className="w-full pl-4 pr-4 py-3 bg-slate-50/50 dark:bg-[#050505] border border-slate-200 dark:border-slate-800 rounded-2xl text-xs font-semibold text-slate-805 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#253df5] focus:border-[#253df5] transition-all"
                               />
                             </div>
                           </div>
@@ -2824,7 +2824,7 @@ export default function StudentDashboard({ user, onLogout }) {
                                 value={formTelegram}
                                 onChange={(e) => setFormTelegram(e.target.value)}
                                 placeholder="@username"
-                                className="w-full pl-4 pr-4 py-3 bg-slate-50/50 dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800 rounded-2xl text-xs font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#253df5] focus:border-[#253df5] transition-all"
+                                className="w-full pl-4 pr-4 py-3 bg-slate-50/50 dark:bg-[#050505] border border-slate-200 dark:border-slate-800 rounded-2xl text-xs font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#253df5] focus:border-[#253df5] transition-all"
                               />
                               <div className="absolute right-4 top-3.5">
                                 {formTelegram ? (
@@ -2849,7 +2849,7 @@ export default function StudentDashboard({ user, onLogout }) {
                                 value={formGmail}
                                 onChange={(e) => setFormGmail(e.target.value)}
                                 placeholder="Contact Gmail address"
-                                className="w-full pl-4 pr-4 py-3 bg-slate-50/50 dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800 rounded-2xl text-xs font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#253df5] focus:border-[#253df5] transition-all"
+                                className="w-full pl-4 pr-4 py-3 bg-slate-50/50 dark:bg-[#050505] border border-slate-200 dark:border-slate-800 rounded-2xl text-xs font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#253df5] focus:border-[#253df5] transition-all"
                               />
                               <div className="absolute right-4 top-3.5">
                                 {formGmail ? (
@@ -2874,7 +2874,7 @@ export default function StudentDashboard({ user, onLogout }) {
                                 value={formPhone}
                                 onChange={(e) => setFormPhone(e.target.value)}
                                 placeholder="+1 (555) 000-0000"
-                                className="w-full pl-4 pr-4 py-3 bg-slate-50/50 dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800 rounded-2xl text-xs font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#253df5] focus:border-[#253df5] transition-all"
+                                className="w-full pl-4 pr-4 py-3 bg-slate-50/50 dark:bg-[#050505] border border-slate-200 dark:border-slate-800 rounded-2xl text-xs font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#253df5] focus:border-[#253df5] transition-all"
                               />
                               <div className="absolute right-4 top-3.5">
                                 {formPhone ? (
@@ -2925,7 +2925,7 @@ export default function StudentDashboard({ user, onLogout }) {
 
                         <div className="space-y-5">
                           {/* Toggle 1 */}
-                          <div className="flex items-center justify-between p-4 bg-slate-50/50 dark:bg-[#0b0f19]/40 border border-[#eef2f6] dark:border-slate-800/80 rounded-2xl">
+                          <div className="flex items-center justify-between p-4 bg-slate-50/50 dark:bg-[#050505]/40 border border-[#eef2f6] dark:border-slate-800/80 rounded-2xl">
                             <div className="space-y-0.5 text-left max-w-[80%]">
                               <h4 className="text-xs font-bold text-slate-900 dark:text-white">Daily Focus Mode Goals</h4>
                               <p className="text-[11px] text-slate-500 dark:text-slate-400">Receive automated adaptive alerts when your learning efficiency peaks.</p>
@@ -2941,7 +2941,7 @@ export default function StudentDashboard({ user, onLogout }) {
                           </div>
 
                           {/* Toggle 2 */}
-                          <div className="flex items-center justify-between p-4 bg-slate-50/50 dark:bg-[#0b0f19]/40 border border-[#eef2f6] dark:border-slate-800/80 rounded-2xl">
+                          <div className="flex items-center justify-between p-4 bg-slate-50/50 dark:bg-[#050505]/40 border border-[#eef2f6] dark:border-slate-800/80 rounded-2xl">
                             <div className="space-y-0.5 text-left max-w-[80%]">
                               <h4 className="text-xs font-bold text-slate-900 dark:text-white">Weekly Progress Reports</h4>
                               <p className="text-[11px] text-slate-500 dark:text-slate-400">Get detailed neural telemetry breakdowns and learning analytics directly in your inbox.</p>
@@ -2957,7 +2957,7 @@ export default function StudentDashboard({ user, onLogout }) {
                           </div>
 
                           {/* Toggle 3 */}
-                          <div className="flex items-center justify-between p-4 bg-slate-50/50 dark:bg-[#0b0f19]/40 border border-[#eef2f6] dark:border-slate-800/80 rounded-2xl">
+                          <div className="flex items-center justify-between p-4 bg-slate-50/50 dark:bg-[#050505]/40 border border-[#eef2f6] dark:border-slate-800/80 rounded-2xl">
                             <div className="space-y-0.5 text-left max-w-[80%]">
                               <h4 className="text-xs font-bold text-slate-900 dark:text-white">AI Tutor Audio Feedback</h4>
                               <p className="text-[11px] text-slate-500 dark:text-slate-400">Enable natural language voice synthesizers during interactive chat sessions.</p>
@@ -2989,7 +2989,7 @@ export default function StudentDashboard({ user, onLogout }) {
                             onChange={(e) => setContactMessage(e.target.value)}
                             placeholder="How can we help you?"
                             rows={5}
-                            className="w-full pl-4 pr-4 py-3 bg-slate-50/50 dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800 rounded-2xl text-xs font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#253df5] focus:border-[#253df5] transition-all"
+                            className="w-full pl-4 pr-4 py-3 bg-slate-50/50 dark:bg-[#050505] border border-slate-200 dark:border-slate-800 rounded-2xl text-xs font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#253df5] focus:border-[#253df5] transition-all"
                             required
                           />
                         </div>
@@ -3013,7 +3013,7 @@ export default function StudentDashboard({ user, onLogout }) {
                             <input 
                               type="password"
                               placeholder="••••••••••••"
-                              className="w-full pl-4 pr-4 py-3 bg-slate-50/50 dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800 rounded-2xl text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#253df5] focus:border-[#253df5] transition-all"
+                              className="w-full pl-4 pr-4 py-3 bg-slate-50/50 dark:bg-[#050505] border border-slate-200 dark:border-slate-800 rounded-2xl text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#253df5] focus:border-[#253df5] transition-all"
                             />
                           </div>
 
@@ -3022,7 +3022,7 @@ export default function StudentDashboard({ user, onLogout }) {
                             <input 
                               type="password"
                               placeholder="Min 8 characters"
-                              className="w-full pl-4 pr-4 py-3 bg-slate-50/50 dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800 rounded-2xl text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#253df5] focus:border-[#253df5] transition-all"
+                              className="w-full pl-4 pr-4 py-3 bg-slate-50/50 dark:bg-[#050505] border border-slate-200 dark:border-slate-800 rounded-2xl text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#253df5] focus:border-[#253df5] transition-all"
                             />
                           </div>
 
@@ -3031,7 +3031,7 @@ export default function StudentDashboard({ user, onLogout }) {
                             <input 
                               type="password"
                               placeholder="Confirm password"
-                              className="w-full pl-4 pr-4 py-3 bg-slate-50/50 dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800 rounded-2xl text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#253df5] focus:border-[#253df5] transition-all"
+                              className="w-full pl-4 pr-4 py-3 bg-slate-50/50 dark:bg-[#050505] border border-slate-200 dark:border-slate-800 rounded-2xl text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#253df5] focus:border-[#253df5] transition-all"
                             />
                           </div>
                         </div>
@@ -3066,7 +3066,7 @@ export default function StudentDashboard({ user, onLogout }) {
                   <div className="lg:col-span-1 space-y-6">
                     
                     {/* Card 1: Academic Track Details */}
-                    <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col gap-4 text-left">
+                    <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col gap-4 text-left">
                       <div className="flex items-center gap-3">
                         <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 flex items-center justify-center flex-shrink-0">
                           <BookOpen size={18} className="text-[#253df5] dark:text-brand-400" />
@@ -3092,7 +3092,7 @@ export default function StudentDashboard({ user, onLogout }) {
                     </div>
 
                     {/* Card 2: Security Health Check */}
-                    <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col gap-4 text-left">
+                    <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col gap-4 text-left">
                       <div className="flex items-center gap-3">
                         <div className="w-9 h-9 rounded-xl bg-[#e6fffa] dark:bg-[#113a36] text-emerald-600 dark:text-emerald-455 flex items-center justify-center flex-shrink-0">
                           <ShieldCheck size={18} />
@@ -3125,7 +3125,7 @@ export default function StudentDashboard({ user, onLogout }) {
                     </div>
 
                     {/* Card 3: Session Status */}
-                    <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col gap-4 text-left">
+                    <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col gap-4 text-left">
                       <div className="flex items-center gap-3">
                         <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-605 dark:text-slate-400 flex items-center justify-center flex-shrink-0">
                           <Sliders size={18} className="text-[#253df5] dark:text-brand-400" />
@@ -3182,7 +3182,7 @@ export default function StudentDashboard({ user, onLogout }) {
               {/* Assignments Grid */}
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
                 {/* Left Column: UPCOMING ASSIGNMENTS (7 cols) */}
-                <div className="lg:col-span-7 bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col justify-between text-left space-y-6">
+                <div className="lg:col-span-7 bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col justify-between text-left space-y-6">
                   <div className="space-y-4 w-full">
                     <div className="text-left border-b border-slate-100 dark:border-slate-850 pb-3">
                       <h3 className="font-extrabold text-[12px] text-slate-500 dark:text-slate-400 uppercase tracking-wider">
@@ -3228,7 +3228,7 @@ export default function StudentDashboard({ user, onLogout }) {
                 </div>
 
                 {/* Right Column: GRADING & COMPLETED (5 cols) */}
-                <div className="lg:col-span-5 bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col justify-between text-left space-y-6">
+                <div className="lg:col-span-5 bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col justify-between text-left space-y-6">
                   <div className="space-y-4 w-full">
                     <div className="text-left border-b border-slate-100 dark:border-slate-850 pb-3">
                       <h3 className="font-extrabold text-[12px] text-slate-500 dark:text-slate-400 uppercase tracking-wider">
@@ -3282,7 +3282,7 @@ export default function StudentDashboard({ user, onLogout }) {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
                 
                 {/* Telegram Class Group */}
-                <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-8 shadow-xs flex flex-col justify-between text-left space-y-6 relative overflow-hidden group">
+                <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-8 shadow-xs flex flex-col justify-between text-left space-y-6 relative overflow-hidden group">
                   <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
                     <MessageSquare size={120} className="text-[#0088cc]" />
                   </div>
@@ -3316,7 +3316,7 @@ export default function StudentDashboard({ user, onLogout }) {
                 </div>
 
                 {/* 1-on-1 Mentor Slack/Telegram */}
-                <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-8 shadow-xs flex flex-col justify-between text-left space-y-6 relative overflow-hidden group">
+                <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-8 shadow-xs flex flex-col justify-between text-left space-y-6 relative overflow-hidden group">
                   <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
                     <Star size={120} className="text-brand-500" />
                   </div>
@@ -3356,7 +3356,7 @@ export default function StudentDashboard({ user, onLogout }) {
         </main>
 
         {/* ================= DASHBOARD FOOTER ================= */}
-        <footer className="w-full mt-auto py-8 px-4 sm:px-6 lg:px-8 border-t border-[#eef2f6] dark:border-slate-855/20 bg-white dark:bg-[#0b0f19] flex flex-col md:flex-row items-center justify-between gap-4">
+        <footer className="w-full mt-auto py-8 px-4 sm:px-6 lg:px-8 border-t border-[#eef2f6] dark:border-slate-855/20 bg-white dark:bg-[#050505] flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex flex-col md:flex-row items-center gap-3 text-left">
             <span className="text-sm font-black tracking-wider text-[#253df5] dark:text-white">
               AetherLearn

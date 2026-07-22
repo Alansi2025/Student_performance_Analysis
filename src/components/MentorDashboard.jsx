@@ -498,10 +498,10 @@ export default function MentorDashboard({ user, onLogout }) {
   ];
 
   return (
-    <div className="w-full h-screen bg-slate-50 dark:bg-[#0b0f19] flex transition-colors duration-300 overflow-hidden">
+    <div className="w-full h-screen bg-slate-50 dark:bg-[#050505] flex transition-colors duration-300 overflow-hidden">
       
       {/* ================= SIDEBAR (DESKTOP) ================= */}
-      <aside className="hidden lg:flex w-64 flex-col bg-white dark:bg-[#0d1326] border-r border-[#eef2f6] dark:border-slate-800/80 p-6 justify-between flex-shrink-0 h-full overflow-y-auto">
+      <aside className="hidden lg:flex w-64 flex-col bg-white dark:bg-[#0c0c0c] border-r border-[#eef2f6] dark:border-slate-800/80 p-6 justify-between flex-shrink-0 h-full overflow-y-auto">
         <div className="space-y-6 text-left">
           {/* Logo */}
           <div className="flex items-center gap-3 px-2">
@@ -617,7 +617,7 @@ export default function MentorDashboard({ user, onLogout }) {
       <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
         
         {/* Header bar */}
-        <header className="sticky top-0 z-30 w-full bg-white/80 dark:bg-[#0b0f19]/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 h-16 sm:h-20 flex items-center px-6 justify-between gap-4 flex-shrink-0">
+        <header className="sticky top-0 z-30 w-full bg-white/80 dark:bg-[#050505]/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 h-16 sm:h-20 flex items-center px-6 justify-between gap-4 flex-shrink-0">
           <div className="flex items-center gap-3">
             <button 
               onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
@@ -636,7 +636,7 @@ export default function MentorDashboard({ user, onLogout }) {
               <select
                 value={selectedCohort}
                 onChange={(e) => setSelectedCohort(e.target.value)}
-                className="appearance-none pl-4 pr-10 py-2 bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800 rounded-2xl text-xs font-extrabold text-slate-700 dark:text-slate-350 cursor-pointer shadow-xs focus:outline-none focus:ring-1 focus:ring-[#253df5]"
+                className="appearance-none pl-4 pr-10 py-2 bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800 rounded-2xl text-xs font-extrabold text-slate-700 dark:text-slate-350 cursor-pointer shadow-xs focus:outline-none focus:ring-1 focus:ring-[#253df5]"
               >
                 {Object.keys(cohortsList).map(name => (
                   <option key={name}>{name}</option>
@@ -648,7 +648,7 @@ export default function MentorDashboard({ user, onLogout }) {
             </div>
 
             {/* Notification Bell */}
-            <button className="relative p-2.5 rounded-2xl border border-[#eef2f6] dark:border-slate-800/80 bg-white dark:bg-[#0d1326] text-slate-500 dark:text-gray-400 hover:text-slate-800 dark:hover:text-white transition-all shadow-xs">
+            <button className="relative p-2.5 rounded-2xl border border-[#eef2f6] dark:border-slate-800/80 bg-white dark:bg-[#0c0c0c] text-slate-500 dark:text-gray-400 hover:text-slate-800 dark:hover:text-white transition-all shadow-xs">
               <Bell size={16} />
               <span className="absolute top-1.5 right-1.5 flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
@@ -659,7 +659,7 @@ export default function MentorDashboard({ user, onLogout }) {
             {/* Quick theme toggle */}
             <button
               onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-              className="p-2.5 rounded-2xl border border-[#eef2f6] dark:border-slate-800/80 bg-white dark:bg-[#0d1326] text-slate-500 dark:text-gray-400 hover:text-slate-800 dark:hover:text-white transition-all shadow-xs"
+              className="p-2.5 rounded-2xl border border-[#eef2f6] dark:border-slate-800/80 bg-white dark:bg-[#0c0c0c] text-slate-500 dark:text-gray-400 hover:text-slate-800 dark:hover:text-white transition-all shadow-xs"
             >
               {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
             </button>
@@ -687,7 +687,7 @@ export default function MentorDashboard({ user, onLogout }) {
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
                 
                 {/* Left Column: Intervention Alert System */}
-                <div className="lg:col-span-7 bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col justify-between space-y-5 text-left">
+                <div className="lg:col-span-7 bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col justify-between space-y-5 text-left">
                   <div className="space-y-4 w-full">
                     <div className="border-b border-slate-100 dark:border-slate-850 pb-3 flex justify-between items-center">
                       <h3 className="font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-2">
@@ -775,7 +775,7 @@ export default function MentorDashboard({ user, onLogout }) {
                 </div>
 
                 {/* Right Column: Cohort Progress & Mastery */}
-                <div className="lg:col-span-5 bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col justify-between space-y-6 text-left animate-fadeIn">
+                <div className="lg:col-span-5 bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col justify-between space-y-6 text-left animate-fadeIn">
                   <div className="space-y-5 w-full">
                     <div className="border-b border-slate-100 dark:border-slate-850 pb-3">
                       <h3 className="font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-2">
@@ -833,7 +833,7 @@ export default function MentorDashboard({ user, onLogout }) {
               </div>
 
               {/* Bottom Card: Curriculum Effectiveness Tracker */}
-              <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs space-y-5 text-left">
+              <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs space-y-5 text-left">
                 <div className="flex justify-between items-center pb-4 border-b border-slate-100 dark:border-slate-850">
                   <div>
                     <h3 className="font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-2">
@@ -969,7 +969,7 @@ export default function MentorDashboard({ user, onLogout }) {
                     <div 
                       key={name}
                       onClick={() => setSelectedCohort(name)}
-                      className={`bg-white dark:bg-[#0d1326] border rounded-3xl p-5 shadow-xs flex flex-col justify-between space-y-4 cursor-pointer transition-all hover:-translate-y-1 ${
+                      className={`bg-white dark:bg-[#0c0c0c] border rounded-3xl p-5 shadow-xs flex flex-col justify-between space-y-4 cursor-pointer transition-all hover:-translate-y-1 ${
                         isSelected 
                           ? 'border-[#253df5] ring-2 ring-[#253df5]/15' 
                           : 'border-[#eef2f6] dark:border-slate-800/80'
@@ -1010,7 +1010,7 @@ export default function MentorDashboard({ user, onLogout }) {
               </div>
 
               {/* Selected Cohort Student Details */}
-              <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs space-y-4 text-left">
+              <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs space-y-4 text-left">
                 <div className="pb-3 border-b border-slate-100 dark:border-slate-850 flex justify-between items-center">
                   <h3 className="font-extrabold text-sm text-slate-909 dark:text-white">
                     Student Roster: {selectedCohort}
@@ -1100,7 +1100,7 @@ export default function MentorDashboard({ user, onLogout }) {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 
                 {/* Chart 1: Average Weekly Engagement */}
-                <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs space-y-4 text-left">
+                <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs space-y-4 text-left">
                   <div className="border-b border-slate-100 dark:border-slate-850 pb-3">
                     <h3 className="font-extrabold text-sm text-slate-905 dark:text-white flex items-center gap-2">
                       <span className="w-5 h-5 rounded-full bg-[#253df5]/10 text-[#253df5] flex items-center justify-center">
@@ -1137,7 +1137,7 @@ export default function MentorDashboard({ user, onLogout }) {
                 </div>
 
                 {/* Chart 2: Grade Distributions */}
-                <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs space-y-4 text-left">
+                <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs space-y-4 text-left">
                   <div className="border-b border-slate-100 dark:border-slate-850 pb-3">
                     <h3 className="font-extrabold text-sm text-slate-905 dark:text-white flex items-center gap-2">
                       <span className="w-5 h-5 rounded-full bg-indigo-500/10 text-indigo-550 dark:text-indigo-400 flex items-center justify-center">
@@ -1204,7 +1204,7 @@ export default function MentorDashboard({ user, onLogout }) {
                       }, 1200);
                     }}
                     disabled={isSyncingLMS}
-                    className="flex items-center gap-2.5 px-4 py-2.5 border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0d1326] text-slate-700 dark:text-slate-200 rounded-xl text-xs font-extrabold shadow-xs hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors disabled:opacity-50"
+                    className="flex items-center gap-2.5 px-4 py-2.5 border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0c0c0c] text-slate-700 dark:text-slate-200 rounded-xl text-xs font-extrabold shadow-xs hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors disabled:opacity-50"
                   >
                     <RefreshCw className={`w-3.5 h-3.5 ${isSyncingLMS ? 'animate-spin' : ''}`} />
                     <span>{isSyncingLMS ? 'Syncing...' : 'Sync LMS'}</span>
@@ -1243,7 +1243,7 @@ export default function MentorDashboard({ user, onLogout }) {
                 </div>
 
                 {/* Avg Turnaround - White Card */}
-                <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex items-center justify-between h-36">
+                <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex items-center justify-between h-36">
                   <div className="space-y-1">
                     <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest block">AVG. TURNAROUND</span>
                     <div className="flex items-baseline mt-1.5">
@@ -1257,7 +1257,7 @@ export default function MentorDashboard({ user, onLogout }) {
                 </div>
 
                 {/* Cohort Progress - White Card */}
-                <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col justify-between h-36">
+                <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col justify-between h-36">
                   <div className="flex justify-between items-start">
                     <div className="space-y-1">
                       <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest block">COHORT PROGRESS</span>
@@ -1278,7 +1278,7 @@ export default function MentorDashboard({ user, onLogout }) {
               </div>
 
               {/* Filter and Search Bar */}
-              <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-2xl p-4 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-2xl p-4 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
                 {/* Left: Dropdowns */}
                 <div className="flex flex-wrap items-center gap-3">
                   {/* Cohort filter */}
@@ -1349,7 +1349,7 @@ export default function MentorDashboard({ user, onLogout }) {
               </div>
 
               {/* Submissions Table */}
-              <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl overflow-hidden shadow-xs">
+              <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl overflow-hidden shadow-xs">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse">
                     <thead>
@@ -1499,20 +1499,20 @@ export default function MentorDashboard({ user, onLogout }) {
                   
                   {/* Pagination */}
                   <div className="flex items-center gap-1.5">
-                    <button className="px-3 py-1.5 bg-white dark:bg-[#0d1326] border border-slate-205 dark:border-slate-800 text-slate-400 rounded-lg text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-900 cursor-not-allowed">
+                    <button className="px-3 py-1.5 bg-white dark:bg-[#0c0c0c] border border-slate-205 dark:border-slate-800 text-slate-400 rounded-lg text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-900 cursor-not-allowed">
                       Previous
                     </button>
                     <button className="w-8 h-8 flex items-center justify-center bg-[#253df5] text-white rounded-lg text-xs font-black">
                       1
                     </button>
-                    <button className="w-8 h-8 flex items-center justify-center bg-white dark:bg-[#0d1326] border border-slate-200 dark:border-slate-800 text-slate-605 dark:text-slate-400 rounded-lg text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-900">
+                    <button className="w-8 h-8 flex items-center justify-center bg-white dark:bg-[#0c0c0c] border border-slate-200 dark:border-slate-800 text-slate-605 dark:text-slate-400 rounded-lg text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-900">
                       2
                     </button>
-                    <button className="w-8 h-8 flex items-center justify-center bg-white dark:bg-[#0d1326] border border-slate-200 dark:border-slate-800 text-slate-605 dark:text-slate-400 rounded-lg text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-900">
+                    <button className="w-8 h-8 flex items-center justify-center bg-white dark:bg-[#0c0c0c] border border-slate-200 dark:border-slate-800 text-slate-605 dark:text-slate-400 rounded-lg text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-900">
                       3
                     </button>
                     <span className="text-slate-400 px-1 font-extrabold text-xs">...</span>
-                    <button className="px-3 py-1.5 bg-white dark:bg-[#0d1326] border border-slate-200 dark:border-slate-800 text-slate-605 dark:text-slate-400 rounded-lg text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-900">
+                    <button className="px-3 py-1.5 bg-white dark:bg-[#0c0c0c] border border-slate-200 dark:border-slate-800 text-slate-605 dark:text-slate-400 rounded-lg text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-900">
                       Next
                     </button>
                   </div>
@@ -1529,7 +1529,7 @@ export default function MentorDashboard({ user, onLogout }) {
                   />
                   
                   {/* Modal Box */}
-                  <div className="bg-white dark:bg-[#0d1326] border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-2xl relative z-10 w-full max-w-lg text-left animate-slideUp">
+                  <div className="bg-white dark:bg-[#0c0c0c] border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-2xl relative z-10 w-full max-w-lg text-left animate-slideUp">
                     
                     {/* Modal Header */}
                     <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800/85 pb-4 mb-4">
@@ -1655,7 +1655,7 @@ export default function MentorDashboard({ user, onLogout }) {
                       }}
                       className={`px-4 py-2 rounded-lg text-xs font-bold transition-all duration-200 ${
                         scheduleTab === 'Today'
-                          ? 'bg-white dark:bg-[#0d1326] text-[#253df5] dark:text-blue-400 shadow-xs'
+                          ? 'bg-white dark:bg-[#0c0c0c] text-[#253df5] dark:text-blue-400 shadow-xs'
                           : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white'
                       }`}
                     >
@@ -1668,7 +1668,7 @@ export default function MentorDashboard({ user, onLogout }) {
                       }}
                       className={`px-4 py-2 rounded-lg text-xs font-bold transition-all duration-200 ${
                         scheduleTab === 'Tomorrow'
-                          ? 'bg-white dark:bg-[#0d1326] text-[#253df5] dark:text-blue-400 shadow-xs'
+                          ? 'bg-white dark:bg-[#0c0c0c] text-[#253df5] dark:text-blue-400 shadow-xs'
                           : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white'
                       }`}
                     >
@@ -1677,7 +1677,7 @@ export default function MentorDashboard({ user, onLogout }) {
                     <label
                       className={`relative px-4 py-2 rounded-lg text-xs font-bold transition-all duration-200 flex items-center gap-1.5 cursor-pointer select-none ${
                         scheduleTab === 'Select Date'
-                          ? 'bg-white dark:bg-[#0d1326] text-[#253df5] dark:text-blue-400 shadow-xs'
+                          ? 'bg-white dark:bg-[#0c0c0c] text-[#253df5] dark:text-blue-400 shadow-xs'
                           : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white'
                       }`}
                     >
@@ -1722,7 +1722,7 @@ export default function MentorDashboard({ user, onLogout }) {
                   {scheduleTab === 'Today' && (
                     <div className="space-y-4">
                       {/* Item 1: Grading: Midterm AI Projects */}
-                      <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 border-l-4 border-l-rose-500 rounded-3xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5 text-left">
+                      <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 border-l-4 border-l-rose-500 rounded-3xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5 text-left">
                         <div className="space-y-2 max-w-xl">
                           <div className="flex items-center gap-2 flex-wrap">
                             <span className="bg-rose-50 dark:bg-rose-950/20 text-rose-600 dark:text-rose-400 text-[9px] font-black px-2 py-0.5 rounded font-mono uppercase tracking-wider">
@@ -1764,7 +1764,7 @@ export default function MentorDashboard({ user, onLogout }) {
                       </div>
 
                       {/* Item 2: Advanced Machine Learning Concepts */}
-                      <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 border-l-4 border-l-blue-600 rounded-3xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5 text-left">
+                      <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 border-l-4 border-l-blue-600 rounded-3xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5 text-left">
                         {/* Time side */}
                         <div className="flex items-baseline md:flex-col justify-start md:justify-center md:text-center min-w-[70px]">
                           <span className="text-3xl font-black text-slate-900 dark:text-white leading-none">11:30</span>
@@ -1805,7 +1805,7 @@ export default function MentorDashboard({ user, onLogout }) {
                   {scheduleTab === 'Tomorrow' && (
                     <div className="space-y-4">
                       {/* Tomorrow Item 1 */}
-                      <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 border-l-4 border-l-rose-500 rounded-3xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5 text-left">
+                      <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 border-l-4 border-l-rose-500 rounded-3xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5 text-left">
                         <div className="space-y-2 max-w-xl">
                           <div className="flex items-center gap-2 flex-wrap">
                             <span className="bg-rose-50 dark:bg-rose-950/20 text-rose-600 dark:text-rose-450 text-[9px] font-black px-2 py-0.5 rounded font-mono uppercase tracking-wider">
@@ -1837,7 +1837,7 @@ export default function MentorDashboard({ user, onLogout }) {
                       </div>
 
                       {/* Tomorrow Item 2 */}
-                      <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 border-l-4 border-l-blue-600 rounded-3xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5 text-left">
+                      <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 border-l-4 border-l-blue-600 rounded-3xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5 text-left">
                         <div className="flex items-baseline md:flex-col justify-start md:justify-center md:text-center min-w-[70px]">
                           <span className="text-3xl font-black text-slate-900 dark:text-white leading-none">10:00</span>
                           <span className="text-xs font-bold text-slate-455 dark:text-slate-550 md:mt-1.5 ml-1.5 md:ml-0 uppercase tracking-wider">AM</span>
@@ -1873,7 +1873,7 @@ export default function MentorDashboard({ user, onLogout }) {
                   {scheduleTab === 'Select Date' && (
                     <div className="space-y-4">
                       {!selectedCalendarDate ? (
-                        <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-12 text-center text-slate-400 dark:text-slate-550">
+                        <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-12 text-center text-slate-400 dark:text-slate-550">
                           <Calendar className="w-10 h-10 mx-auto text-slate-300 dark:text-slate-700" />
                           <h4 className="font-extrabold text-sm text-slate-900 dark:text-white mt-3">Date Agenda View</h4>
                           <p className="text-xs mt-1">Please select an upcoming date on the calendar filter to list planned sessions.</p>
@@ -1882,7 +1882,7 @@ export default function MentorDashboard({ user, onLogout }) {
                         // Today Action Items
                         <div className="space-y-4">
                           {/* Item 1: Grading: Midterm AI Projects */}
-                          <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 border-l-4 border-l-rose-500 rounded-3xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5 text-left animate-fadeIn">
+                          <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 border-l-4 border-l-rose-500 rounded-3xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5 text-left animate-fadeIn">
                             <div className="space-y-2 max-w-xl">
                               <div className="flex items-center gap-2 flex-wrap">
                                 <span className="bg-rose-50 dark:bg-rose-950/20 text-rose-600 dark:text-rose-400 text-[9px] font-black px-2 py-0.5 rounded font-mono uppercase tracking-wider">
@@ -1924,7 +1924,7 @@ export default function MentorDashboard({ user, onLogout }) {
                           </div>
 
                           {/* Item 2: Advanced Machine Learning Concepts */}
-                          <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 border-l-4 border-l-blue-600 rounded-3xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5 text-left animate-fadeIn">
+                          <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 border-l-4 border-l-blue-600 rounded-3xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5 text-left animate-fadeIn">
                             {/* Time side */}
                             <div className="flex items-baseline md:flex-col justify-start md:justify-center md:text-center min-w-[70px]">
                               <span className="text-3xl font-black text-slate-900 dark:text-white leading-none">11:30</span>
@@ -1964,7 +1964,7 @@ export default function MentorDashboard({ user, onLogout }) {
                         // Tomorrow Action Items
                         <div className="space-y-4">
                           {/* Tomorrow Item 1 */}
-                          <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 border-l-4 border-l-rose-500 rounded-3xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5 text-left animate-fadeIn">
+                          <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 border-l-4 border-l-rose-500 rounded-3xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5 text-left animate-fadeIn">
                             <div className="space-y-2 max-w-xl">
                               <div className="flex items-center gap-2 flex-wrap">
                                 <span className="bg-rose-50 dark:bg-rose-950/20 text-rose-600 dark:text-rose-450 text-[9px] font-black px-2 py-0.5 rounded font-mono uppercase tracking-wider">
@@ -1996,7 +1996,7 @@ export default function MentorDashboard({ user, onLogout }) {
                           </div>
 
                           {/* Tomorrow Item 2 */}
-                          <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 border-l-4 border-l-blue-600 rounded-3xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5 text-left animate-fadeIn">
+                          <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 border-l-4 border-l-blue-600 rounded-3xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5 text-left animate-fadeIn">
                             <div className="flex items-baseline md:flex-col justify-start md:justify-center md:text-center min-w-[70px]">
                               <span className="text-3xl font-black text-slate-900 dark:text-white leading-none">10:00</span>
                               <span className="text-xs font-bold text-slate-455 dark:text-slate-550 md:mt-1.5 ml-1.5 md:ml-0 uppercase tracking-wider">AM</span>
@@ -2031,7 +2031,7 @@ export default function MentorDashboard({ user, onLogout }) {
                         // Dynamic search results for other dates
                         <div className="space-y-4">
                           {scheduleEvents.filter(event => calendarMatchesDate(event.date, selectedCalendarDate)).map(event => (
-                            <div key={event.id} className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 border-l-4 border-l-blue-600 rounded-3xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5 text-left animate-fadeIn">
+                            <div key={event.id} className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 border-l-4 border-l-blue-600 rounded-3xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5 text-left animate-fadeIn">
                               {/* Time side */}
                               <div className="flex items-baseline md:flex-col justify-start md:justify-center md:text-center min-w-[75px]">
                                 <span className="text-base font-black text-slate-950 dark:text-white leading-none">
@@ -2071,7 +2071,7 @@ export default function MentorDashboard({ user, onLogout }) {
                           
                           {/* If no events match */}
                           {scheduleEvents.filter(event => calendarMatchesDate(event.date, selectedCalendarDate)).length === 0 && (
-                            <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-12 text-center text-slate-400 dark:text-slate-550">
+                            <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-12 text-center text-slate-400 dark:text-slate-550">
                               <Calendar className="w-10 h-10 mx-auto text-slate-300 dark:text-slate-700 animate-pulse" />
                               <h4 className="font-extrabold text-sm text-slate-900 dark:text-white mt-3">No Actions Scheduled</h4>
                               <p className="text-xs mt-1">There are no lectures, reviews, or grading items scheduled for {formatCalendarDate(selectedCalendarDate)}.</p>
@@ -2093,7 +2093,7 @@ export default function MentorDashboard({ user, onLogout }) {
                   </div>
 
                   {/* Main List Container */}
-                  <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-5 shadow-xs divide-y divide-slate-100 dark:divide-slate-850/60 text-left space-y-4">
+                  <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-5 shadow-xs divide-y divide-slate-100 dark:divide-slate-850/60 text-left space-y-4">
                     
                     {scheduleTab === 'Today' && (
                       <div className="space-y-4 divide-y divide-slate-100 dark:divide-slate-850/60 w-full">
@@ -2335,7 +2335,7 @@ export default function MentorDashboard({ user, onLogout }) {
                   />
                   
                   {/* Modal Box */}
-                  <div className="bg-white dark:bg-[#0d1326] border border-slate-205 dark:border-slate-800 rounded-3xl p-6 shadow-2xl relative z-10 w-full max-w-md text-left animate-slideUp">
+                  <div className="bg-white dark:bg-[#0c0c0c] border border-slate-205 dark:border-slate-800 rounded-3xl p-6 shadow-2xl relative z-10 w-full max-w-md text-left animate-slideUp">
                     
                     {/* Modal Header */}
                     <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-850 pb-4 mb-4">
@@ -2426,7 +2426,7 @@ export default function MentorDashboard({ user, onLogout }) {
                                 onClick={() => setNewSessionType(type)}
                                 className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all duration-200 ${
                                   isSelected
-                                    ? 'bg-white dark:bg-[#0d1326] border border-slate-200/50 dark:border-slate-800 text-[#253df5] dark:text-blue-400 shadow-xs'
+                                    ? 'bg-white dark:bg-[#0c0c0c] border border-slate-200/50 dark:border-slate-800 text-[#253df5] dark:text-blue-400 shadow-xs'
                                     : 'text-slate-500 dark:text-slate-400 hover:text-slate-850 dark:hover:text-white'
                                 }`}
                               >
@@ -2472,7 +2472,7 @@ export default function MentorDashboard({ user, onLogout }) {
 
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-2">
                 <div className="lg:col-span-2 text-left">
-                  <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-xs space-y-6">
+                  <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-xs space-y-6">
                   <form onSubmit={handleSaveSettings}>
                     <div className="flex items-center gap-2.5 pb-3 border-b border-slate-100 dark:border-slate-850">
                       <User className="w-5 h-5 text-[#253df5]" />
@@ -2559,7 +2559,7 @@ export default function MentorDashboard({ user, onLogout }) {
                   </button>
                   </form>
                   </div>
-                <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-xs space-y-6 text-left mt-6">
+                <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-xs space-y-6 text-left mt-6">
                   <div className="flex items-center gap-2.5 pb-3 border-b border-slate-100 dark:border-slate-850">
                     <Mail className="w-5 h-5 text-[#253df5]" />
                     <h3 className="font-extrabold text-base text-slate-909 dark:text-white">Contact Overseer</h3>
@@ -2584,7 +2584,7 @@ export default function MentorDashboard({ user, onLogout }) {
                 </div>
 
                 {/* Connectivity Settings Card */}
-                <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-xs space-y-6 text-left mt-6">
+                <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-xs space-y-6 text-left mt-6">
                   <div className="flex items-center gap-2.5 pb-3 border-b border-slate-100 dark:border-slate-850">
                     <Network className="w-5 h-5 text-[#253df5]" />
                     <h3 className="font-extrabold text-base text-slate-909 dark:text-white">Connectivity & Integrations</h3>
@@ -2677,7 +2677,7 @@ export default function MentorDashboard({ user, onLogout }) {
                 </div>
 
                 {/* Institutional Integrations Status Card for Mentors */}
-                <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-xs space-y-6 text-left mt-6">
+                <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-xs space-y-6 text-left mt-6">
                   <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-850">
                     <div className="flex items-center gap-2.5">
                       <Network className="w-5 h-5 text-[#253df5]" />
@@ -2740,7 +2740,7 @@ export default function MentorDashboard({ user, onLogout }) {
                 </div>
 
                 {/* Right Preferences Card */}
-                <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col gap-5 text-left">
+                <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col gap-5 text-left">
                   <div className="flex items-center gap-3">
                     <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-605 dark:text-slate-400 flex items-center justify-center flex-shrink-0">
                       <Sliders size={18} className="text-[#253df5] dark:text-brand-400" />
@@ -2794,7 +2794,7 @@ export default function MentorDashboard({ user, onLogout }) {
             className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-300"
           />
           {/* Drawer drawer content */}
-          <div className="relative flex flex-col w-64 max-w-xs bg-white dark:bg-[#0d1326] border-r border-[#eef2f6] dark:border-slate-800 p-6 justify-between z-10 transition-transform duration-300">
+          <div className="relative flex flex-col w-64 max-w-xs bg-white dark:bg-[#0c0c0c] border-r border-[#eef2f6] dark:border-slate-800 p-6 justify-between z-10 transition-transform duration-300">
             <div className="space-y-6 text-left">
               {/* Logo & Close Button */}
               <div className="flex items-center justify-between">
