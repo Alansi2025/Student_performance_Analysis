@@ -12,6 +12,18 @@ from .config import settings
 # Create database tables automatically
 Base.metadata.create_all(bind=engine)
 
+def _auto_migrate():
+    from sqlalchemy import text
+    with engine.connect() as conn:
+        for col in ["telegram_id", "gmail", "phone_number"]:
+            try:
+                conn.execute(text(f"ALTER TABLE users ADD COLUMN {col} VARCHAR;"))
+                conn.commit()
+            except Exception:
+                pass
+
+_auto_migrate()
+
 def seed_accounts():
     from .database import SessionLocal
     from . import models, crud

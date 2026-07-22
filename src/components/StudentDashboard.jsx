@@ -7,7 +7,7 @@ import {
   Paperclip, Mic, Send, ExternalLink, Zap, Play, Trophy,
   Globe, Network, Database, Cpu, Router, Scale, ChevronDown,
   User, Sliders, ShieldCheck, Mail, BookOpen,
-  Megaphone, PlayCircle, CheckCircle, Layers, Download, Timer, Check, Camera
+  Megaphone, PlayCircle, CheckCircle, Layers, Download, Timer, Check, Camera, Upload
 } from 'lucide-react';
 
 import alexRiversProfile from '../assets/alex_rivers_profile.png';
@@ -42,6 +42,58 @@ export default function StudentDashboard({ user, onLogout }) {
   const [toggleAdaptiveVoice, setToggleAdaptiveVoice] = useState(true);
   const [isSavingSettings, setIsSavingSettings] = useState(false);
   const [settingsSavedFeedback, setSettingsSavedFeedback] = useState(false);
+  
+  // Connectivity fields
+  const [formTelegram, setFormTelegram] = useState(user?.telegram_id || '');
+  const [formGmail, setFormGmail] = useState(user?.gmail || '');
+  const [formPhone, setFormPhone] = useState(user?.phone_number || '');
+
+  // AI Document Processing State
+  const [aiHealth, setAiHealth] = useState(null);
+  const [aiSelectedFile, setAiSelectedFile] = useState(null);
+  const [aiProcessing, setAiProcessing] = useState(false);
+  const [aiResult, setAiResult] = useState(null);
+  const [aiError, setAiError] = useState(null);
+
+  useEffect(() => {
+    fetch('http://localhost:8000/ai/health')
+      .then(r => r.ok ? r.json() : null)
+      .then(data => data && setAiHealth(data))
+      .catch(() => {});
+  }, []);
+
+  const handleProcessPdf = async (e) => {
+    e.preventDefault();
+    if (!aiSelectedFile) return;
+    setAiProcessing(true);
+    setAiError(null);
+    setAiResult(null);
+
+    const formData = new FormData();
+    formData.append('file', aiSelectedFile);
+
+    try {
+      const res = await fetch('http://localhost:8000/ai/process-pdf', {
+        method: 'POST',
+        headers: {
+          'X-API-Key': 'aether_ai_secret_key_2026'
+        },
+        body: formData
+      });
+
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.detail || 'PDF processing failed');
+      }
+
+      const data = await res.json();
+      setAiResult(data);
+    } catch (err) {
+      setAiError(err.message || 'Failed to analyze PDF with AI');
+    } finally {
+      setAiProcessing(false);
+    }
+  };
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [explorerTab, setExplorerTab] = useState('Modules');
   const [selectedModuleId, setSelectedModuleId] = useState(2);
@@ -276,6 +328,105 @@ export default function StudentDashboard({ user, onLogout }) {
               Access and generate practice sets from historical examination data (2015 - 2024).
             </p>
           </div>
+        </div>
+
+        {/* AI Document Processing Panel (PaddleOCR + Ollama LLM) */}
+        <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs text-left space-y-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-850">
+            <div className="flex items-center gap-2.5">
+              <Cpu className="w-5 h-5 text-[#253df5]" />
+              <div>
+                <h3 className="font-extrabold text-sm text-slate-900 dark:text-white">AI PYQ Document Processor</h3>
+                <span className="text-[10px] text-slate-400 font-mono">PyMuPDF (JPG) → PaddleOCR (Apple ANE) → Ollama (gemma4:12b)</span>
+              </div>
+            </div>
+            {aiHealth && (
+              <div className="flex items-center gap-2 text-[10px] font-bold">
+                <span className={`px-2 py-0.5 rounded-full border ${aiHealth.ready ? 'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800' : 'bg-amber-50 text-amber-600 border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800'}`}>
+                  {aiHealth.ready ? '● AI Pipeline Ready' : '▲ AI Engine Initialising'}
+                </span>
+              </div>
+            )}
+          </div>
+
+          <form onSubmit={handleProcessPdf} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <input 
+              type="file"
+              accept=".pdf"
+              onChange={(e) => setAiSelectedFile(e.target.files ? e.target.files[0] : null)}
+              className="block w-full text-xs text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#253df5]/10 file:text-[#253df5] hover:file:bg-[#253df5]/20 cursor-pointer"
+            />
+            <button
+              type="submit"
+              disabled={!aiSelectedFile || aiProcessing}
+              className="px-6 py-2.5 bg-[#253df5] hover:bg-[#1d2ae0] text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50 min-w-[170px]"
+            >
+              {aiProcessing ? (
+                <>
+                  <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                  <span>Extracting AI...</span>
+                </>
+              ) : (
+                <>
+                  <Upload size={14} />
+                  <span>Analyze PDF with AI</span>
+                </>
+              )}
+            </button>
+          </form>
+
+          {aiError && (
+            <div className="p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 rounded-xl text-xs text-red-600 dark:text-red-400">
+              ⚠️ {aiError}
+            </div>
+          )}
+
+          {aiResult && (
+            <div className="p-5 bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 rounded-2xl space-y-3 animate-fadeIn">
+              <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2">
+                <span className="font-bold text-xs text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+                  <Check size={14} /> PDF Analysis Complete — {aiResult.filename}
+                </span>
+                <span className="text-[10px] font-mono text-slate-400">gemma4:12b Output</span>
+              </div>
+
+              {aiResult.analysis && (
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                  <div className="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-100 dark:border-slate-800">
+                    <span className="text-[10px] font-bold text-slate-400 uppercase block">Subject</span>
+                    <span className="font-extrabold text-slate-800 dark:text-slate-100">{aiResult.analysis.subject || 'Detected Subject'}</span>
+                  </div>
+                  <div className="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-100 dark:border-slate-800">
+                    <span className="text-[10px] font-bold text-slate-400 uppercase block">Difficulty</span>
+                    <span className="font-extrabold text-[#253df5]">{aiResult.analysis.difficulty || 'Intermediate'}</span>
+                  </div>
+                  <div className="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-100 dark:border-slate-800">
+                    <span className="text-[10px] font-bold text-slate-400 uppercase block">Questions</span>
+                    <span className="font-extrabold text-slate-800 dark:text-slate-100">{aiResult.analysis.question_count || '12'}</span>
+                  </div>
+                  <div className="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-100 dark:border-slate-800">
+                    <span className="text-[10px] font-bold text-slate-400 uppercase block">Topics</span>
+                    <span className="font-bold text-slate-700 dark:text-slate-300 text-[11px] truncate block">{aiResult.analysis.topics?.join(', ') || 'N/A'}</span>
+                  </div>
+                </div>
+              )}
+
+              {aiResult.analysis?.summary && (
+                <p className="text-xs text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
+                  <span className="font-bold text-[#253df5] mr-1">Summary:</span> {aiResult.analysis.summary}
+                </p>
+              )}
+
+              {aiResult.extracted_text && (
+                <details className="text-[11px] text-slate-500">
+                  <summary className="cursor-pointer font-bold hover:text-slate-700 dark:hover:text-slate-300">View Raw Extracted Text Snippet (PaddleOCR)</summary>
+                  <pre className="mt-2 p-3 bg-slate-100 dark:bg-slate-950 rounded-xl font-mono text-[10px] max-h-40 overflow-y-auto whitespace-pre-wrap">
+                    {aiResult.extracted_text.slice(0, 1000)}...
+                  </pre>
+                </details>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Past Year Question Vault Grid */}
@@ -2475,6 +2626,32 @@ export default function StudentDashboard({ user, onLogout }) {
               }, 1200);
             };
 
+            const handleSaveConnectivity = async (e) => {
+              e.preventDefault();
+              if (isSavingSettings) return;
+              setIsSavingSettings(true);
+              try {
+                const response = await fetch('http://localhost:8000/users/profile', {
+                  method: 'PUT',
+                  headers: { 'Content-Type': 'application/json' },
+                  credentials: 'include',
+                  body: JSON.stringify({
+                    telegram_id: formTelegram || null,
+                    gmail: formGmail || null,
+                    phone_number: formPhone || null
+                  })
+                });
+                if (response.ok) {
+                  setSettingsSavedFeedback(true);
+                  setTimeout(() => setSettingsSavedFeedback(false), 3000);
+                }
+              } catch (error) {
+                console.error("Failed to update connectivity", error);
+              } finally {
+                setIsSavingSettings(false);
+              }
+            };
+
             return (
               <div className="space-y-6 w-full text-left animate-fadeIn">
                 {/* Header Row */}
@@ -2486,7 +2663,7 @@ export default function StudentDashboard({ user, onLogout }) {
 
                   {/* Filter Pills */}
                   <div className="flex items-center bg-slate-100/80 dark:bg-slate-900/60 p-1 rounded-full border border-slate-205/60 dark:border-slate-800">
-                    {['Profile', 'Preferences', 'Security', 'Contact Support'].map((tab) => (
+                    {['Profile', 'Connectivity', 'Preferences', 'Security', 'Contact Support'].map((tab) => (
                       <button
                         key={tab}
                         onClick={() => setSettingsTab(tab)}
@@ -2601,6 +2778,115 @@ export default function StudentDashboard({ user, onLogout }) {
                                 onChange={(e) => setFormState(e.target.value)}
                                 className="w-full pl-4 pr-4 py-3 bg-slate-50/50 dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800 rounded-2xl text-xs font-semibold text-slate-805 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#253df5] focus:border-[#253df5] transition-all"
                               />
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Submit Row */}
+                        <div className="flex items-center gap-4 pt-4 border-t border-slate-100 dark:border-slate-850">
+                          <button
+                            type="submit"
+                            disabled={isSavingSettings}
+                            className="bg-[#253df5] hover:bg-[#1d2ae0] text-white text-xs font-black py-3.5 px-6 rounded-xl transition-all duration-200 tracking-wider flex items-center justify-center gap-2 min-w-[130px] disabled:opacity-50"
+                          >
+                            {isSavingSettings ? (
+                              <>
+                                <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                                <span>Saving...</span>
+                              </>
+                            ) : settingsSavedFeedback ? (
+                              <>
+                                <Check className="w-3.5 h-3.5" />
+                                <span>Changes Saved!</span>
+                              </>
+                            ) : (
+                              <span>Save Changes</span>
+                            )}
+                          </button>
+                        </div>
+                      </form>
+                    )}
+
+                    {settingsTab === 'Connectivity' && (
+                      <form onSubmit={handleSaveConnectivity} className="space-y-6">
+                        <div className="flex items-center gap-2 pb-2 border-b border-slate-100 dark:border-slate-850">
+                          <Network className="w-5 h-5 text-[#253df5]" />
+                          <h3 className="font-extrabold text-base text-slate-900 dark:text-white">Connectivity & Integrations</h3>
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-5">
+                          {/* Telegram Input */}
+                          <div className="space-y-2">
+                            <label className="block text-xs font-bold text-slate-450 dark:text-slate-400 uppercase tracking-wide">Telegram Username</label>
+                            <div className="relative">
+                              <input 
+                                type="text"
+                                value={formTelegram}
+                                onChange={(e) => setFormTelegram(e.target.value)}
+                                placeholder="@username"
+                                className="w-full pl-4 pr-4 py-3 bg-slate-50/50 dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800 rounded-2xl text-xs font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#253df5] focus:border-[#253df5] transition-all"
+                              />
+                              <div className="absolute right-4 top-3.5">
+                                {formTelegram ? (
+                                  <div className="flex items-center gap-1.5 bg-[#e6fffa] dark:bg-[#113a36] text-emerald-600 dark:text-emerald-450 px-2 py-0.5 rounded-md text-[10px] font-bold">
+                                    <Check className="w-3 h-3" /> Connected
+                                  </div>
+                                ) : (
+                                  <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 px-2 py-0.5 rounded-md text-[10px] font-bold">
+                                    Pending
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Gmail Input */}
+                          <div className="space-y-2">
+                            <label className="block text-xs font-bold text-slate-455 dark:text-slate-400 uppercase tracking-wide">Contact Gmail</label>
+                            <div className="relative">
+                              <input 
+                                type="email"
+                                value={formGmail}
+                                onChange={(e) => setFormGmail(e.target.value)}
+                                placeholder="Contact Gmail address"
+                                className="w-full pl-4 pr-4 py-3 bg-slate-50/50 dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800 rounded-2xl text-xs font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#253df5] focus:border-[#253df5] transition-all"
+                              />
+                              <div className="absolute right-4 top-3.5">
+                                {formGmail ? (
+                                  <div className="flex items-center gap-1.5 bg-[#e6fffa] dark:bg-[#113a36] text-emerald-600 dark:text-emerald-450 px-2 py-0.5 rounded-md text-[10px] font-bold">
+                                    <Check className="w-3 h-3" /> Connected
+                                  </div>
+                                ) : (
+                                  <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 px-2 py-0.5 rounded-md text-[10px] font-bold">
+                                    Pending
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Phone Number Input */}
+                          <div className="space-y-2">
+                            <label className="block text-xs font-bold text-slate-455 dark:text-slate-400 uppercase tracking-wide">Phone Number</label>
+                            <div className="relative">
+                              <input 
+                                type="text"
+                                value={formPhone}
+                                onChange={(e) => setFormPhone(e.target.value)}
+                                placeholder="+1 (555) 000-0000"
+                                className="w-full pl-4 pr-4 py-3 bg-slate-50/50 dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800 rounded-2xl text-xs font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-[#253df5] focus:border-[#253df5] transition-all"
+                              />
+                              <div className="absolute right-4 top-3.5">
+                                {formPhone ? (
+                                  <div className="flex items-center gap-1.5 bg-[#e6fffa] dark:bg-[#113a36] text-emerald-600 dark:text-emerald-450 px-2 py-0.5 rounded-md text-[10px] font-bold">
+                                    <Check className="w-3 h-3" /> Connected
+                                  </div>
+                                ) : (
+                                  <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 px-2 py-0.5 rounded-md text-[10px] font-bold">
+                                    Pending
+                                  </div>
+                                )}
+                              </div>
                             </div>
                           </div>
                         </div>

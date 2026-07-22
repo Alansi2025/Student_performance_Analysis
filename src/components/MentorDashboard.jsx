@@ -4,7 +4,7 @@ import {
   HelpCircle, LogOut, Bell, ChevronDown, ChevronRight, ArrowRight, User, 
   Check, Search, Sliders, Sun, Moon, Zap, Plus, MessageSquare, Download, 
   BookOpen, Play, AlertCircle, AlertTriangle, Send, RefreshCw, X, Star,
-  CheckCircle, Clock, BarChart2, Sparkles, Camera, Mail
+  CheckCircle, Clock, BarChart2, Sparkles, Camera, Mail, Network
 } from 'lucide-react';
 
 import alexRiversProfile from '../assets/alex_rivers_profile.png';
@@ -15,7 +15,7 @@ import ananyaDesaiProfile from '../assets/ananya_desai_profile.png';
 
 // Helper to format date YYYY-MM-DD to e.g., "Jun 11"
 function formatCalendarDate(dateStr) {
-  if (!dateStr) return 'Select Date';
+  if (!dateStr || typeof dateStr !== 'string') return 'Select Date';
   const parts = dateStr.split('-');
   if (parts.length !== 3) return dateStr;
   const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
@@ -115,6 +115,39 @@ export default function MentorDashboard({ user, onLogout }) {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   
+  // Settings & Connectivity State
+  const [formName, setFormName] = useState(user?.name || 'Lead Educator');
+  const [formEmail, setFormEmail] = useState(user?.email || 'educator@aetherlearn.com');
+  const [profileImage, setProfileImage] = useState(null);
+  const [contactMessage, setContactMessage] = useState('');
+  const [contactSent, setContactSent] = useState(false);
+  const [isSavingSettings, setIsSavingSettings] = useState(false);
+  const [settingsSavedFeedback, setSettingsSavedFeedback] = useState(false);
+
+  const [formTelegram, setFormTelegram] = useState(user?.telegram_id || '');
+  const [formGmail, setFormGmail] = useState(user?.gmail || '');
+  const [formPhone, setFormPhone] = useState(user?.phone_number || '');
+
+  // Institutional Integrations State
+  const [mentorIntegrations, setMentorIntegrations] = useState([]);
+  const [mentorSyncingId, setMentorSyncingId] = useState(null);
+
+  const fetchMentorIntegrations = async () => {
+    try {
+      const res = await fetch('http://localhost:8000/integrations/', { credentials: 'include' });
+      if (res.ok) {
+        const data = await res.json();
+        setMentorIntegrations(data);
+      }
+    } catch (e) {
+      console.error('Failed to fetch integrations for mentor', e);
+    }
+  };
+
+  useEffect(() => {
+    fetchMentorIntegrations();
+  }, []);
+  
   // Theme state synced with localStorage and HTML class
   const [theme, setTheme] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -133,6 +166,43 @@ export default function MentorDashboard({ user, onLogout }) {
       localStorage.setItem('theme', 'light');
     }
   }, [theme]);
+
+  const handleSaveSettings = (e) => {
+    e.preventDefault();
+    if (isSavingSettings) return;
+    setIsSavingSettings(true);
+    setTimeout(() => {
+      setIsSavingSettings(false);
+      setSettingsSavedFeedback(true);
+      setTimeout(() => setSettingsSavedFeedback(false), 3000);
+    }, 1200);
+  };
+
+  const handleSaveConnectivity = async (e) => {
+    e.preventDefault();
+    if (isSavingSettings) return;
+    setIsSavingSettings(true);
+    try {
+      const response = await fetch('http://localhost:8000/users/profile', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          telegram_id: formTelegram || null,
+          gmail: formGmail || null,
+          phone_number: formPhone || null
+        })
+      });
+      if (response.ok) {
+        setSettingsSavedFeedback(true);
+        setTimeout(() => setSettingsSavedFeedback(false), 3000);
+      }
+    } catch (error) {
+      console.error("Failed to update connectivity", error);
+    } finally {
+      setIsSavingSettings(false);
+    }
+  };
 
   // Cohort details mock database
   const cohortsList = {
@@ -2401,11 +2471,13 @@ export default function MentorDashboard({ user, onLogout }) {
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-2">
-                <div className="lg:col-span-2 bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-xs space-y-6 text-left">
-                  <div className="flex items-center gap-2.5 pb-3 border-b border-slate-100 dark:border-slate-850">
-                    <User className="w-5 h-5 text-[#253df5]" />
-                    <h3 className="font-extrabold text-base text-slate-909 dark:text-white">Personal Information</h3>
-                  </div>
+                <div className="lg:col-span-2 text-left">
+                  <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-xs space-y-6">
+                  <form onSubmit={handleSaveSettings}>
+                    <div className="flex items-center gap-2.5 pb-3 border-b border-slate-100 dark:border-slate-850">
+                      <User className="w-5 h-5 text-[#253df5]" />
+                      <h3 className="font-extrabold text-base text-slate-909 dark:text-white">Personal Information</h3>
+                    </div>
 
                   <div className="flex items-center gap-6 mb-6">
                     <div className="relative group">
@@ -2470,11 +2542,24 @@ export default function MentorDashboard({ user, onLogout }) {
                     </div>
                   </div>
 
-                  <button className="bg-[#253df5] hover:bg-[#1d2ae0] text-white text-xs font-black py-3 px-6 rounded-2xl transition-all duration-200 tracking-wider">
-                    Save Changes
+                  <button type="submit" disabled={isSavingSettings} className="bg-[#253df5] hover:bg-[#1d2ae0] text-white text-xs font-black py-3 px-6 rounded-2xl transition-all duration-200 tracking-wider disabled:opacity-50 mt-6 flex items-center justify-center gap-2">
+                    {isSavingSettings ? (
+                      <>
+                        <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                        <span>Saving...</span>
+                      </>
+                    ) : settingsSavedFeedback ? (
+                      <>
+                        <Check className="w-3.5 h-3.5" />
+                        <span>Changes Saved!</span>
+                      </>
+                    ) : (
+                      <span>Save Changes</span>
+                    )}
                   </button>
-                </div>
-                <div className="lg:col-span-2 bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-xs space-y-6 text-left mt-6">
+                  </form>
+                  </div>
+                <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-xs space-y-6 text-left mt-6">
                   <div className="flex items-center gap-2.5 pb-3 border-b border-slate-100 dark:border-slate-850">
                     <Mail className="w-5 h-5 text-[#253df5]" />
                     <h3 className="font-extrabold text-base text-slate-909 dark:text-white">Contact Overseer</h3>
@@ -2496,6 +2581,162 @@ export default function MentorDashboard({ user, onLogout }) {
                       {contactSent ? "Message Sent" : "Send Message"}
                     </button>
                   </form>
+                </div>
+
+                {/* Connectivity Settings Card */}
+                <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-xs space-y-6 text-left mt-6">
+                  <div className="flex items-center gap-2.5 pb-3 border-b border-slate-100 dark:border-slate-850">
+                    <Network className="w-5 h-5 text-[#253df5]" />
+                    <h3 className="font-extrabold text-base text-slate-909 dark:text-white">Connectivity & Integrations</h3>
+                  </div>
+                  <form onSubmit={handleSaveConnectivity} className="space-y-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 text-left">
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black tracking-widest text-slate-550 dark:text-slate-400 uppercase font-mono block">Telegram Username</label>
+                        <div className="relative">
+                          <input 
+                            type="text"
+                            value={formTelegram} onChange={(e) => setFormTelegram(e.target.value)}
+                            placeholder="@username"
+                            className="w-full px-4 py-3 bg-slate-55/50 dark:bg-slate-900 border border-slate-205 dark:border-slate-805 rounded-2xl text-xs font-bold text-slate-808 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-[#253df5]"
+                          />
+                          <div className="absolute right-4 top-3.5">
+                            {formTelegram ? (
+                              <div className="flex items-center gap-1.5 bg-[#e6fffa] dark:bg-[#113a36] text-emerald-600 dark:text-emerald-450 px-2 py-0.5 rounded-md text-[10px] font-bold">
+                                <Check className="w-3 h-3" /> Connected
+                              </div>
+                            ) : (
+                              <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 px-2 py-0.5 rounded-md text-[10px] font-bold">
+                                Pending
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black tracking-widest text-slate-550 dark:text-slate-400 uppercase font-mono block">Contact Gmail</label>
+                        <div className="relative">
+                          <input 
+                            type="email"
+                            value={formGmail} onChange={(e) => setFormGmail(e.target.value)}
+                            placeholder="Contact Gmail address"
+                            className="w-full px-4 py-3 bg-slate-55/50 dark:bg-slate-900 border border-slate-205 dark:border-slate-805 rounded-2xl text-xs font-bold text-slate-808 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-[#253df5]"
+                          />
+                          <div className="absolute right-4 top-3.5">
+                            {formGmail ? (
+                              <div className="flex items-center gap-1.5 bg-[#e6fffa] dark:bg-[#113a36] text-emerald-600 dark:text-emerald-450 px-2 py-0.5 rounded-md text-[10px] font-bold">
+                                <Check className="w-3 h-3" /> Connected
+                              </div>
+                            ) : (
+                              <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 px-2 py-0.5 rounded-md text-[10px] font-bold">
+                                Pending
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="space-y-2 sm:col-span-2">
+                        <label className="text-[10px] font-black tracking-widest text-slate-550 dark:text-slate-400 uppercase font-mono block">Phone Number</label>
+                        <div className="relative">
+                          <input 
+                            type="text"
+                            value={formPhone} onChange={(e) => setFormPhone(e.target.value)}
+                            placeholder="+1 (555) 000-0000"
+                            className="w-full px-4 py-3 bg-slate-55/50 dark:bg-slate-900 border border-slate-205 dark:border-slate-805 rounded-2xl text-xs font-bold text-slate-808 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-[#253df5]"
+                          />
+                          <div className="absolute right-4 top-3.5">
+                            {formPhone ? (
+                              <div className="flex items-center gap-1.5 bg-[#e6fffa] dark:bg-[#113a36] text-emerald-600 dark:text-emerald-450 px-2 py-0.5 rounded-md text-[10px] font-bold">
+                                <Check className="w-3 h-3" /> Connected
+                              </div>
+                            ) : (
+                              <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 px-2 py-0.5 rounded-md text-[10px] font-bold">
+                                Pending
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <button type="submit" disabled={isSavingSettings} className="bg-[#253df5] hover:bg-[#1d2ae0] text-white text-xs font-black py-3 px-6 rounded-2xl transition-all duration-200 tracking-wider disabled:opacity-50 mt-2 flex items-center justify-center gap-2 w-fit">
+                      {isSavingSettings ? (
+                        <>
+                          <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                          <span>Saving...</span>
+                        </>
+                      ) : settingsSavedFeedback ? (
+                        <>
+                          <Check className="w-3.5 h-3.5" />
+                          <span>Changes Saved!</span>
+                        </>
+                      ) : (
+                        <span>Save Changes</span>
+                      )}
+                    </button>
+                  </form>
+                </div>
+
+                {/* Institutional Integrations Status Card for Mentors */}
+                <div className="bg-white dark:bg-[#0d1326] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-xs space-y-6 text-left mt-6">
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-850">
+                    <div className="flex items-center gap-2.5">
+                      <Network className="w-5 h-5 text-[#253df5]" />
+                      <h3 className="font-extrabold text-base text-slate-909 dark:text-white">Institutional Bridges & Integrations</h3>
+                    </div>
+                    <button 
+                      onClick={fetchMentorIntegrations}
+                      className="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+                      title="Refresh Integrations"
+                    >
+                      <RefreshCw size={14} />
+                    </button>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    {mentorIntegrations.length === 0 ? (
+                      <p className="text-xs text-slate-500 font-semibold">No active LMS, SSO, or Data Lake integrations configured by Overseer.</p>
+                    ) : (
+                      mentorIntegrations.map((item) => (
+                        <div key={item.id} className="flex items-center justify-between p-4 bg-slate-50/50 dark:bg-slate-900/50 border border-slate-200/60 dark:border-slate-800 rounded-2xl">
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="font-bold text-xs text-slate-900 dark:text-white">{item.name}</span>
+                              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold uppercase">{item.type}</span>
+                            </div>
+                            <span className="text-[11px] text-slate-400 font-medium block mt-0.5">Provider: {item.provider} • Status: {item.status}</span>
+                          </div>
+                          <button
+                            onClick={async () => {
+                              setMentorSyncingId(item.id);
+                              try {
+                                await fetch(`http://localhost:8000/integrations/${item.id}/connect`, {
+                                  method: 'POST',
+                                  credentials: 'include'
+                                });
+                                await fetchMentorIntegrations();
+                              } catch (e) {}
+                              setMentorSyncingId(null);
+                            }}
+                            disabled={mentorSyncingId === item.id}
+                            className="px-3 py-1.5 bg-[#253df5] hover:bg-[#1d2ae0] text-white text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 disabled:opacity-50"
+                          >
+                            {mentorSyncingId === item.id ? (
+                              <>
+                                <span className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                                <span>Testing...</span>
+                              </>
+                            ) : (
+                              <>
+                                <RefreshCw size={12} />
+                                <span>Test & Sync</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
                 </div>
 
                 {/* Right Preferences Card */}

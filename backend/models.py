@@ -10,6 +10,9 @@ class User(Base):
     hashed_password = Column(String, nullable=False)
     role = Column(String, default="Student") # 'Student', 'Mentor', 'Overseer'
     is_active = Column(Boolean, default=True)
+    telegram_id = Column(String, nullable=True)      # Telegram username e.g. @username
+    gmail = Column(String, nullable=True)             # Contact Gmail address
+    phone_number = Column(String, nullable=True)      # Phone number with country code
 
 class ActivityLog(Base):
     __tablename__ = "activity_logs"

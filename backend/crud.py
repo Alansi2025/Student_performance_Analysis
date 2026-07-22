@@ -61,3 +61,14 @@ def update_integration_status(db: Session, integration_id: int, is_active: bool,
         db.refresh(db_integration)
         return db_integration
     return None
+
+def update_user_profile(db: Session, user: models.User, profile: schemas.ProfileUpdate) -> models.User:
+    if profile.telegram_id is not None:
+        user.telegram_id = profile.telegram_id
+    if profile.gmail is not None:
+        user.gmail = profile.gmail
+    if profile.phone_number is not None:
+        user.phone_number = profile.phone_number
+    db.commit()
+    db.refresh(user)
+    return user

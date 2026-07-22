@@ -10,9 +10,17 @@ class User(UserBase):
     id: int
     is_active: bool
     role: str
+    telegram_id: str | None = None
+    gmail: str | None = None
+    phone_number: str | None = None
 
     class Config:
         from_attributes = True
+
+class ProfileUpdate(BaseModel):
+    telegram_id: str | None = None
+    gmail: str | None = None
+    phone_number: str | None = None
 
 class ActivityLog(BaseModel):
     id: int

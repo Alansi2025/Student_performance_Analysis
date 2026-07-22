@@ -47,6 +47,24 @@ def logout(request: Request, db: Session = Depends(database.get_db)) -> dict:
 def read_users_me(current_user: models.User = Depends(security.get_current_user)) -> models.User:
     return current_user
 
+@router.put("/profile", response_model=schemas.User)
+def update_profile(
+    profile: schemas.ProfileUpdate,
+    request: Request,
+    current_user: models.User = Depends(security.get_current_user),
+    db: Session = Depends(database.get_db)
+) -> models.User:
+    updated_user = crud.update_user_profile(db, current_user, profile)
+    client_ip = request.client.host if request.client else "unknown"
+    crud.log_activity(
+        db,
+        action="PROFILE_UPDATED",
+        details=f"Contact info updated (telegram, gmail, phone)",
+        user_email=current_user.email,
+        ip_address=client_ip,
+    )
+    return updated_user
+
 @router.get("/logs", response_model=list[schemas.ActivityLog])
 def get_activity_logs(
     db: Session = Depends(database.get_db),
