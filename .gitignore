@@ -48,3 +48,6 @@ fresh_screenshots/
 capture_all_screens.py
 take_app_screenshots.cjs
 generate_stunning_pptx.py
+generate_pptx.py
+*.pptx
+*.ppt
