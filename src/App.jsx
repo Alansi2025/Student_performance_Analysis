@@ -12,7 +12,7 @@ import liveHeroRoom from './assets/live_hero_room.png';
 import marcusProfile from './assets/marcus_profile.png';
 import quantumScientist from './assets/quantum_scientist.png';
 import sarahJenkinsAvatar from './assets/sarah_profile.png';
-import { Activity, AlertCircle, ArrowRight, Award, BarChart2, Bell, Bot, Brain, BrainCircuit, Building2, Calendar, Camera, CameraOff, Check, CheckCircle, CheckCircle2, ChevronDown, ChevronRight, Clock, Code2, Cpu, Database, ExternalLink, Eye, EyeOff, FileText, Globe, GraduationCap, ImageIcon, KeyRound, Link, Loader2, Lock, Mail, Map, Menu, MessageSquare, Mic, MicOff, Moon, Play, School, Search, Send, Share2, Shield, Sliders, Sparkles, Star, Sun, Target, TrendingUp, User, UserCheck, Users, Video, Volume2, VolumeX, Waves, Wifi, WifiOff, X } from 'lucide-react';
+import { Activity, AlertCircle, ArrowRight, Award, BarChart2, Bell, Bot, Brain, BrainCircuit, Building2, Calendar, Camera, CameraOff, Check, CheckCircle, CheckCircle2, ChevronDown, ChevronRight, Clock, Code2, Cpu, Database, ExternalLink, Eye, EyeOff, FileText, Globe, GraduationCap, ImageIcon, KeyRound, Link, Loader2, Lock, Mail, Map, Menu, MessageSquare, Mic, MicOff, Moon, Play, School, Search, Send, Share2, Shield, Sliders, Sparkles, Star, Sun, Target, TrendingUp, User, UserCheck, Users, Video, Volume2, VolumeX, Waves, Wifi, WifiOff, X, Zap } from 'lucide-react';
 
 // --- Starfield Background (Animated blue particles on deep black) ---
 function StarfieldBackground() {

@@ -1473,6 +1473,120 @@ export default function StudentDashboard({ user, onLogout }) {
                   </div>
                 </div>
 
+                {/* 200-Mark Student Evaluation Scheme Card (Student Side) */}
+                <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs space-y-6 text-left animate-fadeIn">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-850 pb-4">
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-12 h-12 rounded-2xl bg-[#253df5]/10 text-[#253df5] font-black text-base flex items-center justify-center border border-[#253df5]/20 font-mono">
+                        {getInitials(getEffectiveName())}
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-extrabold text-base text-slate-900 dark:text-white">
+                            {selectedCourse.title} Student Evaluation
+                          </h3>
+                          <span className="bg-[#253df5]/10 text-[#253df5] dark:text-[#7f7eff] text-[10px] font-black px-2.5 py-0.5 rounded font-mono uppercase">
+                            200-Mark Scheme
+                          </span>
+                        </div>
+                        <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mt-0.5">
+                          Continuous evaluation scheme: Major (70), Minor (30), Project (50), Report (30), Viva (20).
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-4 bg-slate-50 dark:bg-slate-900/60 p-3 px-5 rounded-2xl border border-slate-200/60 dark:border-slate-800">
+                      <div className="text-right">
+                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block font-mono">TOTAL CUMULATIVE MARKS</span>
+                        <span className="text-2xl font-black text-[#253df5] dark:text-[#7f7eff] font-mono">
+                          124 <span className="text-xs text-slate-400 font-normal">/ 200</span>
+                        </span>
+                      </div>
+                      <div className="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-black text-sm font-mono border border-emerald-500/20">
+                        62%
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 5 Marks Components Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                    {/* Component 1: Major Examination (70 Marks) */}
+                    <div className="p-4 rounded-2xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/30 space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase font-mono tracking-wider">🏆 Major Exam</span>
+                        <span className="text-[10px] font-black text-blue-700 dark:text-blue-300 font-mono">Max 70</span>
+                      </div>
+                      <div className="text-2xl font-black text-slate-900 dark:text-white font-mono">
+                        42 <span className="text-xs text-slate-400 font-normal">/ 70</span>
+                      </div>
+                      <div className="w-full h-1.5 bg-blue-200 dark:bg-blue-900 rounded-full overflow-hidden">
+                        <div className="h-full bg-[#253df5] rounded-full" style={{ width: `${(42 / 70) * 100}%` }}></div>
+                      </div>
+                      <span className="text-[9px] font-bold text-slate-400 block pt-1 font-mono">Sessional Midterm & Paper</span>
+                    </div>
+
+                    {/* Component 2: Minor Examination (30 Marks) */}
+                    <div className="p-4 rounded-2xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/30 space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase font-mono tracking-wider">📝 Minor Exam</span>
+                        <span className="text-[10px] font-black text-emerald-700 dark:text-emerald-300 font-mono">Max 30</span>
+                      </div>
+                      <div className="text-2xl font-black text-slate-900 dark:text-white font-mono">
+                        18 <span className="text-xs text-slate-400 font-normal">/ 30</span>
+                      </div>
+                      <div className="w-full h-1.5 bg-emerald-200 dark:bg-emerald-900 rounded-full overflow-hidden">
+                        <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${(18 / 30) * 100}%` }}></div>
+                      </div>
+                      <span className="text-[9px] font-bold text-slate-400 block pt-1 font-mono">Short Tests & Quizzes</span>
+                    </div>
+
+                    {/* Component 3: Project Work (50 Marks) */}
+                    <div className="p-4 rounded-2xl bg-purple-50/50 dark:bg-purple-950/20 border border-purple-100 dark:border-purple-900/30 space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-[10px] font-black text-purple-600 dark:text-purple-400 uppercase font-mono tracking-wider">💻 Project Work</span>
+                        <span className="text-[10px] font-black text-purple-700 dark:text-purple-300 font-mono">Max 50</span>
+                      </div>
+                      <div className="text-2xl font-black text-slate-900 dark:text-white font-mono">
+                        32 <span className="text-xs text-slate-400 font-normal">/ 50</span>
+                      </div>
+                      <div className="w-full h-1.5 bg-purple-200 dark:bg-purple-900 rounded-full overflow-hidden">
+                        <div className="h-full bg-purple-500 rounded-full" style={{ width: `${(32 / 50) * 100}%` }}></div>
+                      </div>
+                      <span className="text-[9px] font-bold text-slate-400 block pt-1 font-mono">Practical Code & Repo</span>
+                    </div>
+
+                    {/* Component 4: Report Submission (30 Marks) */}
+                    <div className="p-4 rounded-2xl bg-amber-50/50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/30 space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-[10px] font-black text-amber-600 dark:text-amber-400 uppercase font-mono tracking-wider">📄 Report Submission</span>
+                        <span className="text-[10px] font-black text-amber-700 dark:text-amber-300 font-mono">Max 30</span>
+                      </div>
+                      <div className="text-2xl font-black text-slate-900 dark:text-white font-mono">
+                        19 <span className="text-xs text-slate-400 font-normal">/ 30</span>
+                      </div>
+                      <div className="w-full h-1.5 bg-amber-200 dark:bg-amber-900 rounded-full overflow-hidden">
+                        <div className="h-full bg-amber-500 rounded-full" style={{ width: `${(19 / 30) * 100}%` }}></div>
+                      </div>
+                      <span className="text-[9px] font-bold text-slate-400 block pt-1 font-mono">Thesis & Lab Reports</span>
+                    </div>
+
+                    {/* Component 5: Class Viva (20 Marks) */}
+                    <div className="p-4 rounded-2xl bg-rose-50/50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/30 space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-[10px] font-black text-rose-600 dark:text-rose-400 uppercase font-mono tracking-wider">🗣 Class Viva</span>
+                        <span className="text-[10px] font-black text-rose-700 dark:text-rose-300 font-mono">Max 20</span>
+                      </div>
+                      <div className="text-2xl font-black text-slate-900 dark:text-white font-mono">
+                        13 <span className="text-xs text-slate-400 font-normal">/ 20</span>
+                      </div>
+                      <div className="w-full h-1.5 bg-rose-200 dark:bg-rose-900 rounded-full overflow-hidden">
+                        <div className="h-full bg-rose-500 rounded-full" style={{ width: `${(13 / 20) * 100}%` }}></div>
+                      </div>
+                      <span className="text-[9px] font-bold text-slate-400 block pt-1 font-mono">Oral Viva & Participation</span>
+                    </div>
+                  </div>
+                </div>
+
                 {/* Split Grid panel */}
                 <div className="grid grid-cols-1 lg:grid-cols-10 gap-6 items-stretch">
                   {/* Left Column: UP NEXT + ANNOUNCEMENTS (70%) */}
