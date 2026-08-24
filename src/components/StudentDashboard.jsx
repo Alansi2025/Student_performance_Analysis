@@ -1473,120 +1473,6 @@ export default function StudentDashboard({ user, onLogout }) {
                   </div>
                 </div>
 
-                {/* 200-Mark Student Evaluation Scheme Card (Student Side) */}
-                <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs space-y-6 text-left animate-fadeIn">
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-850 pb-4">
-                    <div className="flex items-center gap-3.5">
-                      <div className="w-12 h-12 rounded-2xl bg-[#253df5]/10 text-[#253df5] font-black text-base flex items-center justify-center border border-[#253df5]/20 font-mono">
-                        {getInitials(getEffectiveName())}
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-extrabold text-base text-slate-900 dark:text-white">
-                            {selectedCourse.title} Student Evaluation
-                          </h3>
-                          <span className="bg-[#253df5]/10 text-[#253df5] dark:text-[#7f7eff] text-[10px] font-black px-2.5 py-0.5 rounded font-mono uppercase">
-                            200-Mark Scheme
-                          </span>
-                        </div>
-                        <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mt-0.5">
-                          Continuous evaluation scheme: Major (70), Minor (30), Project (50), Report (30), Viva (20).
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-4 bg-slate-50 dark:bg-slate-900/60 p-3 px-5 rounded-2xl border border-slate-200/60 dark:border-slate-800">
-                      <div className="text-right">
-                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block font-mono">TOTAL CUMULATIVE MARKS</span>
-                        <span className="text-2xl font-black text-[#253df5] dark:text-[#7f7eff] font-mono">
-                          124 <span className="text-xs text-slate-400 font-normal">/ 200</span>
-                        </span>
-                      </div>
-                      <div className="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-black text-sm font-mono border border-emerald-500/20">
-                        62%
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* 5 Marks Components Grid */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-                    {/* Component 1: Major Examination (70 Marks) */}
-                    <div className="p-4 rounded-2xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/30 space-y-2">
-                      <div className="flex justify-between items-center">
-                        <span className="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase font-mono tracking-wider">🏆 Major Exam</span>
-                        <span className="text-[10px] font-black text-blue-700 dark:text-blue-300 font-mono">Max 70</span>
-                      </div>
-                      <div className="text-2xl font-black text-slate-900 dark:text-white font-mono">
-                        42 <span className="text-xs text-slate-400 font-normal">/ 70</span>
-                      </div>
-                      <div className="w-full h-1.5 bg-blue-200 dark:bg-blue-900 rounded-full overflow-hidden">
-                        <div className="h-full bg-[#253df5] rounded-full" style={{ width: `${(42 / 70) * 100}%` }}></div>
-                      </div>
-                      <span className="text-[9px] font-bold text-slate-400 block pt-1 font-mono">Sessional Midterm & Paper</span>
-                    </div>
-
-                    {/* Component 2: Minor Examination (30 Marks) */}
-                    <div className="p-4 rounded-2xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/30 space-y-2">
-                      <div className="flex justify-between items-center">
-                        <span className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase font-mono tracking-wider">📝 Minor Exam</span>
-                        <span className="text-[10px] font-black text-emerald-700 dark:text-emerald-300 font-mono">Max 30</span>
-                      </div>
-                      <div className="text-2xl font-black text-slate-900 dark:text-white font-mono">
-                        18 <span className="text-xs text-slate-400 font-normal">/ 30</span>
-                      </div>
-                      <div className="w-full h-1.5 bg-emerald-200 dark:bg-emerald-900 rounded-full overflow-hidden">
-                        <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${(18 / 30) * 100}%` }}></div>
-                      </div>
-                      <span className="text-[9px] font-bold text-slate-400 block pt-1 font-mono">Short Tests & Quizzes</span>
-                    </div>
-
-                    {/* Component 3: Project Work (50 Marks) */}
-                    <div className="p-4 rounded-2xl bg-purple-50/50 dark:bg-purple-950/20 border border-purple-100 dark:border-purple-900/30 space-y-2">
-                      <div className="flex justify-between items-center">
-                        <span className="text-[10px] font-black text-purple-600 dark:text-purple-400 uppercase font-mono tracking-wider">💻 Project Work</span>
-                        <span className="text-[10px] font-black text-purple-700 dark:text-purple-300 font-mono">Max 50</span>
-                      </div>
-                      <div className="text-2xl font-black text-slate-900 dark:text-white font-mono">
-                        32 <span className="text-xs text-slate-400 font-normal">/ 50</span>
-                      </div>
-                      <div className="w-full h-1.5 bg-purple-200 dark:bg-purple-900 rounded-full overflow-hidden">
-                        <div className="h-full bg-purple-500 rounded-full" style={{ width: `${(32 / 50) * 100}%` }}></div>
-                      </div>
-                      <span className="text-[9px] font-bold text-slate-400 block pt-1 font-mono">Practical Code & Repo</span>
-                    </div>
-
-                    {/* Component 4: Report Submission (30 Marks) */}
-                    <div className="p-4 rounded-2xl bg-amber-50/50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/30 space-y-2">
-                      <div className="flex justify-between items-center">
-                        <span className="text-[10px] font-black text-amber-600 dark:text-amber-400 uppercase font-mono tracking-wider">📄 Report Submission</span>
-                        <span className="text-[10px] font-black text-amber-700 dark:text-amber-300 font-mono">Max 30</span>
-                      </div>
-                      <div className="text-2xl font-black text-slate-900 dark:text-white font-mono">
-                        19 <span className="text-xs text-slate-400 font-normal">/ 30</span>
-                      </div>
-                      <div className="w-full h-1.5 bg-amber-200 dark:bg-amber-900 rounded-full overflow-hidden">
-                        <div className="h-full bg-amber-500 rounded-full" style={{ width: `${(19 / 30) * 100}%` }}></div>
-                      </div>
-                      <span className="text-[9px] font-bold text-slate-400 block pt-1 font-mono">Thesis & Lab Reports</span>
-                    </div>
-
-                    {/* Component 5: Class Viva (20 Marks) */}
-                    <div className="p-4 rounded-2xl bg-rose-50/50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/30 space-y-2">
-                      <div className="flex justify-between items-center">
-                        <span className="text-[10px] font-black text-rose-600 dark:text-rose-400 uppercase font-mono tracking-wider">🗣 Class Viva</span>
-                        <span className="text-[10px] font-black text-rose-700 dark:text-rose-300 font-mono">Max 20</span>
-                      </div>
-                      <div className="text-2xl font-black text-slate-900 dark:text-white font-mono">
-                        13 <span className="text-xs text-slate-400 font-normal">/ 20</span>
-                      </div>
-                      <div className="w-full h-1.5 bg-rose-200 dark:bg-rose-900 rounded-full overflow-hidden">
-                        <div className="h-full bg-rose-500 rounded-full" style={{ width: `${(13 / 20) * 100}%` }}></div>
-                      </div>
-                      <span className="text-[9px] font-bold text-slate-400 block pt-1 font-mono">Oral Viva & Participation</span>
-                    </div>
-                  </div>
-                </div>
-
                 {/* Split Grid panel */}
                 <div className="grid grid-cols-1 lg:grid-cols-10 gap-6 items-stretch">
                   {/* Left Column: UP NEXT + ANNOUNCEMENTS (70%) */}
@@ -2631,17 +2517,83 @@ export default function StudentDashboard({ user, onLogout }) {
 
                     {/* ================= INSIGHTS VIEW ================= */}
           {activeNav === 'Insights' && (() => {
-            // Simulated PowerBI-style data
-            const subjectStats = {
-              "All Subjects": { rank: "12th / 150", marks: "85%", hours: "42h", pie: [40, 35, 15, 10] },
-              "Machine Learning": { rank: "5th / 150", marks: "92%", hours: "15h", pie: [50, 20, 20, 10] },
-              "Neural Networks": { rank: "18th / 150", marks: "78%", hours: "12h", pie: [30, 45, 15, 10] },
-              "Data Science": { rank: "8th / 150", marks: "89%", hours: "15h", pie: [35, 35, 20, 10] }
+            // Subject-wise 200-Mark Continuous Assessment Scheme Data & CGPA Calculation
+            const subject200MarkScheme = {
+              "All Subjects": {
+                rank: "12th / 150",
+                marks: "80.6%",
+                cgpa: "8.38 / 10.0",
+                hours: "42h",
+                major: 226,  // out of 280
+                minor: 96,   // out of 120
+                project: 153, // out of 200
+                report: 94,  // out of 120
+                viva: 66,    // out of 80
+                total: 635,
+                totalMax: 800,
+                pie: [40, 35, 15, 10]
+              },
+              "Advanced Calculus": {
+                rank: "15th / 42",
+                marks: "62%",
+                cgpa: "6.5 / 10.0",
+                hours: "14h",
+                major: 42,   // Max 70
+                minor: 18,   // Max 30
+                project: 32, // Max 50
+                report: 19,  // Max 30
+                viva: 13,    // Max 20
+                total: 124,
+                totalMax: 200,
+                pie: [45, 30, 15, 10]
+              },
+              "Linear Algebra": {
+                rank: "3rd / 35",
+                marks: "88%",
+                cgpa: "9.0 / 10.0",
+                hours: "12h",
+                major: 63,   // Max 70
+                minor: 26,   // Max 30
+                project: 44, // Max 50
+                report: 25,  // Max 30
+                viva: 18,    // Max 20
+                total: 176,
+                totalMax: 200,
+                pie: [50, 25, 15, 10]
+              },
+              "Physics 101": {
+                rank: "6th / 50",
+                marks: "81%",
+                cgpa: "8.5 / 10.0",
+                hours: "10h",
+                major: 56,   // Max 70
+                minor: 24,   // Max 30
+                project: 41, // Max 50
+                report: 24,  // Max 30
+                viva: 17,    // Max 20
+                total: 162,
+                totalMax: 200,
+                pie: [35, 35, 20, 10]
+              },
+              "Advanced Machine Learning": {
+                rank: "2nd / 60",
+                marks: "91.5%",
+                cgpa: "9.5 / 10.0",
+                hours: "16h",
+                major: 65,   // Max 70
+                minor: 28,   // Max 30
+                project: 46, // Max 50
+                report: 26,  // Max 30
+                viva: 18,    // Max 20
+                total: 183,
+                totalMax: 200,
+                pie: [50, 20, 20, 10]
+              }
             };
-            const selectedSubjectData = subjectStats[selectedSubject] || subjectStats["All Subjects"];
+            const selectedSubjectData = subject200MarkScheme[selectedSubject] || subject200MarkScheme["All Subjects"];
             const [pLectures, pPractice, pRevision, pQuiz] = selectedSubjectData.pie;
             
-            // Pie chart calculations (approximate SVG paths for visual representation)
+            // Pie chart calculations
             const createPieSlice = (startPercent, percent, color) => {
               const startAngle = (startPercent * 3.6) - 90;
               const endAngle = ((startPercent + percent) * 3.6) - 90;
@@ -2661,60 +2613,74 @@ export default function StudentDashboard({ user, onLogout }) {
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-slate-205 dark:border-slate-800">
                   <div className="space-y-2.5 text-left max-w-3xl">
                     <h1 className="text-2xl sm:text-3.5xl font-black text-slate-909 dark:text-white tracking-tight leading-none">
-                      Performance Insights
+                      Performance Insights & CGPA Analytics
                     </h1>
                     <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 leading-relaxed">
-                      Track your mastery and optimize your learning path with PowerBI-style analytics.
+                      Track subject-wise 200-mark evaluation matrix, calculated CGPA, and continuous assessment breakdown.
                     </p>
                   </div>
 
-                  {/* Header Action Buttons */}
+                  {/* Header Subject Selector Dropdown */}
                   <div className="flex items-center gap-3">
                     <div className="relative">
                       <select 
-                        className="appearance-none pl-4 pr-10 py-2.5 bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800 rounded-2xl text-xs font-extrabold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors shadow-xs focus:outline-none focus:ring-2 focus:ring-brand-500"
+                        className="appearance-none pl-4 pr-10 py-2.5 bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800 rounded-2xl text-xs font-extrabold text-[#253df5] dark:text-brand-400 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors shadow-xs focus:outline-none focus:ring-2 focus:ring-brand-500 cursor-pointer"
                         value={selectedSubject}
                         onChange={(e) => setSelectedSubject(e.target.value)}
                       >
-                        <option value="All Subjects">All Subjects</option>
-                        <option value="Machine Learning">Machine Learning</option>
-                        <option value="Neural Networks">Neural Networks</option>
-                        <option value="Data Science">Data Science</option>
+                        <option value="All Subjects">🌐 All Subjects (Overall CGPA)</option>
+                        <option value="Advanced Calculus">📐 Advanced Calculus</option>
+                        <option value="Linear Algebra">📊 Linear Algebra</option>
+                        <option value="Physics 101">⚛️ Physics 101</option>
+                        <option value="Advanced Machine Learning">🤖 Advanced Machine Learning</option>
                       </select>
                       <ChevronDown size={14} className="absolute right-3 top-3 text-slate-400 pointer-events-none" />
                     </div>
-                    <button className="flex items-center gap-2 px-4 py-2.5 bg-brand-600 text-white rounded-2xl text-xs font-extrabold hover:bg-brand-700 transition-colors shadow-xs" onClick={() => alert('Downloading CSV...')}>
+                    <button className="flex items-center gap-2 px-4 py-2.5 bg-brand-600 text-white rounded-2xl text-xs font-extrabold hover:bg-brand-700 transition-colors shadow-xs" onClick={() => alert('Downloading Academic Transcript & Performance Report...')}>
                       <FileText size={14} />
                       <span>Export Report</span>
                     </button>
                   </div>
                 </div>
 
-                {/* KPI Cards Row */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                  {/* Rank KPI */}
+                {/* KPI Cards Row (Includes CGPA calculation) */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {/* Cumulative CGPA KPI */}
                   <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col relative overflow-hidden">
                     <div className="absolute top-0 right-0 p-4 opacity-10">
-                      <Award size={48} className="text-brand-500" />
+                      <Award size={48} className="text-emerald-500" />
                     </div>
-                    <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest font-mono mb-2">Class Rank</h3>
-                    <div className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">{selectedSubjectData.rank}</div>
+                    <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest font-mono mb-2">CUMULATIVE CGPA</h3>
+                    <div className="text-3xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight font-mono">{selectedSubjectData.cgpa}</div>
                     <div className="mt-4 flex items-center gap-2 text-xs font-bold text-emerald-600">
                       <TrendingUp size={14} />
-                      <span>Top 10%</span>
+                      <span>Grade Point Average</span>
                     </div>
                   </div>
 
-                  {/* Marks KPI */}
+                  {/* Overall Cumulative Marks KPI */}
                   <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col relative overflow-hidden">
                     <div className="absolute top-0 right-0 p-4 opacity-10">
-                      <Target size={48} className="text-blue-500" />
+                      <Target size={48} className="text-[#253df5]" />
                     </div>
-                    <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest font-mono mb-2">Overall Score</h3>
-                    <div className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">{selectedSubjectData.marks}</div>
-                    <div className="mt-4 flex items-center gap-2 text-xs font-bold text-slate-500">
+                    <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest font-mono mb-2">OVERALL SCORE</h3>
+                    <div className="text-3xl font-black text-[#253df5] dark:text-brand-400 tracking-tight font-mono">{selectedSubjectData.marks}</div>
+                    <div className="mt-4 flex items-center gap-2 text-xs font-bold text-slate-500 font-mono">
                       <BarChart2 size={14} />
-                      <span>Based on assignments & quizzes</span>
+                      <span>{selectedSubjectData.total} / {selectedSubjectData.totalMax} Total Marks</span>
+                    </div>
+                  </div>
+
+                  {/* Class Rank KPI */}
+                  <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs flex flex-col relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-4 opacity-10">
+                      <Award size={48} className="text-amber-500" />
+                    </div>
+                    <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest font-mono mb-2">CLASS RANK</h3>
+                    <div className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">{selectedSubjectData.rank}</div>
+                    <div className="mt-4 flex items-center gap-2 text-xs font-bold text-emerald-600">
+                      <TrendingUp size={14} />
+                      <span>Top Percentile</span>
                     </div>
                   </div>
 
@@ -2723,11 +2689,135 @@ export default function StudentDashboard({ user, onLogout }) {
                     <div className="absolute top-0 right-0 p-4 opacity-10">
                       <Clock size={48} className="text-purple-500" />
                     </div>
-                    <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest font-mono mb-2">Focus Hours</h3>
+                    <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest font-mono mb-2">FOCUS HOURS</h3>
                     <div className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">{selectedSubjectData.hours}</div>
                     <div className="mt-4 flex items-center gap-2 text-xs font-bold text-emerald-600">
                       <TrendingUp size={14} />
-                      <span>+2h this week</span>
+                      <span>Active Learning Time</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 200-Mark Continuous Assessment Scheme Card for Selected Subject */}
+                <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs space-y-6 text-left animate-fadeIn">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-850 pb-4">
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-12 h-12 rounded-2xl bg-[#253df5]/10 text-[#253df5] font-black text-base flex items-center justify-center border border-[#253df5]/20 font-mono">
+                        {getInitials(getEffectiveName())}
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-extrabold text-base text-slate-900 dark:text-white">
+                            {selectedSubject === "All Subjects" ? "Comprehensive Course Evaluation" : `${selectedSubject} Student Evaluation`}
+                          </h3>
+                          <span className="bg-[#253df5]/10 text-[#253df5] dark:text-[#7f7eff] text-[10px] font-black px-2.5 py-0.5 rounded font-mono uppercase">
+                            {selectedSubject === "All Subjects" ? "800-MARK SCHEME" : "200-MARK SCHEME"}
+                          </span>
+                        </div>
+                        <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mt-0.5">
+                          Continuous evaluation breakdown: Major Exams (70), Minor Exams (30), Projects (50), Reports (30), Viva (20).
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-4 bg-slate-50 dark:bg-slate-900/60 p-3 px-5 rounded-2xl border border-slate-200/60 dark:border-slate-800">
+                      <div className="text-right">
+                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block font-mono">CUMULATIVE SCORE</span>
+                        <span className="text-2xl font-black text-[#253df5] dark:text-[#7f7eff] font-mono">
+                          {selectedSubjectData.total} <span className="text-xs text-slate-400 font-normal">/ {selectedSubjectData.totalMax}</span>
+                        </span>
+                      </div>
+                      <div className="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-black text-sm font-mono border border-emerald-500/20">
+                        {selectedSubjectData.marks}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 5 Marks Components Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                    {/* Component 1: Major Examination (70 Marks) */}
+                    <div className="p-4 rounded-2xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/30 space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase font-mono tracking-wider">🏆 Major Exam</span>
+                        <span className="text-[10px] font-black text-blue-700 dark:text-blue-300 font-mono">
+                          {selectedSubject === "All Subjects" ? "Max 280" : "Max 70"}
+                        </span>
+                      </div>
+                      <div className="text-2xl font-black text-slate-900 dark:text-white font-mono">
+                        {selectedSubjectData.major} <span className="text-xs text-slate-400 font-normal">/ {selectedSubject === "All Subjects" ? 280 : 70}</span>
+                      </div>
+                      <div className="w-full h-1.5 bg-blue-200 dark:bg-blue-900 rounded-full overflow-hidden">
+                        <div className="h-full bg-[#253df5] rounded-full" style={{ width: `${(selectedSubjectData.major / (selectedSubject === "All Subjects" ? 280 : 70)) * 100}%` }}></div>
+                      </div>
+                      <span className="text-[9px] font-bold text-slate-400 block pt-1 font-mono">Sessional Midterm & Paper</span>
+                    </div>
+
+                    {/* Component 2: Minor Examination (30 Marks) */}
+                    <div className="p-4 rounded-2xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/30 space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase font-mono tracking-wider">📝 Minor Exam</span>
+                        <span className="text-[10px] font-black text-emerald-700 dark:text-emerald-300 font-mono">
+                          {selectedSubject === "All Subjects" ? "Max 120" : "Max 30"}
+                        </span>
+                      </div>
+                      <div className="text-2xl font-black text-slate-900 dark:text-white font-mono">
+                        {selectedSubjectData.minor} <span className="text-xs text-slate-400 font-normal">/ {selectedSubject === "All Subjects" ? 120 : 30}</span>
+                      </div>
+                      <div className="w-full h-1.5 bg-emerald-200 dark:bg-emerald-900 rounded-full overflow-hidden">
+                        <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${(selectedSubjectData.minor / (selectedSubject === "All Subjects" ? 120 : 30)) * 100}%` }}></div>
+                      </div>
+                      <span className="text-[9px] font-bold text-slate-400 block pt-1 font-mono">Short Tests & Quizzes</span>
+                    </div>
+
+                    {/* Component 3: Project Work (50 Marks) */}
+                    <div className="p-4 rounded-2xl bg-purple-50/50 dark:bg-purple-950/20 border border-purple-100 dark:border-purple-900/30 space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-[10px] font-black text-purple-600 dark:text-purple-400 uppercase font-mono tracking-wider">💻 Project Work</span>
+                        <span className="text-[10px] font-black text-purple-700 dark:text-purple-300 font-mono">
+                          {selectedSubject === "All Subjects" ? "Max 200" : "Max 50"}
+                        </span>
+                      </div>
+                      <div className="text-2xl font-black text-slate-900 dark:text-white font-mono">
+                        {selectedSubjectData.project} <span className="text-xs text-slate-400 font-normal">/ {selectedSubject === "All Subjects" ? 200 : 50}</span>
+                      </div>
+                      <div className="w-full h-1.5 bg-purple-200 dark:bg-purple-900 rounded-full overflow-hidden">
+                        <div className="h-full bg-purple-500 rounded-full" style={{ width: `${(selectedSubjectData.project / (selectedSubject === "All Subjects" ? 200 : 50)) * 100}%` }}></div>
+                      </div>
+                      <span className="text-[9px] font-bold text-slate-400 block pt-1 font-mono">Practical Code & Repo</span>
+                    </div>
+
+                    {/* Component 4: Report Submission (30 Marks) */}
+                    <div className="p-4 rounded-2xl bg-amber-50/50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/30 space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-[10px] font-black text-amber-600 dark:text-amber-400 uppercase font-mono tracking-wider">📄 Report Submission</span>
+                        <span className="text-[10px] font-black text-amber-700 dark:text-amber-300 font-mono">
+                          {selectedSubject === "All Subjects" ? "Max 120" : "Max 30"}
+                        </span>
+                      </div>
+                      <div className="text-2xl font-black text-slate-900 dark:text-white font-mono">
+                        {selectedSubjectData.report} <span className="text-xs text-slate-400 font-normal">/ {selectedSubject === "All Subjects" ? 120 : 30}</span>
+                      </div>
+                      <div className="w-full h-1.5 bg-amber-200 dark:bg-amber-900 rounded-full overflow-hidden">
+                        <div className="h-full bg-amber-500 rounded-full" style={{ width: `${(selectedSubjectData.report / (selectedSubject === "All Subjects" ? 120 : 30)) * 100}%` }}></div>
+                      </div>
+                      <span className="text-[9px] font-bold text-slate-400 block pt-1 font-mono">Thesis & Lab Reports</span>
+                    </div>
+
+                    {/* Component 5: Class Viva (20 Marks) */}
+                    <div className="p-4 rounded-2xl bg-rose-50/50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/30 space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-[10px] font-black text-rose-600 dark:text-rose-400 uppercase font-mono tracking-wider">🗣 Class Viva</span>
+                        <span className="text-[10px] font-black text-rose-700 dark:text-rose-300 font-mono">
+                          {selectedSubject === "All Subjects" ? "Max 80" : "Max 20"}
+                        </span>
+                      </div>
+                      <div className="text-2xl font-black text-slate-900 dark:text-white font-mono">
+                        {selectedSubjectData.viva} <span className="text-xs text-slate-400 font-normal">/ {selectedSubject === "All Subjects" ? 80 : 20}</span>
+                      </div>
+                      <div className="w-full h-1.5 bg-rose-200 dark:bg-rose-900 rounded-full overflow-hidden">
+                        <div className="h-full bg-rose-500 rounded-full" style={{ width: `${(selectedSubjectData.viva / (selectedSubject === "All Subjects" ? 80 : 20)) * 100}%` }}></div>
+                      </div>
+                      <span className="text-[9px] font-bold text-slate-400 block pt-1 font-mono">Oral Viva & Participation</span>
                     </div>
                   </div>
                 </div>

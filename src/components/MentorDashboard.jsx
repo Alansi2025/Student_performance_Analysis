@@ -786,11 +786,10 @@ export default function MentorDashboard({ user, onLogout }) {
                 </p>
               </div>
 
-              {/* 200-Mark Student Assessment Scheme Breakdown Card */}
-              {(() => {
-                const activeStudent = selectedStudentId !== 'all' 
-                  ? currentCohortData.students?.find(s => s.id === selectedStudentId) 
-                  : currentCohortData.students?.[0];
+              {/* 200-Mark Student Assessment Scheme Breakdown Card - Shown when teacher inspects an individual student */}
+              {selectedStudentId !== 'all' && (() => {
+                const activeStudent = currentCohortData.students?.find(s => s.id === selectedStudentId);
+                if (!activeStudent) return null;
                 const assess = activeStudent?.assessment || { major: 64, minor: 27, project: 45, report: 26, viva: 18, weekly: [86, 88, 90, 89, 92] };
                 const totalScore = assess.major + assess.minor + assess.project + assess.report + assess.viva;
                 const percentage = Math.round((totalScore / 200) * 100);
