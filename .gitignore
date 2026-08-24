@@ -55,5 +55,6 @@ build_complete_pptx.py
 build_master_pptx.py
 build_20_page_pptx.py
 build_user_outline_pptx.py
+build_stunning_designer_pptx.py
 *.pptx
 *.ppt
