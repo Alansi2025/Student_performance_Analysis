@@ -53,5 +53,6 @@ generate_stunning_pptx.py
 generate_pptx.py
 build_complete_pptx.py
 build_master_pptx.py
+build_20_page_pptx.py
 *.pptx
 *.ppt
