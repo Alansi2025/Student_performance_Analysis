@@ -45,9 +45,12 @@ __pycache__/
 backend/ai/ai_venv/
 backend/gcs_local_data/
 fresh_screenshots/
+all_project_screenshots/
 capture_all_screens.py
+capture_all_pages_ordered.py
 take_app_screenshots.cjs
 generate_stunning_pptx.py
 generate_pptx.py
+build_complete_pptx.py
 *.pptx
 *.ppt
