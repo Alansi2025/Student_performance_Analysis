@@ -794,8 +794,27 @@ export default function MentorDashboard({ user, onLogout }) {
                 const totalScore = assess.major + assess.minor + assess.project + assess.report + assess.viva;
                 const percentage = Math.round((totalScore / 200) * 100);
 
+                // Pass / Target Thresholds (70% Cutoff = 140 / 200)
+                const targetMajor = 49;
+                const targetMinor = 21;
+                const targetProject = 35;
+                const targetReport = 21;
+                const targetViva = 14;
+                const totalTarget = 140;
+
+                const majorDeficit = Math.max(0, targetMajor - assess.major);
+                const minorDeficit = Math.max(0, targetMinor - assess.minor);
+                const projectDeficit = Math.max(0, targetProject - assess.project);
+                const reportDeficit = Math.max(0, targetReport - assess.report);
+                const vivaDeficit = Math.max(0, targetViva - assess.viva);
+                const totalDeficit = Math.max(0, totalTarget - totalScore);
+
+                const isCodeRed = activeStudent.stress === 'High' || totalScore < 130;
+                const isWatchlist = activeStudent.engagement === 'Low' || activeStudent.stress === 'Medium';
+
                 return (
                   <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs space-y-6 text-left animate-fadeIn">
+                    {/* Top Header & Overview */}
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-850 pb-4">
                       <div className="flex items-center gap-3.5">
                         <div className="w-12 h-12 rounded-2xl bg-[#253df5]/10 text-[#253df5] font-black text-base flex items-center justify-center border border-[#253df5]/20 font-mono">
@@ -804,14 +823,21 @@ export default function MentorDashboard({ user, onLogout }) {
                         <div>
                           <div className="flex items-center gap-2">
                             <h3 className="font-extrabold text-base text-slate-900 dark:text-white">
-                              {selectedStudentId !== 'all' ? activeStudent?.name : `${currentCohortData.subject} Student Evaluation`}
+                              {activeStudent?.name} — Student Evaluation
                             </h3>
-                            <span className="bg-[#253df5]/10 text-[#253df5] dark:text-[#7f7eff] text-[10px] font-black px-2.5 py-0.5 rounded font-mono">
-                              {selectedStudentId !== 'all' ? `ID: ${activeStudent?.id}` : '200-MARK SCHEME'}
+                            <span className={`text-[10px] font-black px-2.5 py-0.5 rounded font-mono uppercase ${
+                              isCodeRed ? 'bg-rose-500/10 text-rose-600 border border-rose-500/20' : 
+                              isWatchlist ? 'bg-amber-500/10 text-amber-600 border border-amber-500/20' : 
+                              'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20'
+                            }`}>
+                              {isCodeRed ? '🛑 CODE RED' : isWatchlist ? '⚠️ WATCHLIST' : '✅ IN GOOD STANDING'}
+                            </span>
+                            <span className="bg-[#253df5]/10 text-[#253df5] dark:text-[#7f7eff] text-[10px] font-black px-2 py-0.5 rounded font-mono">
+                              ID: {activeStudent?.id}
                             </span>
                           </div>
                           <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mt-0.5">
-                            Continuous evaluation scheme: Major (70), Minor (30), Project (50), Report (30), Viva (20).
+                            Continuous evaluation scheme for {currentCohortData.subject}: Major (70), Minor (30), Project (50), Report (30), Viva (20).
                           </p>
                         </div>
                       </div>
@@ -823,87 +849,172 @@ export default function MentorDashboard({ user, onLogout }) {
                             {totalScore} <span className="text-xs text-slate-400 font-normal">/ 200</span>
                           </span>
                         </div>
-                        <div className="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-black text-sm font-mono border border-emerald-500/20">
+                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-black text-sm font-mono border ${
+                          percentage < 60 ? 'bg-rose-500/10 text-rose-600 border-rose-500/20' : 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20'
+                        }`}>
                           {percentage}%
                         </div>
                       </div>
                     </div>
 
-                    {/* 5 Marks Components Grid */}
+                    {/* Failing / At-Risk Subjects & Mark Deficit Alert Card */}
+                    {totalDeficit > 0 ? (
+                      <div className="p-4 rounded-2xl bg-rose-50/50 dark:bg-rose-950/20 border border-rose-200/60 dark:border-rose-900/30 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div className="flex items-start gap-3">
+                          <div className="w-10 h-10 rounded-xl bg-rose-500/10 text-rose-600 flex items-center justify-center font-black flex-shrink-0 mt-0.5">
+                            <AlertCircle size={20} />
+                          </div>
+                          <div className="space-y-1 text-left">
+                            <div className="flex items-center gap-2">
+                              <h4 className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
+                                Failing / At-Risk Subject: <span className="text-rose-600 dark:text-rose-400">{currentCohortData.subject}</span>
+                              </h4>
+                              <span className="bg-rose-600 text-white text-[9px] font-black px-2 py-0.5 rounded font-mono">
+                                NEEDS +{totalDeficit} MARKS
+                              </span>
+                            </div>
+                            <p className="text-[11px] font-semibold text-slate-600 dark:text-slate-300">
+                              {activeStudent.name} is currently scoring <span className="font-extrabold text-slate-900 dark:text-white font-mono">{totalScore}/200 ({percentage}%)</span>. Needs at least <span className="font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">+{totalDeficit} more marks</span> to reach the minimum 70% passing threshold ({totalTarget}/200).
+                            </p>
+                          </div>
+                        </div>
+
+                        <button 
+                          className="px-4 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-black tracking-wide transition-colors shrink-0 shadow-xs"
+                          onClick={() => alert(`Initiating pastoral intervention for ${activeStudent.name}... Remedial module assigned.`)}
+                        >
+                          Assign Remedial Tasks
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="p-4 rounded-2xl bg-emerald-50/40 dark:bg-emerald-950/20 border border-emerald-200/60 dark:border-emerald-900/30 flex items-center gap-3">
+                        <CheckCircle size={20} className="text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
+                        <p className="text-xs font-extrabold text-emerald-800 dark:text-emerald-300">
+                          {activeStudent.name} has cleared all minimum benchmarks in {currentCohortData.subject} with {percentage}% performance.
+                        </p>
+                      </div>
+                    )}
+
+                    {/* 5 Marks Components Flashcard Grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
                       {/* Component 1: Major Examination (70 Marks) */}
-                      <div className="p-4 rounded-2xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/30 space-y-2">
+                      <div className="p-4 rounded-2xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/30 space-y-2.5 text-left">
                         <div className="flex justify-between items-center">
                           <span className="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase font-mono tracking-wider">🏆 Major Exam</span>
                           <span className="text-[10px] font-black text-blue-700 dark:text-blue-300 font-mono">Max 70</span>
                         </div>
-                        <div className="text-2xl font-black text-slate-900 dark:text-white font-mono">
-                          {assess.major} <span className="text-xs text-slate-400 font-normal">/ 70</span>
+                        <div className="text-2xl font-black text-slate-900 dark:text-white font-mono flex items-baseline justify-between">
+                          <span>{assess.major} <span className="text-xs text-slate-400 font-normal">/ 70</span></span>
+                          {majorDeficit > 0 ? (
+                            <span className="text-[9px] font-black text-rose-600 bg-rose-100 dark:bg-rose-950/40 px-1.5 py-0.5 rounded font-mono">
+                              +{majorDeficit} Needed
+                            </span>
+                          ) : (
+                            <span className="text-[9px] font-black text-emerald-600 bg-emerald-100 dark:bg-emerald-950/40 px-1.5 py-0.5 rounded font-mono">
+                              Passed
+                            </span>
+                          )}
                         </div>
                         <div className="w-full h-1.5 bg-blue-200 dark:bg-blue-900 rounded-full overflow-hidden">
                           <div className="h-full bg-[#253df5] rounded-full" style={{ width: `${(assess.major / 70) * 100}%` }}></div>
                         </div>
-                        <span className="text-[9px] font-bold text-slate-400 block pt-1 font-mono">Sessional Midterm & Paper</span>
+                        <span className="text-[9px] font-bold text-slate-400 block font-mono">Sessional Midterm & Paper</span>
                       </div>
 
                       {/* Component 2: Minor Examination (30 Marks) */}
-                      <div className="p-4 rounded-2xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/30 space-y-2">
+                      <div className="p-4 rounded-2xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/30 space-y-2.5 text-left">
                         <div className="flex justify-between items-center">
                           <span className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase font-mono tracking-wider">📝 Minor Exam</span>
                           <span className="text-[10px] font-black text-emerald-700 dark:text-emerald-300 font-mono">Max 30</span>
                         </div>
-                        <div className="text-2xl font-black text-slate-900 dark:text-white font-mono">
-                          {assess.minor} <span className="text-xs text-slate-400 font-normal">/ 30</span>
+                        <div className="text-2xl font-black text-slate-900 dark:text-white font-mono flex items-baseline justify-between">
+                          <span>{assess.minor} <span className="text-xs text-slate-400 font-normal">/ 30</span></span>
+                          {minorDeficit > 0 ? (
+                            <span className="text-[9px] font-black text-rose-600 bg-rose-100 dark:bg-rose-950/40 px-1.5 py-0.5 rounded font-mono">
+                              +{minorDeficit} Needed
+                            </span>
+                          ) : (
+                            <span className="text-[9px] font-black text-emerald-600 bg-emerald-100 dark:bg-emerald-950/40 px-1.5 py-0.5 rounded font-mono">
+                              Passed
+                            </span>
+                          )}
                         </div>
                         <div className="w-full h-1.5 bg-emerald-200 dark:bg-emerald-900 rounded-full overflow-hidden">
                           <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${(assess.minor / 30) * 100}%` }}></div>
                         </div>
-                        <span className="text-[9px] font-bold text-slate-400 block pt-1 font-mono">Short Tests & Quizzes</span>
+                        <span className="text-[9px] font-bold text-slate-400 block font-mono">Short Tests & Quizzes</span>
                       </div>
 
                       {/* Component 3: Project Work (50 Marks) */}
-                      <div className="p-4 rounded-2xl bg-purple-50/50 dark:bg-purple-950/20 border border-purple-100 dark:border-purple-900/30 space-y-2">
+                      <div className="p-4 rounded-2xl bg-purple-50/50 dark:bg-purple-950/20 border border-purple-100 dark:border-purple-900/30 space-y-2.5 text-left">
                         <div className="flex justify-between items-center">
                           <span className="text-[10px] font-black text-purple-600 dark:text-purple-400 uppercase font-mono tracking-wider">💻 Project Work</span>
                           <span className="text-[10px] font-black text-purple-700 dark:text-purple-300 font-mono">Max 50</span>
                         </div>
-                        <div className="text-2xl font-black text-slate-900 dark:text-white font-mono">
-                          {assess.project} <span className="text-xs text-slate-400 font-normal">/ 50</span>
+                        <div className="text-2xl font-black text-slate-900 dark:text-white font-mono flex items-baseline justify-between">
+                          <span>{assess.project} <span className="text-xs text-slate-400 font-normal">/ 50</span></span>
+                          {projectDeficit > 0 ? (
+                            <span className="text-[9px] font-black text-rose-600 bg-rose-100 dark:bg-rose-950/40 px-1.5 py-0.5 rounded font-mono">
+                              +{projectDeficit} Needed
+                            </span>
+                          ) : (
+                            <span className="text-[9px] font-black text-emerald-600 bg-emerald-100 dark:bg-emerald-950/40 px-1.5 py-0.5 rounded font-mono">
+                              Passed
+                            </span>
+                          )}
                         </div>
                         <div className="w-full h-1.5 bg-purple-200 dark:bg-purple-900 rounded-full overflow-hidden">
                           <div className="h-full bg-purple-500 rounded-full" style={{ width: `${(assess.project / 50) * 100}%` }}></div>
                         </div>
-                        <span className="text-[9px] font-bold text-slate-400 block pt-1 font-mono">Practical Code & Repo</span>
+                        <span className="text-[9px] font-bold text-slate-400 block font-mono">Practical Code & Repo</span>
                       </div>
 
                       {/* Component 4: Report Submission (30 Marks) */}
-                      <div className="p-4 rounded-2xl bg-amber-50/50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/30 space-y-2">
+                      <div className="p-4 rounded-2xl bg-amber-50/50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/30 space-y-2.5 text-left">
                         <div className="flex justify-between items-center">
                           <span className="text-[10px] font-black text-amber-600 dark:text-amber-400 uppercase font-mono tracking-wider">📄 Report Submission</span>
                           <span className="text-[10px] font-black text-amber-700 dark:text-amber-300 font-mono">Max 30</span>
                         </div>
-                        <div className="text-2xl font-black text-slate-900 dark:text-white font-mono">
-                          {assess.report} <span className="text-xs text-slate-400 font-normal">/ 30</span>
+                        <div className="text-2xl font-black text-slate-900 dark:text-white font-mono flex items-baseline justify-between">
+                          <span>{assess.report} <span className="text-xs text-slate-400 font-normal">/ 30</span></span>
+                          {reportDeficit > 0 ? (
+                            <span className="text-[9px] font-black text-rose-600 bg-rose-100 dark:bg-rose-950/40 px-1.5 py-0.5 rounded font-mono">
+                              +{reportDeficit} Needed
+                            </span>
+                          ) : (
+                            <span className="text-[9px] font-black text-emerald-600 bg-emerald-100 dark:bg-emerald-950/40 px-1.5 py-0.5 rounded font-mono">
+                              Passed
+                            </span>
+                          )}
                         </div>
                         <div className="w-full h-1.5 bg-amber-200 dark:bg-amber-900 rounded-full overflow-hidden">
                           <div className="h-full bg-amber-500 rounded-full" style={{ width: `${(assess.report / 30) * 100}%` }}></div>
                         </div>
-                        <span className="text-[9px] font-bold text-slate-400 block pt-1 font-mono">Thesis & Lab Reports</span>
+                        <span className="text-[9px] font-bold text-slate-400 block font-mono">Thesis & Lab Reports</span>
                       </div>
 
                       {/* Component 5: Class Viva (20 Marks) */}
-                      <div className="p-4 rounded-2xl bg-rose-50/50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/30 space-y-2">
+                      <div className="p-4 rounded-2xl bg-rose-50/50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/30 space-y-2.5 text-left">
                         <div className="flex justify-between items-center">
                           <span className="text-[10px] font-black text-rose-600 dark:text-rose-400 uppercase font-mono tracking-wider">🗣 Class Viva</span>
                           <span className="text-[10px] font-black text-rose-700 dark:text-rose-300 font-mono">Max 20</span>
                         </div>
-                        <div className="text-2xl font-black text-slate-900 dark:text-white font-mono">
-                          {assess.viva} <span className="text-xs text-slate-400 font-normal">/ 20</span>
+                        <div className="text-2xl font-black text-slate-900 dark:text-white font-mono flex items-baseline justify-between">
+                          <span>{assess.viva} <span className="text-xs text-slate-400 font-normal">/ 20</span></span>
+                          {vivaDeficit > 0 ? (
+                            <span className="text-[9px] font-black text-rose-600 bg-rose-100 dark:bg-rose-950/40 px-1.5 py-0.5 rounded font-mono">
+                              +{vivaDeficit} Needed
+                            </span>
+                          ) : (
+                            <span className="text-[9px] font-black text-emerald-600 bg-emerald-100 dark:bg-emerald-950/40 px-1.5 py-0.5 rounded font-mono">
+                              Passed
+                            </span>
+                          )}
                         </div>
                         <div className="w-full h-1.5 bg-rose-200 dark:bg-rose-900 rounded-full overflow-hidden">
                           <div className="h-full bg-rose-500 rounded-full" style={{ width: `${(assess.viva / 20) * 100}%` }}></div>
                         </div>
-                        <span className="text-[9px] font-bold text-slate-400 block pt-1 font-mono">Oral Viva & Participation</span>
+                        <span className="text-[9px] font-bold text-slate-400 block font-mono">Oral Viva & Participation</span>
                       </div>
                     </div>
                   </div>
@@ -928,11 +1039,18 @@ export default function MentorDashboard({ user, onLogout }) {
                       </span>
                     </div>
 
-                    {/* Alert items list */}
+                    {/* Alert items list - Clickable to open student detailed mark deficit flashcard */}
                     <div className="space-y-3.5">
                       
-                      {/* Alert 1 */}
-                      <div className="p-4 rounded-2xl bg-rose-50/40 dark:bg-red-950/10 border border-rose-100/60 dark:border-red-900/20 flex items-start justify-between gap-4 hover:border-rose-200 dark:hover:border-red-900/40 transition-colors cursor-pointer">
+                      {/* Alert 1: Ananya Iyer */}
+                      <div 
+                        onClick={() => setSelectedStudentId('25mca016')}
+                        className={`p-4 rounded-2xl transition-all cursor-pointer flex items-start justify-between gap-4 ${
+                          selectedStudentId === '25mca016' 
+                            ? 'bg-rose-500/10 border-2 border-rose-500 shadow-sm' 
+                            : 'bg-rose-50/40 dark:bg-red-950/10 border border-rose-100/60 dark:border-red-900/20 hover:border-rose-300 dark:hover:border-red-900/50'
+                        }`}
+                      >
                         <div className="space-y-1.5">
                           <div className="flex flex-wrap items-center gap-2">
                             <span className="bg-rose-600 text-white text-[8px] font-black tracking-widest px-2 py-0.5 rounded font-mono uppercase">
@@ -944,22 +1062,32 @@ export default function MentorDashboard({ user, onLogout }) {
                             <span className="text-[10px] font-bold text-slate-400 font-mono">
                               (25mca016)
                             </span>
+                            <span className="bg-rose-100 dark:bg-rose-950/40 text-rose-600 text-[9px] font-black px-2 py-0.5 rounded font-mono">
+                              Needs +16 Marks
+                            </span>
                           </div>
                           <p className="text-[11px] font-semibold text-slate-600 dark:text-slate-400">
-                            High Risk + High Stress detected in Advanced Calculus.
+                            High Risk + High Stress in Advanced Calculus (Score: 124/200).
                           </p>
-                          <a href="#" className="inline-block text-[10px] font-extrabold text-rose-600 dark:text-rose-450 hover:underline">
-                            Action Required: Immediate Pastoral Care
-                          </a>
+                          <span className="inline-block text-[10px] font-extrabold text-rose-600 dark:text-rose-450 hover:underline">
+                            Click to View 200-Mark Deficit & Component Breakdown ➔
+                          </span>
                         </div>
                         <ChevronRight className="text-rose-500 w-5 h-5 self-center" />
                       </div>
 
-                      {/* Alert 2 */}
-                      <div className="p-4 rounded-2xl bg-slate-50/50 dark:bg-slate-900/20 border border-[#eef2f6] dark:border-slate-850/60 flex items-start justify-between gap-4 hover:border-slate-205 dark:hover:border-slate-800 transition-colors cursor-pointer">
+                      {/* Alert 2: Arjun Mehta */}
+                      <div 
+                        onClick={() => setSelectedStudentId('25mca042')}
+                        className={`p-4 rounded-2xl transition-all cursor-pointer flex items-start justify-between gap-4 ${
+                          selectedStudentId === '25mca042' 
+                            ? 'bg-amber-500/10 border-2 border-amber-500 shadow-sm' 
+                            : 'bg-slate-50/50 dark:bg-slate-900/20 border border-[#eef2f6] dark:border-slate-850/60 hover:border-amber-300 dark:hover:border-amber-800'
+                        }`}
+                      >
                         <div className="space-y-1.5">
                           <div className="flex flex-wrap items-center gap-2">
-                            <span className="bg-slate-500 text-white text-[8px] font-black tracking-widest px-2 py-0.5 rounded font-mono uppercase">
+                            <span className="bg-amber-500 text-white text-[8px] font-black tracking-widest px-2 py-0.5 rounded font-mono uppercase">
                               WATCHLIST
                             </span>
                             <span className="text-xs font-black text-slate-850 dark:text-white">
@@ -968,19 +1096,32 @@ export default function MentorDashboard({ user, onLogout }) {
                             <span className="text-[10px] font-bold text-slate-400 font-mono">
                               (25mca042)
                             </span>
+                            <span className="bg-amber-100 dark:bg-amber-950/40 text-amber-600 text-[9px] font-black px-2 py-0.5 rounded font-mono">
+                              Needs +15 Marks
+                            </span>
                           </div>
                           <p className="text-[11px] font-semibold text-slate-655 dark:text-slate-400">
                             Consecutive missed micro-assessments in Physics 101.
                           </p>
+                          <span className="inline-block text-[10px] font-extrabold text-amber-600 dark:text-amber-400 hover:underline">
+                            Click to View 200-Mark Deficit & Component Breakdown ➔
+                          </span>
                         </div>
-                        <ChevronRight className="text-slate-400 w-5 h-5 self-center" />
+                        <ChevronRight className="text-amber-500 w-5 h-5 self-center" />
                       </div>
 
-                      {/* Alert 3 */}
-                      <div className="p-4 rounded-2xl bg-slate-50/50 dark:bg-slate-900/20 border border-[#eef2f6] dark:border-slate-850/60 flex items-start justify-between gap-4 hover:border-slate-205 dark:hover:border-slate-800 transition-colors cursor-pointer">
+                      {/* Alert 3: Rohan Das */}
+                      <div 
+                        onClick={() => setSelectedStudentId('25mca109')}
+                        className={`p-4 rounded-2xl transition-all cursor-pointer flex items-start justify-between gap-4 ${
+                          selectedStudentId === '25mca109' 
+                            ? 'bg-amber-500/10 border-2 border-amber-500 shadow-sm' 
+                            : 'bg-slate-50/50 dark:bg-slate-900/20 border border-[#eef2f6] dark:border-slate-850/60 hover:border-amber-300 dark:hover:border-amber-800'
+                        }`}
+                      >
                         <div className="space-y-1.5">
                           <div className="flex flex-wrap items-center gap-2">
-                            <span className="bg-slate-500 text-white text-[8px] font-black tracking-widest px-2 py-0.5 rounded font-mono uppercase">
+                            <span className="bg-amber-500 text-white text-[8px] font-black tracking-widest px-2 py-0.5 rounded font-mono uppercase">
                               WATCHLIST
                             </span>
                             <span className="text-xs font-black text-slate-855 dark:text-white">
@@ -989,12 +1130,18 @@ export default function MentorDashboard({ user, onLogout }) {
                             <span className="text-[10px] font-bold text-slate-400 font-mono">
                               (25mca109)
                             </span>
+                            <span className="bg-amber-100 dark:bg-amber-950/40 text-amber-600 text-[9px] font-black px-2 py-0.5 rounded font-mono">
+                              Needs +26 Marks
+                            </span>
                           </div>
                           <p className="text-[11px] font-semibold text-slate-655 dark:text-slate-400">
-                            Low engagement in Thermodynamics module.
+                            Low engagement in Thermodynamics module (Score: 114/200).
                           </p>
+                          <span className="inline-block text-[10px] font-extrabold text-amber-600 dark:text-amber-400 hover:underline">
+                            Click to View 200-Mark Deficit & Component Breakdown ➔
+                          </span>
                         </div>
-                        <ChevronRight className="text-slate-400 w-5 h-5 self-center" />
+                        <ChevronRight className="text-amber-500 w-5 h-5 self-center" />
                       </div>
 
                     </div>
