@@ -5,6 +5,7 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     password: str
+    role: str = "Student"
 
 class User(UserBase):
     id: int

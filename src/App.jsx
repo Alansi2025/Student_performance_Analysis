@@ -119,7 +119,7 @@ function Navbar({ activeTab, setActiveTab, isLoggedIn, currentUser, onLogout }) 
   const [searchFocused, setSearchFocused] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [showNotifications, setShowNotifications] = useState(false);
-  
+
   // Theme state synced with localStorage and html class
   const [theme, setTheme] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -161,10 +161,10 @@ function Navbar({ activeTab, setActiveTab, isLoggedIn, currentUser, onLogout }) 
     <header className="sticky top-0 z-50 w-full bg-white/80 dark:bg-[#050505]/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20 gap-4">
-          
+
           {/* LEFT SIDE: Logo */}
           <div className="flex-shrink-0 flex items-center">
-            <a 
+            <a
               href="#" onClick={(e) => { e.preventDefault(); setActiveTab('Home'); }}
               className="flex items-center gap-2 group focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 rounded-md"
               aria-label="AetherLearn Home"
@@ -190,11 +190,10 @@ function Navbar({ activeTab, setActiveTab, isLoggedIn, currentUser, onLogout }) 
                         setActiveTab(tab.name);
                         setIsMobileMenuOpen(false);
                       }}
-                      className={`px-3 lg:px-4 py-2 text-sm font-medium rounded-lg transition-all duration-300 relative focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 ${
-                        isActive 
-                          ? 'text-brand-600 dark:text-brand-400 font-bold' 
+                      className={`px-3 lg:px-4 py-2 text-sm font-medium rounded-lg transition-all duration-300 relative focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 ${isActive
+                          ? 'text-brand-600 dark:text-brand-400 font-bold'
                           : 'text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-gray-200 hover:bg-slate-100/50 dark:hover:bg-slate-800/40'
-                      }`}
+                        }`}
                     >
                       {tab.name}
                       {/* Active state indicator line */}
@@ -210,14 +209,13 @@ function Navbar({ activeTab, setActiveTab, isLoggedIn, currentUser, onLogout }) 
 
           {/* RIGHT SIDE: Search & Actions */}
           <div className="flex items-center justify-end gap-1.5 sm:gap-3 md:flex-initial">
-            
+
             {/* Search Bar Container */}
-            <div 
-              className={`relative flex items-center transition-all duration-300 rounded-full bg-slate-100/80 dark:bg-slate-900/90 border ${
-                searchFocused 
-                  ? 'border-brand-500/60 ring-2 ring-brand-500/10 w-36 sm:w-48 md:w-52 lg:w-60 bg-white dark:bg-[#0c0c0c]' 
+            <div
+              className={`relative flex items-center transition-all duration-300 rounded-full bg-slate-100/80 dark:bg-slate-900/90 border ${searchFocused
+                  ? 'border-brand-500/60 ring-2 ring-brand-500/10 w-36 sm:w-48 md:w-52 lg:w-60 bg-white dark:bg-[#0c0c0c]'
                   : 'border-slate-200/80 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 w-24 sm:w-36 md:w-40 lg:w-48'
-              }`}
+                }`}
             >
               <div className="absolute left-3 pointer-events-none text-slate-400 dark:text-gray-500">
                 <Search size={14} className={`transition-colors duration-200 ${searchFocused ? 'text-brand-500' : 'text-slate-400 dark:text-gray-500'}`} />
@@ -259,7 +257,7 @@ function Navbar({ activeTab, setActiveTab, isLoggedIn, currentUser, onLogout }) 
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-500"></span>
                 </span>
               </button>
-              
+
               {showNotifications && (
                 <div className="absolute right-0 mt-3 w-60 bg-white dark:bg-[#050505] border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl py-6 px-4 z-50 animate-fade-in-up">
                   <div className="flex flex-col items-center justify-center text-center gap-2">
@@ -338,18 +336,17 @@ function Navbar({ activeTab, setActiveTab, isLoggedIn, currentUser, onLogout }) 
                       setActiveTab(tab.name);
                       setIsMobileMenuOpen(false);
                     }}
-                    className={`block px-4 py-2.5 rounded-xl text-base font-medium transition-all duration-200 ${
-                      isActive
+                    className={`block px-4 py-2.5 rounded-xl text-base font-medium transition-all duration-200 ${isActive
                         ? 'bg-brand-50/60 dark:bg-brand-500/10 text-brand-600 dark:text-brand-400 border-l-4 border-brand-500 pl-3'
                         : 'text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-gray-200 hover:bg-slate-50 dark:hover:bg-slate-800/40 border-l-4 border-transparent'
-                    }`}
+                      }`}
                   >
                     {tab.name}
                   </a>
                 );
               })}
             </div>
-            
+
             {/* Log In Button (Mobile Dropdown Viewport) */}
             <div className="px-4 pt-2">
               {isLoggedIn ? (
@@ -426,8 +423,8 @@ function SubscribeForm() {
             required
             disabled={status === 'sending'}
           />
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="absolute right-1 p-1.5 rounded-md bg-brand-600 hover:bg-brand-700 text-white transition-colors duration-200 disabled:opacity-50"
             aria-label="Subscribe"
             disabled={status === 'sending'}
@@ -446,7 +443,7 @@ function Footer({ setActiveTab, isLoggedIn, onLogout }) {
       <div className="max-w-7xl mx-auto">
         {/* Main Footer Content Grid */}
         <div className="grid grid-cols-12 gap-y-10 gap-x-6 sm:gap-x-8 pb-12 border-b border-slate-200/60 dark:border-slate-800/60">
-          
+
           {/* Column 1: Brand Info */}
           <div className="col-span-12 md:col-span-5 lg:col-span-4 space-y-5 text-left">
             <div className="flex items-center gap-3 group">
@@ -462,7 +459,7 @@ function Footer({ setActiveTab, isLoggedIn, onLogout }) {
                 </span>
               </div>
             </div>
-            
+
             <p className="text-sm text-slate-550 dark:text-slate-400 leading-relaxed max-w-sm">
               Empowering the next generation of education through predictive analytics, real-time tracking, and personalized learning pathways.
             </p>
@@ -475,7 +472,7 @@ function Footer({ setActiveTab, isLoggedIn, onLogout }) {
             </h4>
             <ul className="space-y-2.5 text-sm">
               <li>
-                <a 
+                <a
                   href="#" onClick={(e) => { e.preventDefault(); if (setActiveTab) setActiveTab('Home'); }}
                   className="hover:text-brand-600 dark:hover:text-brand-400 transition-all duration-200 font-medium inline-block hover:translate-x-1"
                 >
@@ -485,8 +482,8 @@ function Footer({ setActiveTab, isLoggedIn, onLogout }) {
               {isLoggedIn ? (
                 <>
                   <li>
-                    <a 
-                      href="#dashboard" 
+                    <a
+                      href="#dashboard"
                       onClick={(e) => {
                         e.preventDefault();
                         if (setActiveTab) setActiveTab('Dashboard');
@@ -497,8 +494,8 @@ function Footer({ setActiveTab, isLoggedIn, onLogout }) {
                     </a>
                   </li>
                   <li>
-                    <a 
-                      href="#logout" 
+                    <a
+                      href="#logout"
                       onClick={(e) => {
                         e.preventDefault();
                         if (onLogout) onLogout();
@@ -512,8 +509,8 @@ function Footer({ setActiveTab, isLoggedIn, onLogout }) {
               ) : (
                 <>
                   <li>
-                    <a 
-                      href="#login" 
+                    <a
+                      href="#login"
                       onClick={(e) => {
                         e.preventDefault();
                         if (setActiveTab) setActiveTab('Login');
@@ -524,8 +521,8 @@ function Footer({ setActiveTab, isLoggedIn, onLogout }) {
                     </a>
                   </li>
                   <li>
-                    <a 
-                      href="#register" 
+                    <a
+                      href="#register"
                       onClick={(e) => {
                         e.preventDefault();
                         if (setActiveTab) setActiveTab('Login');
@@ -547,32 +544,32 @@ function Footer({ setActiveTab, isLoggedIn, onLogout }) {
             </h4>
             <ul className="space-y-2.5 text-sm">
               <li>
-                <a 
-                  href="#" 
+                <a
+                  href="#"
                   className="hover:text-brand-600 dark:hover:text-brand-400 transition-all duration-200 font-medium inline-block hover:translate-x-1"
                 >
                   Predictive Analytics
                 </a>
               </li>
               <li>
-                <a 
-                  href="#" 
+                <a
+                  href="#"
                   className="hover:text-brand-600 dark:hover:text-brand-400 transition-all duration-200 font-medium inline-block hover:translate-x-1"
                 >
                   Real-time Monitoring
                 </a>
               </li>
               <li>
-                <a 
-                  href="#" 
+                <a
+                  href="#"
                   className="hover:text-brand-600 dark:hover:text-brand-400 transition-all duration-200 font-medium inline-block hover:translate-x-1"
                 >
                   Personalized Learning
                 </a>
               </li>
               <li>
-                <a 
-                  href="#" 
+                <a
+                  href="#"
                   className="hover:text-brand-600 dark:hover:text-brand-400 transition-all duration-200 font-medium inline-block hover:translate-x-1"
                 >
                   Early Intervention
@@ -590,14 +587,14 @@ function Footer({ setActiveTab, isLoggedIn, onLogout }) {
               Subscribe to get the latest updates on performance analytics and learning methodologies.
             </p>
             <SubscribeForm />
-            
+
             <div className="space-y-3 pt-2">
               <span className="text-[10px] uppercase font-bold tracking-widest text-slate-400 dark:text-slate-500 block font-mono">
                 Follow Us
               </span>
               <div className="flex gap-2">
-                <a 
-                  href="https://github.com" 
+                <a
+                  href="https://github.com"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800/60 hover:bg-slate-200 dark:hover:bg-slate-700/80 border border-slate-200 dark:border-slate-800/60 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-white transition-all duration-200 hover:scale-105"
@@ -605,8 +602,8 @@ function Footer({ setActiveTab, isLoggedIn, onLogout }) {
                 >
                   <Code2 className="w-4 h-4" />
                 </a>
-                <a 
-                  href="https://linkedin.com" 
+                <a
+                  href="https://linkedin.com"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800/60 hover:bg-slate-200 dark:hover:bg-slate-700/80 border border-slate-200 dark:border-slate-800/60 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-white transition-all duration-200 hover:scale-105"
@@ -614,8 +611,8 @@ function Footer({ setActiveTab, isLoggedIn, onLogout }) {
                 >
                   <Share2 className="w-4 h-4" />
                 </a>
-                <a 
-                  href="https://discord.com" 
+                <a
+                  href="https://discord.com"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800/60 hover:bg-slate-200 dark:hover:bg-slate-700/80 border border-slate-200 dark:border-slate-800/60 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-white transition-all duration-200 hover:scale-105"
@@ -623,8 +620,8 @@ function Footer({ setActiveTab, isLoggedIn, onLogout }) {
                 >
                   <Users className="w-4 h-4" />
                 </a>
-                <a 
-                  href="mailto:contact@aetherlearn.edu" 
+                <a
+                  href="mailto:contact@aetherlearn.edu"
                   className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800/60 hover:bg-slate-200 dark:hover:bg-slate-700/80 border border-slate-200 dark:border-slate-800/60 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-white transition-all duration-200 hover:scale-105"
                   aria-label="Email"
                 >
@@ -663,12 +660,13 @@ function LoginPage({ onBackToHome, onLoginSuccess }) {
   const [viewState, setViewState] = useState('signIn');
   const [rememberMe, setRememberMe] = useState(false);
   const [role, setRole] = useState('');
+  const [selectedRole, setSelectedRole] = useState('Student');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  
+
   // Sign In inputs state
   const [signInEmail, setSignInEmail] = useState('');
   const [signInPassword, setSignInPassword] = useState('');
-  
+
   // Sign Up inputs state
   const [signUpName, setSignUpName] = useState('');
   const [signUpEmail, setSignUpEmail] = useState('');
@@ -685,7 +683,7 @@ function LoginPage({ onBackToHome, onLoginSuccess }) {
   const [signUpRole, setSignUpRole] = useState('Student');
   const [isEmailFocused, setIsEmailFocused] = useState(false);
   const [isEmailHovered, setIsEmailHovered] = useState(false);
-  
+
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
 
@@ -718,18 +716,19 @@ function LoginPage({ onBackToHome, onLoginSuccess }) {
   const handleSignInSubmit = async (e) => {
     e.preventDefault();
     setErrorMsg('');
-    
+
     if (!signInEmail || !signInPassword) {
       setErrorMsg('Please enter both email and password.');
       return;
     }
 
     try {
+      const activeRoleParam = selectedRole === 'Teacher' ? 'Mentor' : selectedRole;
       const formData = new URLSearchParams();
       formData.append('username', signInEmail.trim());
       formData.append('password', signInPassword);
 
-      const response = await fetch('http://localhost:8000/users/login', {
+      const response = await fetch(`http://localhost:8000/users/login?role=${encodeURIComponent(activeRoleParam)}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -745,12 +744,81 @@ function LoginPage({ onBackToHome, onLoginSuccess }) {
       }
 
       const data = await response.json();
-      const user = { email: signInEmail.trim(), role: data.role };
+      const user = { email: signInEmail.trim(), role: data.role || activeRoleParam };
       if (onLoginSuccess) onLoginSuccess(user);
     } catch (err) {
       setErrorMsg('Server connection failed. Please try again.');
     }
   };
+
+  const executeGoogleAuth = async (token) => {
+    setErrorMsg('');
+    try {
+      const response = await fetch('http://localhost:8000/users/google-login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          token: token,
+          credential: token,
+          role: selectedRole || 'Student'
+        }),
+        credentials: 'include'
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        setErrorMsg(errorData.detail || 'Google Authentication failed.');
+        return;
+      }
+
+      const data = await response.json();
+      const user = {
+        email: data.email,
+        name: data.name,
+        picture: data.picture,
+        role: data.role
+      };
+      if (onLoginSuccess) onLoginSuccess(user);
+    } catch (err) {
+      setErrorMsg(err.message || 'Google authentication server error.');
+    }
+  };
+
+  const handleGoogleSignIn = () => {
+    setErrorMsg('');
+    const userEmail = window.prompt("Google Account Sign-In:\nEnter your Google Account email (or paste Google ID Token):", "1978adityakakri@gmail.com");
+    if (!userEmail) return;
+    executeGoogleAuth(userEmail.trim());
+  };
+
+  useEffect(() => {
+    if (window.google?.accounts?.id) {
+      try {
+        window.google.accounts.id.initialize({
+          client_id: '341791876616-40e80livod2f7h4u2kj8jm0pov66bdv3.apps.googleusercontent.com',
+          callback: (res) => {
+            if (res.credential) {
+              executeGoogleAuth(res.credential);
+            }
+          }
+        });
+        const btnContainer = document.getElementById('googleSignInBtnContainer');
+        if (btnContainer) {
+          window.google.accounts.id.renderButton(btnContainer, {
+            theme: 'outline',
+            size: 'large',
+            width: '100%',
+            text: 'continue_with',
+            shape: 'pill'
+          });
+        }
+      } catch (err) {
+        console.error('Google GSI error:', err);
+      }
+    }
+  }, []);
 
   const handleSignUpSubmit = async (e) => {
     e.preventDefault();
@@ -769,6 +837,7 @@ function LoginPage({ onBackToHome, onLoginSuccess }) {
     }
 
     try {
+      const activeRoleParam = selectedRole === 'Teacher' ? 'Mentor' : selectedRole;
       const response = await fetch('http://localhost:8000/users/register', {
         method: 'POST',
         headers: {
@@ -776,7 +845,8 @@ function LoginPage({ onBackToHome, onLoginSuccess }) {
         },
         body: JSON.stringify({
           email: signUpEmail.trim(),
-          password: signUpAccessKey
+          password: signUpAccessKey,
+          role: activeRoleParam
         }),
       });
 
@@ -804,10 +874,10 @@ function LoginPage({ onBackToHome, onLoginSuccess }) {
 
   return (
     <div className="w-full min-h-screen flex flex-col items-center justify-center pt-8 pb-6 px-4 sm:px-6 lg:px-8 bg-slate-50 dark:bg-[#050505] transition-colors duration-300">
-      
+
       {/* Top Header Controls with Theme Toggle and Back button */}
       <div className="w-full flex items-center justify-between mb-4 max-w-md">
-        <button 
+        <button
           onClick={onBackToHome}
           className="text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-brand-600 dark:hover:text-white transition-colors duration-200 flex items-center gap-1.5 focus:outline-none"
         >
@@ -826,149 +896,176 @@ function LoginPage({ onBackToHome, onLoginSuccess }) {
       </div>
 
       {/* ==================== LOGIN CARD CONTAINER ==================== */}
-      <div className="w-full max-w-md bg-white dark:bg-[#0c0c0c] border border-slate-200 dark:border-slate-800/80 rounded-3xl shadow-xl dark:shadow-black/30 p-8 sm:p-10 transition-all duration-300 animate-fade-in">
-          
-          {viewState === 'signIn' ? (
-            /* ==================== SIGN IN VIEW ==================== */
-            <>
-              {/* Title Block */}
-              <div className="text-center mb-6">
-                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-slate-900 via-slate-855 to-brand-600 dark:from-white dark:via-gray-150 dark:to-brand-400 bg-clip-text text-transparent">
-                  AetherLearn
-                </h1>
-                <p className="text-sm font-medium text-slate-550 dark:text-slate-400 mt-2">
-                  Intelligence evolved. Access your account.
-                </p>
+      <div className="w-full max-w-md bg-white dark:bg-[#0c0c0c] border border-slate-200 dark:border-slate-800/80 rounded-3xl shadow-xl dark:shadow-black/30 p-8 sm:p-10 transition-all duration-300 animate-login-card animate-border-glow">
+
+        {viewState === 'signIn' ? (
+          /* ==================== SIGN IN VIEW ==================== */
+          <>
+            {/* Title Block */}
+            <div className="text-center mb-6">
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-slate-900 via-slate-855 to-brand-600 dark:from-white dark:via-gray-150 dark:to-brand-400 bg-clip-text text-transparent">
+                AetherLearn
+              </h1>
+              <p className="text-sm font-medium text-slate-550 dark:text-slate-400 mt-2">
+                Intelligence evolved. Access your account.
+              </p>
+            </div>
+
+            {successMsg && (
+              <div className="mb-4 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-650 dark:text-emerald-455 text-xs font-semibold text-center animate-fade-in">
+                {successMsg}
               </div>
+            )}
 
-              {successMsg && (
-                <div className="mb-4 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-650 dark:text-emerald-455 text-xs font-semibold text-center animate-fade-in">
-                  {successMsg}
-                </div>
-              )}
+            {errorMsg && (
+              <div className="mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-650 dark:text-rose-455 text-xs font-semibold text-center">
+                {errorMsg}
+              </div>
+            )}
 
-              {errorMsg && (
-                <div className="mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-650 dark:text-rose-455 text-xs font-semibold text-center">
-                  {errorMsg}
-                </div>
-              )}
+            {/* Login Form */}
+            <form onSubmit={handleSignInSubmit} className="space-y-5 text-left">
 
-              {/* Login Form */}
-              <form onSubmit={handleSignInSubmit} className="space-y-5 text-left">
-                
-                {/* Email Address */}
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-black tracking-widest text-slate-550 dark:text-slate-400 uppercase font-mono block">
-                    Email Address
-                  </label>
-                  <div className="relative flex items-center">
-                    <span className="absolute left-4 text-slate-400 dark:text-slate-500">
-                      <Mail size={16} />
-                    </span>
-                    <input 
-                      type="email" 
-                      required
-                      placeholder="alex@aetherlearn.com"
-                      value={signInEmail}
-                      onChange={(e) => setSignInEmail(e.target.value)}
-                      className="w-full bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-850/80 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 pl-11 pr-4 py-3 rounded-2xl text-sm focus:outline-none focus:border-brand-500/60 focus:ring-2 focus:ring-brand-500/10 transition-all duration-200"
-                    />
-                  </div>
-                </div>
-
-                {/* Password */}
-                <div className="space-y-1.5">
-                  <div className="flex justify-between items-center">
-                    <label className="text-[10px] font-black tracking-widest text-slate-550 dark:text-slate-400 uppercase font-mono">
-                      Password
-                    </label>
-                    <a href="#" className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:underline">
-                      Forgot password?
-                    </a>
-                  </div>
-                  <div className="relative flex items-center">
-                    <span className="absolute left-4 text-slate-400 dark:text-slate-500">
-                      <Lock size={16} />
-                    </span>
-                    <input 
-                      type={showSignInPassword ? "text" : "password"} 
-                      required
-                      placeholder="••••••••"
-                      value={signInPassword}
-                      onChange={(e) => setSignInPassword(e.target.value)}
-                      className="w-full bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-855/80 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-650 pl-11 pr-12 py-3 rounded-2xl text-sm focus:outline-none focus:border-brand-500/60 focus:ring-2 focus:ring-brand-500/10 transition-all duration-200 font-sans"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowSignInPassword(!showSignInPassword)}
-                      className="absolute right-4 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-white focus:outline-none cursor-pointer"
-                    >
-                      {showSignInPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                    </button>
-                  </div>
-                </div>
-
-                {/* Remember me checkbox */}
-                <div className="flex items-center">
-                  <label className="relative flex items-center cursor-pointer select-none text-xs font-medium text-slate-650 dark:text-slate-350">
-                    <input 
-                      type="checkbox" 
-                      checked={rememberMe}
-                      onChange={() => setRememberMe(!rememberMe)}
-                      className="sr-only"
-                    />
-                    <div className={`w-5 h-5 rounded border mr-2 flex items-center justify-center transition-all duration-200 ${
-                      rememberMe 
-                        ? 'bg-brand-500 border-brand-500 text-white' 
-                        : 'bg-slate-50 dark:bg-slate-900/60 border-slate-200 dark:border-slate-850/80'
-                    }`}>
-                      {rememberMe && (
-                        <svg className="w-3.5 h-3.5 stroke-current stroke-2 fill-none" viewBox="0 0 24 24">
-                          <polyline points="20 6 9 17 4 12" />
-                        </svg>
-                      )}
-                    </div>
-                    Remember me for 30 days
-                  </label>
-                </div>
-
-                {/* Sign In Button */}
-                <div className="pt-2">
-                  <button 
-                    type="submit" 
-                    className="w-full bg-blue-100 dark:bg-[#1a2b5c] text-blue-900 dark:text-blue-300 border border-blue-200 dark:border-blue-800/50 hover:bg-blue-200 dark:hover:bg-[#20346e] py-3.5 rounded-2xl text-sm font-bold transition-all duration-300 flex items-center justify-center gap-2 group shadow-sm shadow-blue-500/5"
-                  >
-                    <span>Sign In</span>
-                    <ArrowRight size={16} className="transform group-hover:translate-x-1 transition-transform duration-200" />
-                  </button>
-                </div>
-
-                {/* Divider */}
-                <div className="relative py-4 flex items-center justify-center">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-slate-200/80 dark:border-slate-850" />
-                  </div>
-                  <span className="relative px-3 bg-white dark:bg-[#0c0c0c] text-[10px] font-black tracking-widest text-slate-400 dark:text-gray-500 uppercase font-mono">
-                    Or continue with
-                  </span>
-                </div>
-
-                {/* Social login buttons */}
-                <div className="grid grid-cols-2 gap-3">
-                  {/* Google */}
+              {/* Account Portal Role Selector */}
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-black tracking-widest text-slate-550 dark:text-slate-400 uppercase font-mono block">
+                  Account Portal Role
+                </label>
+                <div className="grid grid-cols-3 gap-1.5 p-1 bg-slate-100 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 rounded-2xl text-xs font-bold">
                   <button
                     type="button"
-                    className="flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border border-slate-200 dark:border-slate-855 bg-white dark:bg-slate-900/40 text-slate-700 dark:text-slate-300 text-xs font-bold hover:bg-slate-55 dark:hover:bg-slate-800/40 transition-colors duration-200"
+                    onClick={() => setSelectedRole('Student')}
+                    className={`py-2 px-2.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-1.5 ${selectedRole === 'Student'
+                        ? 'bg-white dark:bg-slate-800 text-[#253df5] dark:text-blue-400 shadow-sm font-extrabold'
+                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                      }`}
                   >
-                    <svg className="w-4 h-4" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
-                      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
-                      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05" />
-                      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335" />
-                    </svg>
-                    Google
+                    🎓 Student
                   </button>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedRole('Teacher')}
+                    className={`py-2 px-2.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-1.5 ${selectedRole === 'Teacher' || selectedRole === 'Mentor'
+                        ? 'bg-white dark:bg-slate-800 text-[#253df5] dark:text-blue-400 shadow-sm font-extrabold'
+                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                      }`}
+                  >
+                    👨‍🏫 Teacher
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedRole('Overseer')}
+                    className={`py-2 px-2.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-1.5 ${selectedRole === 'Overseer'
+                        ? 'bg-white dark:bg-slate-800 text-[#253df5] dark:text-blue-400 shadow-sm font-extrabold'
+                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                      }`}
+                  >
+                    🛡️ Overseer
+                  </button>
+                </div>
+              </div>
 
+              {/* Email Address */}
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-black tracking-widest text-slate-550 dark:text-slate-400 uppercase font-mono block">
+                  Email Address
+                </label>
+                <div className="relative flex items-center">
+                  <span className="absolute left-4 text-slate-400 dark:text-slate-500">
+                    <Mail size={16} />
+                  </span>
+                  <input
+                    type="email"
+                    required
+                    placeholder="alex@aetherlearn.com"
+                    value={signInEmail}
+                    onChange={(e) => setSignInEmail(e.target.value)}
+                    className="w-full bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-850/80 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 pl-11 pr-4 py-3 rounded-2xl text-sm focus:outline-none focus:border-brand-500/60 focus:ring-2 focus:ring-brand-500/10 transition-all duration-200"
+                  />
+                </div>
+              </div>
+
+              {/* Password */}
+              <div className="space-y-1.5">
+                <div className="flex justify-between items-center">
+                  <label className="text-[10px] font-black tracking-widest text-slate-550 dark:text-slate-400 uppercase font-mono">
+                    Password
+                  </label>
+                  <a href="#" className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:underline">
+                    Forgot password?
+                  </a>
+                </div>
+                <div className="relative flex items-center">
+                  <span className="absolute left-4 text-slate-400 dark:text-slate-500">
+                    <Lock size={16} />
+                  </span>
+                  <input
+                    type={showSignInPassword ? "text" : "password"}
+                    required
+                    placeholder="••••••••"
+                    value={signInPassword}
+                    onChange={(e) => setSignInPassword(e.target.value)}
+                    className="w-full bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-855/80 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-650 pl-11 pr-12 py-3 rounded-2xl text-sm focus:outline-none focus:border-brand-500/60 focus:ring-2 focus:ring-brand-500/10 transition-all duration-200 font-sans"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowSignInPassword(!showSignInPassword)}
+                    className="absolute right-4 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-white focus:outline-none cursor-pointer"
+                  >
+                    {showSignInPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+              </div>
+
+              {/* Remember me checkbox */}
+              <div className="flex items-center">
+                <label className="relative flex items-center cursor-pointer select-none text-xs font-medium text-slate-650 dark:text-slate-350">
+                  <input
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={() => setRememberMe(!rememberMe)}
+                    className="sr-only"
+                  />
+                  <div className={`w-5 h-5 rounded border mr-2 flex items-center justify-center transition-all duration-200 ${rememberMe
+                      ? 'bg-brand-500 border-brand-500 text-white'
+                      : 'bg-slate-50 dark:bg-slate-900/60 border-slate-200 dark:border-slate-850/80'
+                    }`}>
+                    {rememberMe && (
+                      <svg className="w-3.5 h-3.5 stroke-current stroke-2 fill-none" viewBox="0 0 24 24">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    )}
+                  </div>
+                  Remember me for 30 days
+                </label>
+              </div>
+
+              {/* Sign In Button */}
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  className="w-full bg-blue-100 dark:bg-[#1a2b5c] text-blue-900 dark:text-blue-300 border border-blue-200 dark:border-blue-800/50 hover:bg-blue-200 dark:hover:bg-[#20346e] py-3.5 rounded-2xl text-sm font-bold transition-all duration-300 flex items-center justify-center gap-2 group shadow-sm shadow-blue-500/5"
+                >
+                  <span>Sign In</span>
+                  <ArrowRight size={16} className="transform group-hover:translate-x-1 transition-transform duration-200" />
+                </button>
+              </div>
+
+              {/* Divider */}
+              <div className="relative py-4 flex items-center justify-center">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-slate-200/80 dark:border-slate-850" />
+                </div>
+                <span className="relative px-3 bg-white dark:bg-[#0c0c0c] text-[10px] font-black tracking-widest text-slate-400 dark:text-gray-500 uppercase font-mono">
+                  Or continue with
+                </span>
+              </div>
+
+              {/* Social login buttons */}
+              <div className="space-y-3">
+                <div id="googleSignInBtnContainer" className="w-full flex justify-center min-h-[40px]"></div>
+
+                <div className="grid grid-cols-1 gap-3">
                   {/* GitHub */}
                   <button
                     type="button"
@@ -980,276 +1077,314 @@ function LoginPage({ onBackToHome, onLoginSuccess }) {
                     GitHub
                   </button>
                 </div>
+              </div>
 
+            </form>
 
+            {/* Footer text: Toggles to Sign Up Form */}
+            <div className="text-center mt-6">
+              <p className="text-xs text-slate-550 dark:text-slate-400">
+                Don't have an account?{' '}
+                <button
+                  onClick={() => { setErrorMsg(''); setSuccessMsg(''); setViewState('signUp'); }}
+                  className="text-brand-600 dark:text-brand-400 font-bold hover:underline bg-transparent border-none p-0 focus:outline-none"
+                >
+                  Apply for Access
+                </button>
+              </p>
+            </div>
+          </>
+        ) : (
+          /* ==================== SIGN UP VIEW (The Earlier Form) ==================== */
+          <>
+            {/* Title Block */}
+            <div className="text-center mb-8">
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-slate-900 via-slate-855 to-brand-600 dark:from-white dark:via-gray-150 dark:to-brand-400 bg-clip-text text-transparent">
+                AetherLearn
+              </h1>
+              <p className="text-sm font-medium text-slate-550 dark:text-slate-400 mt-2">
+                Initialize your learning matrix.
+              </p>
 
-              </form>
+              {/* Symmetrical step progress dots */}
+              <div className="flex justify-center items-center gap-1.5 mt-4">
+                <span className="w-8 h-1 rounded-full bg-brand-500 dark:bg-brand-400 transition-colors duration-300" />
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-300 dark:bg-slate-800" />
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-300 dark:bg-slate-800" />
+              </div>
+            </div>
 
-              {/* Footer text: Toggles to Sign Up Form */}
-              <div className="text-center mt-6">
-                <p className="text-xs text-slate-550 dark:text-slate-400">
-                  Don't have an account?{' '}
-                  <button 
-                    onClick={() => { setErrorMsg(''); setSuccessMsg(''); setViewState('signUp'); }}
-                    className="text-brand-600 dark:text-brand-400 font-bold hover:underline bg-transparent border-none p-0 focus:outline-none"
+            {errorMsg && (
+              <div className="mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-650 dark:text-rose-455 text-xs font-semibold text-center">
+                {errorMsg}
+              </div>
+            )}
+
+            {/* Registration Form */}
+            <form onSubmit={handleSignUpSubmit} className="space-y-5 text-left">
+
+              {/* Account Portal Role Selector */}
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-black tracking-widest text-slate-550 dark:text-slate-400 uppercase font-mono block">
+                  Registering Account Role
+                </label>
+                <div className="grid grid-cols-3 gap-1.5 p-1 bg-slate-100 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 rounded-2xl text-xs font-bold">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedRole('Student')}
+                    className={`py-2 px-2.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-1.5 ${selectedRole === 'Student'
+                        ? 'bg-white dark:bg-slate-800 text-[#253df5] dark:text-blue-400 shadow-sm font-extrabold'
+                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                      }`}
                   >
-                    Apply for Access
+                    🎓 Student
                   </button>
-                </p>
-              </div>
-            </>
-          ) : (
-            /* ==================== SIGN UP VIEW (The Earlier Form) ==================== */
-            <>
-              {/* Title Block */}
-              <div className="text-center mb-8">
-                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-slate-900 via-slate-855 to-brand-600 dark:from-white dark:via-gray-150 dark:to-brand-400 bg-clip-text text-transparent">
-                  AetherLearn
-                </h1>
-                <p className="text-sm font-medium text-slate-550 dark:text-slate-400 mt-2">
-                  Initialize your learning matrix.
-                </p>
-
-                {/* Symmetrical step progress dots */}
-                <div className="flex justify-center items-center gap-1.5 mt-4">
-                  <span className="w-8 h-1 rounded-full bg-brand-500 dark:bg-brand-400 transition-colors duration-300" />
-                  <span className="w-1.5 h-1.5 rounded-full bg-slate-300 dark:bg-slate-800" />
-                  <span className="w-1.5 h-1.5 rounded-full bg-slate-300 dark:bg-slate-800" />
-                </div>
-              </div>
-
-              {errorMsg && (
-                <div className="mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-650 dark:text-rose-455 text-xs font-semibold text-center">
-                  {errorMsg}
-                </div>
-              )}
-
-              {/* Registration Form */}
-              <form onSubmit={handleSignUpSubmit} className="space-y-5 text-left">
-                
-                {/* Full Name */}
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-black tracking-widest text-slate-500 dark:text-slate-400 uppercase font-mono block">
-                    Full Name
-                  </label>
-                  <div className="relative flex items-center">
-                    <span className="absolute left-4 text-slate-400 dark:text-slate-500">
-                      <User size={16} />
-                    </span>
-                    <input 
-                      type="text" 
-                      required
-                      placeholder="Dr. Sarah Connor"
-                      value={signUpName}
-                      onChange={(e) => setSignUpName(e.target.value)}
-                      className="w-full bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-850/80 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 pl-11 pr-4 py-3 rounded-2xl text-sm focus:outline-none focus:border-brand-500/60 focus:ring-2 focus:ring-brand-500/10 transition-all duration-200"
-                    />
-                  </div>
-                </div>
-
-                {/* Email Coordinates */}
-                <div className="space-y-1.5 relative">
-                  <label className="text-[10px] font-black tracking-widest text-slate-555 dark:text-slate-400 uppercase font-mono block">
-                    Email Coordinates
-                  </label>
-                  <div 
-                    className="relative flex items-center w-full"
-                    onMouseEnter={() => setIsEmailHovered(true)}
-                    onMouseLeave={() => setIsEmailHovered(false)}
+                  <button
+                    type="button"
+                    onClick={() => setSelectedRole('Teacher')}
+                    className={`py-2 px-2.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-1.5 ${selectedRole === 'Teacher' || selectedRole === 'Mentor'
+                        ? 'bg-white dark:bg-slate-800 text-[#253df5] dark:text-blue-400 shadow-sm font-extrabold'
+                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                      }`}
                   >
-                    <span className="absolute left-4 text-slate-400 dark:text-slate-500">
-                      <Mail size={16} />
-                    </span>
-                    <input 
-                      type="email" 
-                      required
-                      placeholder="sarah@cyberdyne.sys"
-                      value={signUpEmail}
-                      onChange={(e) => setSignUpEmail(e.target.value)}
-                      onFocus={() => setIsEmailFocused(true)}
-                      onBlur={() => setIsEmailFocused(false)}
-                      className="w-full bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-850/80 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 pl-11 pr-4 py-3 rounded-2xl text-sm focus:outline-none focus:border-brand-500/60 focus:ring-2 focus:ring-brand-500/10 transition-all duration-200"
-                    />
-                    
-                    {/* Hover/Focus Tooltip */}
-                    {(isEmailFocused || isEmailHovered) && (
-                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2.5 w-72 bg-white/95 dark:bg-slate-900/95 border border-slate-200 dark:border-slate-800 p-3 rounded-2xl shadow-xl backdrop-blur-md z-30 text-left animate-fadeIn">
-                        <div className="text-[11px] font-bold text-slate-705 dark:text-slate-300 leading-relaxed flex items-start gap-2">
-                          <Sparkles className="w-3.5 h-3.5 text-[#253df5] dark:text-brand-400 flex-shrink-0 mt-0.5" />
-                          <div>
-                            <span className="font-extrabold text-[#253df5] dark:text-brand-400 block mb-0.5">Email Requirement</span>
-                            Must contain <span className="font-mono text-[#253df5] dark:text-brand-400 font-black">@</span> and end with a valid extension (e.g. <span className="font-mono font-black">.com</span>, <span className="font-mono font-black">.in</span>, <span className="font-mono font-black">.edu</span>).
-                          </div>
+                    👨‍🏫 Teacher
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedRole('Overseer')}
+                    className={`py-2 px-2.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-1.5 ${selectedRole === 'Overseer'
+                        ? 'bg-white dark:bg-slate-800 text-[#253df5] dark:text-blue-400 shadow-sm font-extrabold'
+                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                      }`}
+                  >
+                    🛡️ Overseer
+                  </button>
+                </div>
+              </div>
+
+              {/* Full Name */}
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-black tracking-widest text-slate-500 dark:text-slate-400 uppercase font-mono block">
+                  Full Name
+                </label>
+                <div className="relative flex items-center">
+                  <span className="absolute left-4 text-slate-400 dark:text-slate-500">
+                    <User size={16} />
+                  </span>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Dr. Sarah Connor"
+                    value={signUpName}
+                    onChange={(e) => setSignUpName(e.target.value)}
+                    className="w-full bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-850/80 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 pl-11 pr-4 py-3 rounded-2xl text-sm focus:outline-none focus:border-brand-500/60 focus:ring-2 focus:ring-brand-500/10 transition-all duration-200"
+                  />
+                </div>
+              </div>
+
+              {/* Email Coordinates */}
+              <div className="space-y-1.5 relative">
+                <label className="text-[10px] font-black tracking-widest text-slate-555 dark:text-slate-400 uppercase font-mono block">
+                  Email Coordinates
+                </label>
+                <div
+                  className="relative flex items-center w-full"
+                  onMouseEnter={() => setIsEmailHovered(true)}
+                  onMouseLeave={() => setIsEmailHovered(false)}
+                >
+                  <span className="absolute left-4 text-slate-400 dark:text-slate-500">
+                    <Mail size={16} />
+                  </span>
+                  <input
+                    type="email"
+                    required
+                    placeholder="sarah@cyberdyne.sys"
+                    value={signUpEmail}
+                    onChange={(e) => setSignUpEmail(e.target.value)}
+                    onFocus={() => setIsEmailFocused(true)}
+                    onBlur={() => setIsEmailFocused(false)}
+                    className="w-full bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-850/80 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 pl-11 pr-4 py-3 rounded-2xl text-sm focus:outline-none focus:border-brand-500/60 focus:ring-2 focus:ring-brand-500/10 transition-all duration-200"
+                  />
+
+                  {/* Hover/Focus Tooltip */}
+                  {(isEmailFocused || isEmailHovered) && (
+                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2.5 w-72 bg-white/95 dark:bg-slate-900/95 border border-slate-200 dark:border-slate-800 p-3 rounded-2xl shadow-xl backdrop-blur-md z-30 text-left animate-fadeIn">
+                      <div className="text-[11px] font-bold text-slate-705 dark:text-slate-300 leading-relaxed flex items-start gap-2">
+                        <Sparkles className="w-3.5 h-3.5 text-[#253df5] dark:text-brand-400 flex-shrink-0 mt-0.5" />
+                        <div>
+                          <span className="font-extrabold text-[#253df5] dark:text-brand-400 block mb-0.5">Email Requirement</span>
+                          Must contain <span className="font-mono text-[#253df5] dark:text-brand-400 font-black">@</span> and end with a valid extension (e.g. <span className="font-mono font-black">.com</span>, <span className="font-mono font-black">.in</span>, <span className="font-mono font-black">.edu</span>).
                         </div>
-                        {/* Downward Pointer Arrow */}
-                        <div className="absolute top-full left-1/2 -translate-x-1/2 w-2.5 h-2.5 bg-white dark:bg-slate-900 border-r border-b border-slate-200 dark:border-slate-800 rotate-45 -mt-1.25 z-20" />
                       </div>
-                    )}
-                  </div>
+                      {/* Downward Pointer Arrow */}
+                      <div className="absolute top-full left-1/2 -translate-x-1/2 w-2.5 h-2.5 bg-white dark:bg-slate-900 border-r border-b border-slate-200 dark:border-slate-800 rotate-45 -mt-1.25 z-20" />
+                    </div>
+                  )}
                 </div>
+              </div>
 
-                {/* Institute Name */}
+              {/* Institute Name */}
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-black tracking-widest text-slate-500 dark:text-slate-400 uppercase font-mono block">
+                  Institute Name
+                </label>
+                <div className="relative flex items-center">
+                  <span className="absolute left-4 text-slate-400 dark:text-slate-500">
+                    <School size={16} />
+                  </span>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Aether University"
+                    value={signUpInstitute}
+                    onChange={(e) => setSignUpInstitute(e.target.value)}
+                    className="w-full bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-850/80 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 pl-11 pr-4 py-3 rounded-2xl text-sm focus:outline-none focus:border-brand-500/60 focus:ring-2 focus:ring-brand-500/10 transition-all duration-200"
+                  />
+                </div>
+              </div>
+
+              {/* Select Your Role */}
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-black tracking-widest text-slate-500 dark:text-slate-400 uppercase font-mono block">
+                  Select Your Role
+                </label>
+                <div className="relative flex items-center">
+                  <span className="absolute left-4 text-slate-400 dark:text-slate-550">
+                    <UserCheck size={16} />
+                  </span>
+                  <select
+                    value={signUpRole}
+                    onChange={(e) => setSignUpRole(e.target.value)}
+                    className="w-full bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-850/80 text-slate-900 dark:text-white pl-11 pr-10 py-3 rounded-2xl text-sm focus:outline-none focus:border-brand-500/60 focus:ring-2 focus:ring-brand-500/10 transition-all duration-200 appearance-none cursor-pointer"
+                  >
+                    <option value="Student">Student</option>
+                    <option value="Teacher">Teacher</option>
+                  </select>
+                  <span className="absolute right-4 text-slate-400 dark:text-slate-550 pointer-events-none">
+                    <ChevronDown size={16} />
+                  </span>
+                </div>
+              </div>
+
+              {/* State & City (2-column Row) */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* State */}
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-black tracking-widest text-slate-500 dark:text-slate-400 uppercase font-mono block">
-                    Institute Name
-                  </label>
-                  <div className="relative flex items-center">
-                    <span className="absolute left-4 text-slate-400 dark:text-slate-500">
-                      <School size={16} />
-                    </span>
-                    <input 
-                      type="text" 
-                      required
-                      placeholder="Aether University"
-                      value={signUpInstitute}
-                      onChange={(e) => setSignUpInstitute(e.target.value)}
-                      className="w-full bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-850/80 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 pl-11 pr-4 py-3 rounded-2xl text-sm focus:outline-none focus:border-brand-500/60 focus:ring-2 focus:ring-brand-500/10 transition-all duration-200"
-                    />
-                  </div>
-                </div>
-
-                {/* Select Your Role */}
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-black tracking-widest text-slate-500 dark:text-slate-400 uppercase font-mono block">
-                    Select Your Role
+                    State
                   </label>
                   <div className="relative flex items-center">
                     <span className="absolute left-4 text-slate-400 dark:text-slate-550">
-                      <UserCheck size={16} />
+                      <Map size={16} />
                     </span>
-                    <select
-                      value={signUpRole}
-                      onChange={(e) => setSignUpRole(e.target.value)}
-                      className="w-full bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-850/80 text-slate-900 dark:text-white pl-11 pr-10 py-3 rounded-2xl text-sm focus:outline-none focus:border-brand-500/60 focus:ring-2 focus:ring-brand-500/10 transition-all duration-200 appearance-none cursor-pointer"
+                    <input
+                      type="text"
+                      required
+                      placeholder="California"
+                      value={signUpState}
+                      onChange={(e) => setSignUpState(e.target.value)}
+                      className="w-full bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-850/80 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 pl-11 pr-4 py-3 rounded-2xl text-sm focus:outline-none focus:border-brand-500/60 focus:ring-2 focus:ring-brand-500/10 transition-all duration-200"
+                    />
+                  </div>
+                </div>
+
+                {/* City */}
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-black tracking-widest text-slate-555 dark:text-slate-400 uppercase font-mono block">
+                    City
+                  </label>
+                  <div className="relative flex items-center">
+                    <span className="absolute left-4 text-slate-400 dark:text-slate-550">
+                      <Building2 size={16} />
+                    </span>
+                    <input
+                      type="text"
+                      required
+                      placeholder="San Francisco"
+                      value={signUpCity}
+                      onChange={(e) => setSignUpCity(e.target.value)}
+                      className="w-full bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-850/80 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 pl-11 pr-4 py-3 rounded-2xl text-sm focus:outline-none focus:border-brand-500/60 focus:ring-2 focus:ring-brand-500/10 transition-all duration-200"
+                    />
+                  </div>
+                </div>
+
+                {/* Choose Password */}
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-black tracking-widest text-slate-555 dark:text-slate-400 uppercase font-mono block">
+                    Choose Password
+                  </label>
+                  <div className="relative flex items-center">
+                    <span className="absolute left-4 text-slate-400 dark:text-slate-550">
+                      <Lock size={16} />
+                    </span>
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      required
+                      placeholder="Choose your password"
+                      value={signUpAccessKey}
+                      onChange={(e) => setSignUpAccessKey(e.target.value)}
+                      className="w-full bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-850/80 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 pl-11 pr-12 py-3 rounded-2xl text-sm focus:outline-none focus:border-brand-500/60 focus:ring-2 focus:ring-brand-500/10 transition-all duration-200 font-sans"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-4 text-slate-400 dark:text-slate-555 hover:text-slate-600 dark:hover:text-white focus:outline-none cursor-pointer"
                     >
-                      <option value="Student">Student</option>
-                      <option value="Teacher">Teacher</option>
-                    </select>
-                    <span className="absolute right-4 text-slate-400 dark:text-slate-550 pointer-events-none">
-                      <ChevronDown size={16} />
+                      {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Confirm Password */}
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-black tracking-widest text-slate-555 dark:text-slate-400 uppercase font-mono block">
+                    Confirm Password
+                  </label>
+                  <div className="relative flex items-center">
+                    <span className="absolute left-4 text-slate-400 dark:text-slate-555">
+                      <Lock size={16} />
                     </span>
+                    <input
+                      type={showConfirmPassword ? "text" : "password"}
+                      required
+                      placeholder="Confirm your password"
+                      value={signUpConfirmAccessKey}
+                      onChange={(e) => setSignUpConfirmAccessKey(e.target.value)}
+                      className="w-full bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-850/80 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 pl-11 pr-12 py-3 rounded-2xl text-sm focus:outline-none focus:border-brand-500/60 focus:ring-2 focus:ring-brand-500/10 transition-all duration-200 font-sans"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-4 text-slate-400 dark:text-slate-555 hover:text-slate-600 dark:hover:text-white focus:outline-none cursor-pointer"
+                    >
+                      {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </button>
                   </div>
                 </div>
+              </div>
 
-                {/* State & City (2-column Row) */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {/* State */}
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-black tracking-widest text-slate-500 dark:text-slate-400 uppercase font-mono block">
-                      State
-                    </label>
-                    <div className="relative flex items-center">
-                      <span className="absolute left-4 text-slate-400 dark:text-slate-550">
-                        <Map size={16} />
-                      </span>
-                      <input 
-                        type="text" 
-                        required
-                        placeholder="California"
-                        value={signUpState}
-                        onChange={(e) => setSignUpState(e.target.value)}
-                        className="w-full bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-850/80 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 pl-11 pr-4 py-3 rounded-2xl text-sm focus:outline-none focus:border-brand-500/60 focus:ring-2 focus:ring-brand-500/10 transition-all duration-200"
-                      />
-                    </div>
-                  </div>
+              {/* Continue button */}
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  className="w-full bg-blue-100 dark:bg-[#1a2b5c] text-blue-900 dark:text-blue-300 border border-blue-200 dark:border-blue-800/50 hover:bg-blue-200 dark:hover:bg-[#20346e] py-3.5 rounded-2xl text-sm font-bold transition-all duration-300 flex items-center justify-center gap-2 group shadow-sm shadow-blue-500/5"
+                >
+                  <span>Continue</span>
+                  <ArrowRight size={16} className="transform group-hover:translate-x-1 transition-transform duration-200" />
+                </button>
+              </div>
 
-                  {/* City */}
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-black tracking-widest text-slate-555 dark:text-slate-400 uppercase font-mono block">
-                      City
-                    </label>
-                    <div className="relative flex items-center">
-                      <span className="absolute left-4 text-slate-400 dark:text-slate-550">
-                        <Building2 size={16} />
-                      </span>
-                      <input 
-                        type="text" 
-                        required
-                        placeholder="San Francisco"
-                        value={signUpCity}
-                        onChange={(e) => setSignUpCity(e.target.value)}
-                        className="w-full bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-850/80 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 pl-11 pr-4 py-3 rounded-2xl text-sm focus:outline-none focus:border-brand-500/60 focus:ring-2 focus:ring-brand-500/10 transition-all duration-200"
-                      />
-                    </div>
-                  </div>
+            </form>
 
-                  {/* Choose Password */}
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-black tracking-widest text-slate-555 dark:text-slate-400 uppercase font-mono block">
-                      Choose Password
-                    </label>
-                    <div className="relative flex items-center">
-                      <span className="absolute left-4 text-slate-400 dark:text-slate-550">
-                        <Lock size={16} />
-                      </span>
-                      <input 
-                        type={showPassword ? "text" : "password"} 
-                        required
-                        placeholder="Choose your password"
-                        value={signUpAccessKey}
-                        onChange={(e) => setSignUpAccessKey(e.target.value)}
-                        className="w-full bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-850/80 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 pl-11 pr-12 py-3 rounded-2xl text-sm focus:outline-none focus:border-brand-500/60 focus:ring-2 focus:ring-brand-500/10 transition-all duration-200 font-sans"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-4 text-slate-400 dark:text-slate-555 hover:text-slate-600 dark:hover:text-white focus:outline-none cursor-pointer"
-                      >
-                        {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Confirm Password */}
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-black tracking-widest text-slate-555 dark:text-slate-400 uppercase font-mono block">
-                      Confirm Password
-                    </label>
-                    <div className="relative flex items-center">
-                      <span className="absolute left-4 text-slate-400 dark:text-slate-555">
-                        <Lock size={16} />
-                      </span>
-                      <input 
-                        type={showConfirmPassword ? "text" : "password"} 
-                        required
-                        placeholder="Confirm your password"
-                        value={signUpConfirmAccessKey}
-                        onChange={(e) => setSignUpConfirmAccessKey(e.target.value)}
-                        className="w-full bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-850/80 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 pl-11 pr-12 py-3 rounded-2xl text-sm focus:outline-none focus:border-brand-500/60 focus:ring-2 focus:ring-brand-500/10 transition-all duration-200 font-sans"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute right-4 text-slate-400 dark:text-slate-555 hover:text-slate-600 dark:hover:text-white focus:outline-none cursor-pointer"
-                      >
-                        {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Continue button */}
-                <div className="pt-2">
-                  <button 
-                    type="submit" 
-                    className="w-full bg-blue-100 dark:bg-[#1a2b5c] text-blue-900 dark:text-blue-300 border border-blue-200 dark:border-blue-800/50 hover:bg-blue-200 dark:hover:bg-[#20346e] py-3.5 rounded-2xl text-sm font-bold transition-all duration-300 flex items-center justify-center gap-2 group shadow-sm shadow-blue-500/5"
-                  >
-                    <span>Continue</span>
-                    <ArrowRight size={16} className="transform group-hover:translate-x-1 transition-transform duration-200" />
-                  </button>
-                </div>
-
-              </form>
-
-              {/* Footer text: Toggles back to Sign In Form */}
-              <div className="text-center mt-6">
-                <p className="text-xs text-slate-550 dark:text-slate-400">
-                  Already part of the network?{' '}
-                  <button 
-                    onClick={() => { setErrorMsg(''); setSuccessMsg(''); setViewState('signIn'); }}
-                    className="text-brand-600 dark:text-brand-400 font-bold hover:underline bg-transparent border-none p-0 focus:outline-none"
-                  >
-                    Authenticate
+            {/* Footer text: Toggles back to Sign In Form */}
+            <div className="text-center mt-6">
+              <p className="text-xs text-slate-550 dark:text-slate-400">
+                Already part of the network?{' '}
+                <button
+                  onClick={() => { setErrorMsg(''); setSuccessMsg(''); setViewState('signIn'); }}
+                  className="text-brand-600 dark:text-brand-400 font-bold hover:underline bg-transparent border-none p-0 focus:outline-none"
+                >
+                  Authenticate
                 </button>
               </p>
             </div>
@@ -1261,7 +1396,7 @@ function LoginPage({ onBackToHome, onLoginSuccess }) {
       {showExistsModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-md p-4 animate-fade-in">
           <div className="bg-white dark:bg-[#0c0c0c] border border-slate-200 dark:border-slate-800/80 rounded-3xl p-8 max-w-md w-full shadow-2xl text-center space-y-6 transform scale-100 transition-all duration-300">
-            
+
             {/* Warning Icon Container */}
             <div className="w-16 h-16 rounded-full bg-amber-50 dark:bg-amber-950/30 text-amber-500 dark:text-amber-400 flex items-center justify-center mx-auto shadow-inner">
               <UserCheck size={28} />
@@ -1318,7 +1453,7 @@ function Hero() {
       <div className="absolute bottom-1/4 right-1/12 w-[30rem] h-[30rem] bg-indigo-500/5 dark:bg-indigo-500/10 rounded-full blur-[100px] pointer-events-none transition-colors duration-300" />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-        
+
         {/* LEFT COLUMN: Texts & Calls to Action */}
         <div className="lg:col-span-6 space-y-6 sm:space-y-8 text-left">
 
@@ -1333,13 +1468,13 @@ function Hero() {
 
           {/* Description */}
           <p className="text-slate-600 dark:text-slate-400 text-base sm:text-lg max-w-xl leading-relaxed transition-colors duration-300 animate-fadeInUp delay-100">
-            Experience a living curriculum that adapts to your neural patterns. 
+            Experience a living curriculum that adapts to your neural patterns.
             AetherLearn utilizes deep analytics to predict, guide, and accelerate your educational journey.
           </p>
 
           {/* CTA Buttons */}
           <div className="flex flex-wrap items-center gap-4 pt-2 animate-fadeInUp delay-200">
-            <button 
+            <button
               onClick={() => setIsLoginModalOpen(true)}
               className="bg-[#253df5] hover:bg-[#1d2ae0] text-white px-8 py-4 rounded-xl text-sm font-black transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl hover:shadow-[#253df5]/30 uppercase tracking-widest w-full sm:w-auto"
             >
@@ -1352,10 +1487,10 @@ function Hero() {
 
         {/* RIGHT COLUMN: Neural Pathway progress card */}
         <div className="lg:col-span-6 flex justify-center items-center relative">
-          
-          {/* Card Wrapper */}
-          <div className="relative bg-white dark:bg-[#0c0c0c]/60 border border-slate-100 dark:border-slate-800 shadow-2xl shadow-slate-200/80 dark:shadow-black/40 rounded-3xl p-6 sm:p-8 flex flex-col gap-6 w-[100%] max-w-[32rem] transition-all duration-300 animate-slideInRight">
-            
+
+          {/* Card Wrapper with Dynamic Floating Animation */}
+          <div className="relative bg-white dark:bg-[#0c0c0c]/60 border border-slate-100 dark:border-slate-800 shadow-2xl shadow-slate-200/80 dark:shadow-black/40 rounded-3xl p-6 sm:p-8 flex flex-col gap-6 w-[100%] max-w-[32rem] transition-all duration-300 animate-slideInRight animate-float-slow sheen-wrapper animate-pulse-glow-subtle">
+
             {/* Header info */}
             <div className="flex items-center justify-between">
               <h2 className="text-lg sm:text-xl font-bold text-slate-800 dark:text-white tracking-tight">
@@ -1379,21 +1514,21 @@ function Hero() {
                 {/* Pathway background lines */}
                 <path d="M 0 100 Q 50 140 100 100 T 200 100 T 300 100" stroke="rgba(59,92,250,0.15)" strokeWidth="1.5" />
                 <path d="M 0 120 Q 70 80 150 120 T 300 80" stroke="rgba(168,85,247,0.15)" strokeWidth="1.5" />
-                
+
                 {/* Wavy glowing signals (Mock path representation) */}
-                <path 
-                  d="M 10 100 Q 45 130 90 95 T 180 105 T 290 85" 
-                  stroke="url(#blue-purple-glow-hero)" 
-                  strokeWidth="2.5" 
+                <path
+                  d="M 10 100 Q 45 130 90 95 T 180 105 T 290 85"
+                  stroke="url(#blue-purple-glow-hero)"
+                  strokeWidth="2.5"
                   strokeLinecap="round"
                   className="animate-[dash_10s_linear_infinite]"
                   style={{ strokeDasharray: '400', strokeDashoffset: '0' }}
                 />
-                
-                <path 
-                  d="M 20 80 C 80 140 140 60 200 130 C 240 160 270 110 280 100" 
-                  stroke="url(#purple-green-glow-hero)" 
-                  strokeWidth="2" 
+
+                <path
+                  d="M 20 80 C 80 140 140 60 200 130 C 240 160 270 110 280 100"
+                  stroke="url(#purple-green-glow-hero)"
+                  strokeWidth="2"
                   strokeLinecap="round"
                   className="opacity-70"
                 />
@@ -1440,7 +1575,7 @@ function Hero() {
 
             {/* Bottom metrics blocks */}
             <div className="grid grid-cols-2 gap-4">
-              
+
               {/* Metric 1 */}
               <div className="bg-slate-50 dark:bg-slate-900/40 border border-slate-100 dark:border-slate-800/80 rounded-2xl p-4 flex flex-col gap-1 text-left transition-colors duration-300">
                 <span className="text-[9px] font-extrabold tracking-wider text-slate-400 dark:text-gray-500 uppercase font-mono">
@@ -1556,10 +1691,10 @@ function NeuralAdvantage() {
     for (let j = i + 1; j < allNodes.length; j++) {
       const n1 = allNodes[i];
       const n2 = allNodes[j];
-      
+
       // Do not draw connections across the middle sagittal fissure to maintain separation
       const sameHemisphere = (n1.x <= 145 && n2.x <= 145) || (n1.x >= 155 && n2.x >= 155);
-      
+
       if (sameHemisphere) {
         const distance = Math.hypot(n1.x - n2.x, n1.y - n2.y);
         // Connect nodes close to each other to generate a detailed mesh grid
@@ -1572,18 +1707,18 @@ function NeuralAdvantage() {
 
   return (
     <section className="relative overflow-hidden py-12 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full border-t border-slate-200/60 dark:border-slate-800/40">
-      
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-        
+
         {/* LEFT COLUMN: Brain visualization card */}
         <div className="lg:col-span-6 flex justify-center items-center relative order-2 lg:order-1">
-          
+
           {/* Main Visual Card */}
           <div className="relative bg-white dark:bg-[#0c0c0c]/60 border border-slate-100 dark:border-slate-800 shadow-2xl shadow-slate-200/80 dark:shadow-black/40 rounded-3xl p-6 sm:p-8 flex flex-col gap-6 w-full max-w-lg transition-all duration-300">
-            
+
             {/* Visual Screen Container */}
             <div className="relative bg-[#0c0c0c] border border-slate-800/85 rounded-2xl p-4 sm:p-6 overflow-hidden aspect-[4/3] flex items-center justify-center shadow-inner">
-              
+
               {/* Radial glow background */}
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(6,182,212,0.18),transparent_70%)] pointer-events-none" />
 
@@ -1594,17 +1729,17 @@ function NeuralAdvantage() {
               <svg className="w-full h-full relative z-10" viewBox="0 0 300 200" fill="none" xmlns="http://www.w3.org/2000/svg">
                 {/* Center Sagittal Fissure shadow gap line */}
                 <line x1="150" y1="20" x2="150" y2="180" stroke="rgba(6,182,212,0.08)" strokeWidth="1" strokeDasharray="4 4" />
-                
+
                 {/* Neural mesh connecting lines */}
                 {lines.map((line, idx) => (
-                  <line 
+                  <line
                     key={idx}
                     x1={line.x1}
                     y1={line.y1}
                     x2={line.x2}
                     y2={line.y2}
-                    stroke="rgba(6,182,212,0.18)" 
-                    strokeWidth="0.65" 
+                    stroke="rgba(6,182,212,0.18)"
+                    strokeWidth="0.65"
                   />
                 ))}
 
@@ -1627,7 +1762,7 @@ function NeuralAdvantage() {
               <span className="text-[9px] font-extrabold tracking-widest text-slate-400 dark:text-gray-500 font-mono uppercase">
                 Real-Time Adaptation
               </span>
-              
+
               {/* Progress bar */}
               <div className="w-1/3 h-2 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
                 <div className="w-[94%] h-full bg-gradient-to-r from-emerald-500 to-brand-500 rounded-full" />
@@ -1644,7 +1779,7 @@ function NeuralAdvantage() {
 
         {/* RIGHT COLUMN: Texts & Features list */}
         <div className="lg:col-span-6 space-y-6 sm:space-y-8 text-left order-1 lg:order-2">
-          
+
           {/* Title */}
           <h2 className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight transition-colors duration-300">
             The Neural{' '}
@@ -1655,14 +1790,14 @@ function NeuralAdvantage() {
 
           {/* Description */}
           <p className="text-slate-600 dark:text-slate-400 text-base sm:text-lg max-w-xl leading-relaxed transition-colors duration-300">
-            Every mind processes information differently. AetherLearn's 
-            proprietary engine continuously maps your cognitive load, 
+            Every mind processes information differently. AetherLearn's
+            proprietary engine continuously maps your cognitive load,
             learning velocity, and retention decay.
           </p>
 
           {/* Features */}
           <div className="space-y-6 max-w-xl">
-            
+
             {/* Feature 1 */}
             <div className="flex gap-4 items-start group">
               <div className="w-10 h-10 rounded-xl bg-brand-50 dark:bg-brand-950/40 text-brand-650 dark:text-brand-400 flex items-center justify-center flex-shrink-0 border border-brand-100/50 dark:border-brand-900/30 transition-all duration-300 group-hover:scale-105">
@@ -1673,7 +1808,7 @@ function NeuralAdvantage() {
                   Dynamic Pacing
                 </h3>
                 <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed transition-colors duration-300">
-                  The curriculum slows down for complex topics and accelerates 
+                  The curriculum slows down for complex topics and accelerates
                   through mastered concepts, ensuring optimal flow state.
                 </p>
               </div>
@@ -1689,7 +1824,7 @@ function NeuralAdvantage() {
                   Cognitive Load Balancing
                 </h3>
                 <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed transition-colors duration-300">
-                  Prevents burnout by measuring interaction patterns and scheduling 
+                  Prevents burnout by measuring interaction patterns and scheduling
                   micro-breaks precisely when your brain needs them.
                 </p>
               </div>
@@ -1709,7 +1844,7 @@ function NeuralAdvantage() {
 function CoreCapabilities() {
   return (
     <section className="relative overflow-hidden py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full border-t border-slate-200/60 dark:border-slate-800/40">
-      
+
       {/* SECTION HEADER */}
       <div className="text-center space-y-4 mb-12 sm:mb-16">
         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight transition-colors duration-300">
@@ -1722,12 +1857,12 @@ function CoreCapabilities() {
 
       {/* 2X2 BALANCED GRID */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
-        
+
         {/* CARD 1: AI Performance Prediction */}
         <div className="relative bg-white dark:bg-[#0c0c0c]/60 border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/40 dark:shadow-black/20 rounded-3xl p-6 sm:p-8 flex flex-col items-start gap-4 overflow-hidden transition-all duration-300 hover:border-slate-250 dark:hover:border-slate-700 hover:shadow-2xl hover:scale-[1.005]">
           {/* Subtle background glow */}
           <div className="absolute right-[-10%] bottom-[-20%] w-48 h-48 rounded-full bg-brand-500/5 dark:bg-brand-500/10 pointer-events-none blur-3xl transition-colors duration-300" />
-          
+
           <div className="w-10 h-10 rounded-xl bg-brand-50 dark:bg-brand-950/40 text-brand-650 dark:text-brand-400 flex items-center justify-center border border-brand-100/50 dark:border-brand-900/30 transition-all duration-300 flex-shrink-0">
             <TrendingUp size={18} />
           </div>
@@ -1744,7 +1879,7 @@ function CoreCapabilities() {
 
         {/* CARD 2: Smart Analytics */}
         <div className="bg-white dark:bg-[#0c0c0c]/60 border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/40 dark:shadow-black/20 rounded-3xl p-6 sm:p-8 flex flex-col items-start gap-4 transition-all duration-300 hover:border-slate-250 dark:hover:border-slate-700 hover:shadow-2xl hover:scale-[1.005]">
-          
+
           <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center border border-emerald-100/50 dark:border-emerald-900/30 transition-all duration-300 flex-shrink-0">
             <BarChart2 size={18} />
           </div>
@@ -1761,7 +1896,7 @@ function CoreCapabilities() {
 
         {/* CARD 3: Focus Mode */}
         <div className="bg-white dark:bg-[#0c0c0c]/60 border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/40 dark:shadow-black/20 rounded-3xl p-6 sm:p-8 flex flex-col items-start gap-4 transition-all duration-300 hover:border-slate-250 dark:hover:border-slate-700 hover:shadow-2xl hover:scale-[1.005]">
-          
+
           <div className="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400 flex items-center justify-center border border-purple-100/50 dark:border-purple-900/30 transition-all duration-300 flex-shrink-0">
             <Target size={18} />
           </div>
@@ -1778,7 +1913,7 @@ function CoreCapabilities() {
 
         {/* CARD 4: Peer Comparison Matrix */}
         <div className="bg-white dark:bg-[#0c0c0c]/60 border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/40 dark:shadow-black/20 rounded-3xl p-6 sm:p-8 flex flex-col items-start gap-4 transition-all duration-300 hover:border-slate-250 dark:hover:border-slate-700 hover:shadow-2xl hover:scale-[1.005]">
-          
+
           <div className="w-10 h-10 rounded-xl bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-455 flex items-center justify-center border border-rose-100/50 dark:border-rose-900/30 transition-all duration-300 flex-shrink-0">
             <Users size={18} />
           </div>
@@ -1803,7 +1938,7 @@ function CoreCapabilities() {
 function Ecosystem() {
   return (
     <section className="relative overflow-hidden py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full border-t border-slate-200/60 dark:border-slate-800/40">
-      
+
       {/* DECORATIVE BACKGROUND GRADIENTS */}
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[40rem] h-[40rem] bg-brand-500/5 dark:bg-brand-500/5 rounded-full blur-[120px] pointer-events-none" />
 
@@ -1822,7 +1957,7 @@ function Ecosystem() {
 
       {/* THREE-COLUMN LAYOUT */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-5xl mx-auto items-stretch">
-        
+
         {/* CARD 1: For Students */}
         <div className="bg-white dark:bg-[#0c0c0c]/60 border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/40 dark:shadow-black/25 rounded-3xl p-8 flex flex-col items-center text-center gap-5 transition-all duration-305 hover:border-slate-200 dark:hover:border-slate-700 hover:shadow-2xl hover:scale-[1.01]">
           <div className="w-12 h-12 rounded-2xl bg-brand-50 dark:bg-brand-950/40 text-brand-650 dark:text-brand-400 flex items-center justify-center border border-brand-100/50 dark:border-brand-900/30 transition-all duration-300 flex-shrink-0">
@@ -1841,7 +1976,7 @@ function Ecosystem() {
 
         {/* CARD 2: For Mentors (Highlighted Premium Card!) */}
         <div className="relative bg-white dark:bg-[#0c0c0c]/85 border-2 border-brand-500/60 dark:border-brand-500/50 shadow-2xl rounded-3xl p-8 flex flex-col items-center text-center gap-5 transition-all duration-305 hover:scale-[1.015]">
-          
+
           {/* Absolute Hovering Badge on Top Border */}
           <div className="absolute top-[-12px] left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-brand-600 to-indigo-650 dark:from-brand-550 dark:to-indigo-500 text-white text-[9px] font-extrabold tracking-widest uppercase px-3.5 py-1 rounded-full shadow-md shadow-brand-500/20 font-mono transition-all duration-300">
             Synergy Core
@@ -2000,11 +2135,10 @@ function IntegrationModal({ type, onClose }) {
                     <button
                       key={p.provider}
                       onClick={() => setSelectedProvider(p)}
-                      className={`flex items-center gap-3 p-3.5 rounded-2xl border text-left transition-all duration-200 ${
-                        selectedProvider?.provider === p.provider
+                      className={`flex items-center gap-3 p-3.5 rounded-2xl border text-left transition-all duration-200 ${selectedProvider?.provider === p.provider
                           ? 'border-brand-500 bg-brand-50 dark:bg-brand-950/30 ring-2 ring-brand-500/20'
                           : 'border-slate-150 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-slate-50 dark:bg-slate-900/40'
-                      }`}
+                        }`}
                     >
                       <span className="text-xl">{p.icon}</span>
                       <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">{p.name}</span>
@@ -2086,7 +2220,7 @@ function IntegrationSafety() {
     fetch(`${BACKEND}/integrations/status`, { credentials: 'include' })
       .then(r => r.ok ? r.json() : null)
       .then(data => data && setIntegrationStatus(data))
-      .catch(() => {});
+      .catch(() => { });
   }, [activeModal]); // Re-fetch when modal closes
 
   const getStatusBadge = (type) => {
@@ -2110,13 +2244,13 @@ function IntegrationSafety() {
 
   return (
     <section className="relative overflow-hidden py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full border-t border-slate-200/60 dark:border-slate-800/40">
-      
+
       {/* TWO-COLUMN GRID */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto items-stretch">
-        
+
         {/* CARD 1: Deep Integration */}
         <div className="bg-white dark:bg-[#0c0c0c]/60 border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/40 dark:shadow-black/25 rounded-3xl p-8 flex flex-col justify-between gap-6 transition-all duration-300 hover:border-slate-200 dark:hover:border-slate-700 hover:shadow-2xl hover:scale-[1.005]">
-          
+
           <div className="space-y-4">
             <div className="w-10 h-10 rounded-xl bg-brand-50 dark:bg-brand-950/40 text-brand-650 dark:text-brand-400 flex items-center justify-center border border-brand-100/50 dark:border-brand-900/30 transition-all duration-300 flex-shrink-0">
               <Link size={18} />
@@ -2153,7 +2287,7 @@ function IntegrationSafety() {
 
         {/* CARD 2: Safety & Ethics First */}
         <div className="bg-white dark:bg-[#0c0c0c]/60 border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/40 dark:shadow-black/25 rounded-3xl p-8 flex flex-col justify-between gap-6 transition-all duration-300 hover:border-slate-200 dark:hover:border-slate-700 hover:shadow-2xl hover:scale-[1.005]">
-          
+
           <div className="space-y-4">
             <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-650 dark:text-emerald-400 flex items-center justify-center border border-emerald-100/50 dark:border-emerald-900/30 transition-all duration-300 flex-shrink-0">
               <Shield size={18} />
@@ -2171,7 +2305,7 @@ function IntegrationSafety() {
 
           {/* Metric Sub-cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left w-full">
-            
+
             <div className="bg-slate-50 dark:bg-slate-900/40 border border-slate-100 dark:border-slate-800/80 rounded-2xl p-5 flex flex-col gap-2 transition-colors duration-300">
               <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
                 Zero-Data Retention
@@ -2212,23 +2346,23 @@ function IntegrationSafety() {
 function MeasurableEvolution() {
   return (
     <section className="relative overflow-hidden py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full border-t border-slate-200/60 dark:border-slate-800/40">
-      
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center max-w-5xl mx-auto">
-        
+
         {/* LEFT COLUMN: Texts & Mini Stats Cards */}
         <div className="lg:col-span-6 space-y-6 sm:space-y-8 text-left">
-          
+
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight transition-colors duration-300">
             Measurable Evolution
           </h2>
-          
+
           <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base leading-relaxed transition-colors duration-300">
             Our algorithms don't just teach; they optimize the learning process itself, resulting in profound shifts in comprehension speed.
           </p>
 
           {/* Stats Grid */}
           <div className="grid grid-cols-2 gap-4 pt-2">
-            
+
             {/* Stat 1 */}
             <div className="bg-white dark:bg-[#0c0c0c]/60 border border-slate-100 dark:border-slate-800/80 border-l-4 border-l-emerald-500 dark:border-l-emerald-500 shadow-xl dark:shadow-black/15 rounded-3xl p-6 text-left transition-all duration-300 hover:border-slate-250 dark:hover:border-slate-700 hover:shadow-2xl">
               <span className="text-3xl sm:text-4xl font-black text-emerald-600 dark:text-emerald-400 leading-none block mb-1">
@@ -2255,18 +2389,18 @@ function MeasurableEvolution() {
 
         {/* RIGHT COLUMN: Testimonial Card */}
         <div className="lg:col-span-6 flex justify-center items-center">
-          
+
           {/* Testimonial card wrapper */}
           <div className="relative bg-white dark:bg-[#0c0c0c]/65 border border-slate-100 dark:border-slate-800/80 shadow-2xl shadow-slate-200/80 dark:shadow-black/30 rounded-3xl p-6 sm:p-8 flex flex-col gap-6 w-full max-w-md text-left transition-all duration-300 hover:border-slate-250 dark:hover:border-slate-700 hover:shadow-2xl">
-            
+
             {/* Card Header (User profile details + Quote mark) */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 {/* Profile Photo */}
                 <div className="w-16 h-16 rounded-full overflow-hidden border-4 border-white dark:border-[#050505] shadow-lg">
-                    <img 
-                    src={sarahJenkinsAvatar} 
-                    alt="Reviewer" 
+                  <img
+                    src={sarahJenkinsAvatar}
+                    alt="Reviewer"
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -2279,7 +2413,7 @@ function MeasurableEvolution() {
                   </span>
                 </div>
               </div>
-              
+
               {/* Giant quote mark icon in background style */}
               <span className="text-5xl font-black text-slate-200 dark:text-slate-800/60 leading-none font-serif select-none pointer-events-none pr-2">
                 &rdquo;
@@ -2296,7 +2430,7 @@ function MeasurableEvolution() {
               <span className="text-[9px] font-extrabold tracking-widest text-slate-400 dark:text-gray-500 font-mono uppercase">
                 Module Completion
               </span>
-              
+
               {/* Progress bar */}
               <div className="w-1/3 h-2 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
                 <div className="w-[95%] h-full bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full" />
@@ -2332,7 +2466,7 @@ function LiveSessions() {
   const [reminders, setReminders] = useState([]);
   const [showClassroom, setShowClassroom] = useState(false);
   const [activeSession, setActiveSession] = useState(null);
-  
+
   // Classroom Simulation States
   const [chatMessages, setChatMessages] = useState([
     { sender: 'Ananya Iyer', text: 'Will this code example be uploaded to the LMS?', time: '2:15 PM' },
@@ -2455,7 +2589,7 @@ function LiveSessions() {
 
   return (
     <div className="w-full bg-slate-50 dark:bg-[#050505] py-8 sm:py-12 transition-colors duration-300 animate-fadeIn">
-      
+
       {/* Toast Notification alert */}
       {classAlert && (
         <div className="fixed top-24 right-6 z-55 bg-slate-900/95 dark:bg-white/95 text-white dark:text-slate-900 px-5 py-3 rounded-2xl shadow-xl flex items-center gap-2.5 text-xs font-bold border border-slate-805/10 dark:border-white/20 animate-slideIn">
@@ -2465,7 +2599,7 @@ function LiveSessions() {
       )}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 sm:space-y-16">
-        
+
         {/* ================= HERO SECTION ================= */}
         <section className="bg-white dark:bg-[#0c0c0c]/60 border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 lg:p-10 shadow-xs flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12 text-left relative overflow-hidden transition-all duration-300 hover:shadow-md">
           <div className="space-y-4 max-w-xl">
@@ -2482,10 +2616,10 @@ function LiveSessions() {
           </div>
           <div className="w-full lg:w-[48%] flex-shrink-0 rounded-2xl overflow-hidden shadow-lg border border-slate-200/50 dark:border-slate-800/80 group relative aspect-video">
             <div className="absolute inset-0 bg-slate-900/10 group-hover:bg-transparent transition-all duration-300 z-10" />
-            <img 
-              src={liveHeroRoom} 
-              alt="Digital virtual meeting classroom" 
-              className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" 
+            <img
+              src={liveHeroRoom}
+              alt="Digital virtual meeting classroom"
+              className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
             />
           </div>
         </section>
@@ -2504,11 +2638,10 @@ function LiveSessions() {
                   <button
                     key={cat}
                     onClick={() => setSelectedCategory(cat)}
-                    className={`px-4 py-2 rounded-xl text-xs font-black tracking-wide transition-all duration-200 cursor-pointer ${
-                      isActive
+                    className={`px-4 py-2 rounded-xl text-xs font-black tracking-wide transition-all duration-200 cursor-pointer ${isActive
                         ? 'bg-brand-600 text-white shadow-md shadow-brand-500/15'
                         : 'border border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-100/50 dark:hover:bg-slate-800/40'
-                    }`}
+                      }`}
                   >
                     {cat}
                   </button>
@@ -2524,8 +2657,8 @@ function LiveSessions() {
                 const isReminderSet = reminders.includes(session.id);
                 const isToday = session.timeType === 'Today';
                 return (
-                  <div 
-                    key={session.id} 
+                  <div
+                    key={session.id}
                     className="bg-white dark:bg-[#0c0c0c]/60 border border-slate-200/60 dark:border-slate-800/80 shadow-sm hover:shadow-lg dark:hover:shadow-black/20 rounded-3xl p-6 flex flex-col justify-between gap-5 text-left transition-all duration-300 hover:-translate-y-1 hover:border-brand-500/40 group relative overflow-hidden"
                   >
                     <div className="space-y-4">
@@ -2534,11 +2667,10 @@ function LiveSessions() {
                         <span className={session.tagClass}>
                           {session.tag}
                         </span>
-                        <span className={`flex items-center gap-1.5 text-xs font-semibold ${
-                          isToday 
-                            ? 'text-[#253df5] dark:text-blue-400 font-bold' 
+                        <span className={`flex items-center gap-1.5 text-xs font-semibold ${isToday
+                            ? 'text-[#253df5] dark:text-blue-400 font-bold'
                             : 'text-slate-500 dark:text-slate-400'
-                        }`}>
+                          }`}>
                           {session.iconType === 'clock' ? <Clock size={13} /> : <Calendar size={13} />}
                           {session.time}
                         </span>
@@ -2573,20 +2705,19 @@ function LiveSessions() {
 
                       {/* Action buttons */}
                       {session.btnType === 'join' ? (
-                        <button 
+                        <button
                           onClick={() => handleJoinSession(session)}
                           className="w-full py-3 bg-[#253df5] hover:bg-blue-650 text-white rounded-xl text-xs font-bold tracking-wide flex items-center justify-center gap-1.5 transition-all duration-200 shadow-md shadow-blue-500/10 hover:shadow-lg active:scale-95 cursor-pointer"
                         >
                           <span>Join Now &nbsp; →</span>
                         </button>
                       ) : (
-                        <button 
+                        <button
                           onClick={() => toggleReminder(session.id, session.title)}
-                          className={`w-full py-3 rounded-xl text-xs font-bold tracking-wide flex items-center justify-center gap-1.5 transition-all duration-200 active:scale-95 border cursor-pointer ${
-                            isReminderSet
+                          className={`w-full py-3 rounded-xl text-xs font-bold tracking-wide flex items-center justify-center gap-1.5 transition-all duration-200 active:scale-95 border cursor-pointer ${isReminderSet
                               ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-450 hover:bg-emerald-500/20'
                               : 'border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-905 text-slate-700 dark:text-slate-350 bg-transparent'
-                          }`}
+                            }`}
                         >
                           {isReminderSet ? (
                             <>
@@ -2620,14 +2751,14 @@ function LiveSessions() {
           </h2>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            
+
             {/* Masterclass 1 */}
             <div className="bg-white dark:bg-[#0c0c0c]/60 border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl overflow-hidden shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col md:flex-row group">
               <div className="w-full md:w-[42%] aspect-video md:aspect-auto relative overflow-hidden flex-shrink-0">
-                <img 
-                  src={quantumScientist} 
-                  alt="Quantum machine learning expert" 
-                  className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" 
+                <img
+                  src={quantumScientist}
+                  alt="Quantum machine learning expert"
+                  className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
                 />
                 <span className="absolute bottom-4 left-4 bg-brand-600 text-white text-[9px] font-black tracking-widest px-2.5 py-1 rounded-lg uppercase font-mono z-10 shadow-md">
                   Exclusive
@@ -2647,7 +2778,7 @@ function LiveSessions() {
                   <span className="text-xs font-black text-slate-700 dark:text-slate-300">
                     Dr. Elena Rostova
                   </span>
-                  <button 
+                  <button
                     onClick={() => alert('Launching masterclass details preview... Coming soon.')}
                     className="inline-flex items-center gap-1 text-xs font-black text-brand-600 dark:text-brand-400 hover:text-blue-600 dark:hover:text-brand-300 transition-colors"
                   >
@@ -2661,10 +2792,10 @@ function LiveSessions() {
             {/* Masterclass 2 */}
             <div className="bg-white dark:bg-[#0c0c0c]/60 border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl overflow-hidden shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col md:flex-row group">
               <div className="w-full md:w-[42%] aspect-video md:aspect-auto relative overflow-hidden flex-shrink-0">
-                <img 
-                  src={agiStage} 
-                  alt="AGI stage speaker spotlight" 
-                  className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" 
+                <img
+                  src={agiStage}
+                  alt="AGI stage speaker spotlight"
+                  className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
                 />
                 <span className="absolute bottom-4 left-4 bg-indigo-600 text-white text-[9px] font-black tracking-widest px-2.5 py-1 rounded-lg uppercase font-mono z-10 shadow-md">
                   Masterclass
@@ -2684,7 +2815,7 @@ function LiveSessions() {
                   <span className="text-xs font-black text-slate-700 dark:text-slate-300">
                     Marcus Vance
                   </span>
-                  <button 
+                  <button
                     onClick={() => alert('Launching masterclass details preview... Coming soon.')}
                     className="inline-flex items-center gap-1 text-xs font-black text-brand-600 dark:text-brand-400 hover:text-blue-600 dark:hover:text-brand-300 transition-colors"
                   >
@@ -2709,7 +2840,7 @@ function LiveSessions() {
                 Catch up on highly-rated past recordings.
               </p>
             </div>
-            <button 
+            <button
               onClick={() => alert('Loading complete video library... Coming soon.')}
               className="inline-flex items-center gap-1 text-xs font-black text-brand-600 dark:text-brand-400 hover:text-blue-600 dark:hover:text-brand-300 transition-colors"
             >
@@ -2719,7 +2850,7 @@ function LiveSessions() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            
+
             {/* Archive Item 1 */}
             <div className="space-y-3 group text-left">
               <div className="aspect-video w-full rounded-2xl overflow-hidden border border-slate-200/60 dark:border-slate-800/60 relative shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer bg-slate-100">
@@ -2821,7 +2952,7 @@ function LiveSessions() {
       {showClassroom && activeSession && (
         <div className="fixed inset-0 z-50 overflow-hidden bg-slate-900/90 backdrop-blur-md flex items-center justify-center p-4">
           <div className="bg-slate-950 border border-slate-800 rounded-3xl w-full max-w-6xl h-[85vh] flex flex-col justify-between shadow-2xl relative animate-scaleUp">
-            
+
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-900">
               <div className="flex items-center gap-3">
@@ -2840,7 +2971,7 @@ function LiveSessions() {
                   <Users size={12} className="text-blue-500" />
                   <span>{participantsCount} ATTENDING</span>
                 </div>
-                <button 
+                <button
                   onClick={() => setShowClassroom(false)}
                   className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-900 transition-colors"
                 >
@@ -2851,13 +2982,13 @@ function LiveSessions() {
 
             {/* Content Split: Slides Video Pane (Left) and Live Chat (Right) */}
             <div className="flex-grow flex flex-col lg:flex-row overflow-hidden">
-              
+
               {/* Left Column: Virtual Presentation screen */}
               <div className="flex-1 bg-slate-950 p-6 flex flex-col justify-center items-center relative overflow-hidden border-r border-slate-900 h-1/2 lg:h-full">
-                
+
                 {/* Simulated Screen Share Slide */}
                 <div className="w-full max-w-3xl aspect-video bg-[#0c0c0c] border border-slate-850 rounded-2xl p-6 shadow-2xl flex flex-col justify-between relative overflow-hidden group">
-                  
+
                   {/* Floating slide watermarks */}
                   <div className="flex justify-between items-start text-[9px] font-mono text-slate-500/60 uppercase tracking-wider">
                     <span>AetherLearn Live Session #04</span>
@@ -2872,7 +3003,7 @@ function LiveSessions() {
                     <div className="bg-slate-950/50 p-4 border border-slate-800 rounded-xl font-mono text-[11px] sm:text-xs text-indigo-400 max-w-md mx-auto leading-normal">
                       {"Attention(Q, K, V) = softmax( (QKᵀ) / √dₖ ) V"}
                     </div>
-                    
+
                     {/* Abstract math flow visual */}
                     <div className="flex justify-center gap-4 text-[10px] font-bold text-slate-400 font-mono">
                       <span className="px-2 py-1 bg-slate-900 border border-slate-800 rounded-lg">Q (Query Vector)</span>
@@ -2903,7 +3034,7 @@ function LiveSessions() {
 
               {/* Right Column: Live Chat Pane */}
               <div className="w-full lg:w-80 bg-slate-950 flex flex-col justify-between border-t lg:border-t-0 border-slate-900 h-1/2 lg:h-full">
-                
+
                 {/* Title */}
                 <div className="px-4 py-3 bg-slate-950 border-b border-slate-900 flex items-center justify-between">
                   <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest font-mono flex items-center gap-1.5">
@@ -2924,13 +3055,12 @@ function LiveSessions() {
                         <span className={msg.isInstructor ? 'text-brand-400 font-black' : ''}>{msg.sender}</span>
                         <span className="text-[8px] text-slate-600 font-mono">{msg.time}</span>
                       </div>
-                      <div className={`inline-block px-3 py-2 rounded-2xl text-xs max-w-[85%] leading-relaxed ${
-                        msg.sender === 'You'
+                      <div className={`inline-block px-3 py-2 rounded-2xl text-xs max-w-[85%] leading-relaxed ${msg.sender === 'You'
                           ? 'bg-brand-600 text-white rounded-tr-none text-left'
                           : msg.isInstructor
                             ? 'bg-brand-500/10 border border-brand-500/20 text-brand-300 rounded-tl-none'
                             : 'bg-slate-900 text-slate-200 border border-slate-850 rounded-tl-none'
-                      }`}>
+                        }`}>
                         {msg.text}
                       </div>
                     </div>
@@ -2941,14 +3071,14 @@ function LiveSessions() {
                 {/* Keyboard Input Form */}
                 <form onSubmit={handleSendMessage} className="p-3 border-t border-slate-900 bg-slate-950">
                   <div className="relative flex items-center bg-slate-900 border border-slate-800 rounded-xl overflow-hidden focus-within:border-brand-500 transition-colors">
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       placeholder="Ask a question..."
                       value={typedMessage}
                       onChange={(e) => setTypedMessage(e.target.value)}
                       className="w-full bg-transparent pl-4 pr-10 py-3 text-xs text-white placeholder-slate-500 focus:outline-none"
                     />
-                    <button 
+                    <button
                       type="submit"
                       className="absolute right-2 p-1.5 rounded-lg bg-brand-600 hover:bg-blue-600 text-white hover:scale-105 active:scale-95 transition-all cursor-pointer"
                     >
@@ -2963,32 +3093,30 @@ function LiveSessions() {
 
             {/* Bottom: Virtual Control Bar */}
             <div className="px-6 py-4 border-t border-slate-900 bg-slate-950 flex flex-col sm:flex-row justify-between items-center gap-4 rounded-b-3xl">
-              
+
               {/* Media Controls */}
               <div className="flex items-center gap-3">
-                <button 
+                <button
                   onClick={() => setIsAudioMuted(!isAudioMuted)}
-                  className={`p-3.5 rounded-xl border transition-all active:scale-95 cursor-pointer ${
-                    isAudioMuted 
-                      ? 'bg-rose-500/15 border-rose-500/30 text-rose-500' 
+                  className={`p-3.5 rounded-xl border transition-all active:scale-95 cursor-pointer ${isAudioMuted
+                      ? 'bg-rose-500/15 border-rose-500/30 text-rose-500'
                       : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white'
-                  }`}
+                    }`}
                   title={isAudioMuted ? 'Unmute Audio' : 'Mute Audio'}
                 >
                   {isAudioMuted ? <MicOff size={16} /> : <Mic size={16} />}
                 </button>
-                <button 
+                <button
                   onClick={() => setIsVideoMuted(!isVideoMuted)}
-                  className={`p-3.5 rounded-xl border transition-all active:scale-95 cursor-pointer ${
-                    isVideoMuted 
-                      ? 'bg-rose-500/15 border-rose-500/30 text-rose-500' 
+                  className={`p-3.5 rounded-xl border transition-all active:scale-95 cursor-pointer ${isVideoMuted
+                      ? 'bg-rose-500/15 border-rose-500/30 text-rose-500'
                       : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white'
-                  }`}
+                    }`}
                   title={isVideoMuted ? 'Turn Camera On' : 'Turn Camera Off'}
                 >
                   {isVideoMuted ? <CameraOff size={16} /> : <Camera size={16} />}
                 </button>
-                <button 
+                <button
                   onClick={() => alert('Starting desktop screen broadcast simulation...')}
                   className="p-3.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 transition-all active:scale-95 cursor-pointer"
                   title="Share Screen"
@@ -3004,7 +3132,7 @@ function LiveSessions() {
               </div>
 
               {/* Stop Session Button */}
-              <button 
+              <button
                 onClick={() => setShowClassroom(false)}
                 className="w-full sm:w-auto px-6 py-3 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-black tracking-wide flex items-center justify-center gap-1.5 transition-all duration-200 shadow-md shadow-rose-500/10 active:scale-95 cursor-pointer"
               >
@@ -3133,7 +3261,7 @@ function MentorsList() {
 
   return (
     <div className="w-full bg-slate-50 dark:bg-[#050505] py-8 sm:py-12 transition-colors duration-300 animate-fadeIn text-slate-900 dark:text-white">
-      
+
       {/* Toast Alert popup */}
       {toastMessage && (
         <div className="fixed top-24 right-6 z-55 bg-slate-900/95 dark:bg-white/95 text-white dark:text-slate-900 px-5 py-3 rounded-2xl shadow-xl flex items-center gap-2.5 text-xs font-bold border border-slate-805/10 dark:border-white/20 animate-slideIn">
@@ -3143,7 +3271,7 @@ function MentorsList() {
       )}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
-        
+
         {/* ================= HEADER & SEARCH SECTION ================= */}
         <section className="text-center max-w-3xl mx-auto space-y-5 text-left">
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
@@ -3157,14 +3285,14 @@ function MentorsList() {
           <div className="max-w-xl mx-auto pt-2">
             <div className="relative flex items-center bg-white dark:bg-[#0c0c0c] border border-slate-200 dark:border-slate-800/80 rounded-2xl overflow-hidden shadow-xs focus-within:border-brand-500 transition-colors pl-4 pr-2.5 py-1.5 gap-2.5">
               <Search size={16} className="text-slate-400 flex-shrink-0" />
-              <input 
-                type="text" 
+              <input
+                type="text"
                 placeholder="Find a Mentor by Expertise (e.g., Quantum Computing)"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full bg-transparent text-xs sm:text-sm text-slate-850 dark:text-white placeholder-slate-400 focus:outline-none"
               />
-              <button 
+              <button
                 onClick={() => alert(`Searching for: "${searchQuery}"...`)}
                 className="bg-[#253df5] hover:bg-blue-650 text-white font-bold py-2.5 px-6 rounded-xl text-xs sm:text-sm transition-all shadow-xs active:scale-95 cursor-pointer flex-shrink-0"
               >
@@ -3179,19 +3307,19 @@ function MentorsList() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {filteredMentors.length > 0 ? (
               filteredMentors.map((mentor) => (
-                <div 
+                <div
                   key={mentor.id}
                   className="bg-white dark:bg-[#0c0c0c]/60 border border-slate-200/60 dark:border-slate-800/80 shadow-xs hover:shadow-lg dark:hover:shadow-black/20 rounded-3xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-brand-500/40 flex flex-col text-left group relative"
                 >
                   {/* Top Image banner with Rating badge */}
                   <div className="h-52 sm:h-56 relative w-full overflow-hidden bg-slate-100 dark:bg-slate-900 flex-shrink-0">
-                    <img 
-                      src={mentor.avatar} 
-                      alt={mentor.name} 
+                    <img
+                      src={mentor.avatar}
+                      alt={mentor.name}
                       className="w-full h-full object-cover transform group-hover:scale-103 transition-transform duration-500"
                     />
                     <div className="absolute inset-0 bg-slate-900/10" />
-                    
+
                     {/* Semi-transparent rating badge */}
                     <div className="absolute top-4 right-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md px-2.5 py-1 rounded-lg text-xs font-bold text-slate-850 dark:text-white flex items-center gap-1 shadow-sm border border-slate-200/20">
                       <Star size={11} className="text-amber-500 fill-current" />
@@ -3215,7 +3343,7 @@ function MentorsList() {
                       {/* Tag Pills */}
                       <div className="flex flex-wrap gap-1.5">
                         {mentor.specialties.map((spec, idx) => (
-                          <span 
+                          <span
                             key={idx}
                             className="bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 text-[10px] font-bold px-3 py-1 rounded-full border border-slate-100 dark:border-slate-800"
                           >
@@ -3232,14 +3360,14 @@ function MentorsList() {
 
                     {/* Double stacked buttons */}
                     <div className="space-y-2.5 pt-4 border-t border-slate-100 dark:border-slate-850/60">
-                      <button 
+                      <button
                         onClick={() => setBookingMentor(mentor)}
                         className="w-full py-3 bg-[#253df5] hover:bg-blue-650 text-white rounded-xl text-xs font-bold tracking-wide flex items-center justify-center gap-1.5 transition-all shadow-sm shadow-blue-500/10 active:scale-95 cursor-pointer"
                       >
                         <Calendar size={13} />
                         <span>Book a Session</span>
                       </button>
-                      <button 
+                      <button
                         onClick={() => setSelectedProfile(mentor)}
                         className="w-full py-3 border border-slate-205 dark:border-slate-800 hover:bg-slate-55 dark:hover:bg-slate-900/60 text-slate-700 dark:text-slate-350 rounded-xl text-xs font-bold tracking-wide flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer bg-transparent"
                       >
@@ -3269,7 +3397,7 @@ function MentorsList() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            
+
             {/* Advantage 1 */}
             <div className="bg-white dark:bg-[#0c0c0c]/60 border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 flex flex-col items-start gap-4 text-left transition-all duration-300 shadow-xs hover:shadow-md hover:border-brand-500/30">
               <div className="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-950/20 text-[#253df5] dark:text-blue-400 flex items-center justify-center flex-shrink-0">
@@ -3318,14 +3446,14 @@ function MentorsList() {
       {bookingMentor && (
         <div className="fixed inset-0 z-50 overflow-hidden bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4">
           <div className="bg-white dark:bg-[#0c0c0c] border border-slate-200 dark:border-slate-800 rounded-3xl w-full max-w-md shadow-2xl relative animate-scaleUp p-6 space-y-5 text-left">
-            
+
             {/* Header */}
             <div className="flex justify-between items-center pb-3 border-b border-slate-100 dark:border-slate-850">
               <h3 className="text-base font-black text-slate-909 dark:text-white flex items-center gap-1.5">
                 <Calendar size={16} className="text-blue-500 animate-pulse" />
                 <span>Book Office Hours</span>
               </h3>
-              <button 
+              <button
                 onClick={() => setBookingMentor(null)}
                 className="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60"
               >
@@ -3349,8 +3477,8 @@ function MentorsList() {
               {/* Date Input */}
               <div className="space-y-1">
                 <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-wide block">Select Date</label>
-                <input 
-                  type="date" 
+                <input
+                  type="date"
                   value={selectedDate}
                   min="2026-06-15"
                   max="2026-06-25"
@@ -3376,11 +3504,10 @@ function MentorsList() {
                         key={slot.val}
                         type="button"
                         onClick={() => setSelectedTimeSlot(slot.val)}
-                        className={`p-2.5 rounded-xl border text-[10px] font-bold text-center transition-all cursor-pointer ${
-                          isSelected
+                        className={`p-2.5 rounded-xl border text-[10px] font-bold text-center transition-all cursor-pointer ${isSelected
                             ? 'bg-brand-600 border-brand-600 text-white shadow-xs'
                             : 'border-slate-200 dark:border-slate-850 bg-slate-50 dark:bg-slate-900/60 text-slate-655 dark:text-slate-350 hover:border-slate-300 dark:hover:border-slate-700'
-                        }`}
+                          }`}
                       >
                         {slot.label}
                       </button>
@@ -3392,8 +3519,8 @@ function MentorsList() {
               {/* Focus Scope */}
               <div className="space-y-1">
                 <label className="text-[10px] font-black text-slate-400 dark:text-slate-550 uppercase tracking-wide block">Subject Focus</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   placeholder="e.g. Model Alignment, Pipeline Debugging"
                   value={bookingTopic}
                   onChange={(e) => setBookingTopic(e.target.value)}
@@ -3429,7 +3556,7 @@ function MentorsList() {
       {selectedProfile && (
         <div className="fixed inset-0 z-50 overflow-hidden bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4">
           <div className="bg-white dark:bg-[#0c0c0c] border border-slate-200 dark:border-slate-800 rounded-3xl w-full max-w-2xl shadow-2xl relative animate-scaleUp p-6 sm:p-8 flex flex-col justify-between max-h-[85vh] overflow-y-auto text-left gap-6">
-            
+
             {/* Header info */}
             <div className="flex flex-col sm:flex-row gap-5 items-start justify-between border-b border-slate-100 dark:border-slate-850 pb-5">
               <div className="flex gap-4 items-center">
@@ -3445,7 +3572,7 @@ function MentorsList() {
                   </p>
                   <div className="flex gap-1.5 pt-0.5">
                     {selectedProfile.specialties.map((spec, idx) => (
-                      <span 
+                      <span
                         key={idx}
                         className="bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 text-[9px] font-bold px-2 py-0.5 rounded-md border border-slate-100 dark:border-slate-850"
                       >
@@ -3455,7 +3582,7 @@ function MentorsList() {
                   </div>
                 </div>
               </div>
-              <button 
+              <button
                 onClick={() => setSelectedProfile(null)}
                 className="p-1 rounded-lg text-slate-400 hover:text-slate-655 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 self-start sm:self-center"
               >
@@ -3490,7 +3617,7 @@ function MentorsList() {
               {/* Right Column: AI Insights & Core Expertise progress bars */}
               <div className="space-y-5 border-t md:border-t-0 md:border-l md:border-slate-105 dark:border-slate-850 md:pl-8 pt-5 md:pt-0">
                 <span className="text-[10px] font-black text-slate-400 dark:text-slate-550 uppercase tracking-widest font-mono block">Core Research Expertise</span>
-                
+
                 <div className="space-y-4">
                   {selectedProfile.expertise.map((exp, idx) => (
                     <div key={idx} className="space-y-1">
@@ -3509,23 +3636,23 @@ function MentorsList() {
                 <div className="space-y-3 pt-3 border-t border-slate-100 dark:border-slate-850/60">
                   <span className="text-[10px] font-black text-slate-400 dark:text-slate-550 uppercase tracking-widest font-mono block">Professional Networks</span>
                   <div className="flex gap-3">
-                    <a 
-                      href="#" 
+                    <a
+                      href="#"
                       target="_blank" rel="noopener noreferrer" href="https://linkedin.com"
                       className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 dark:bg-blue-950/20 text-[#253df5] hover:bg-blue-100/60 dark:hover:bg-blue-950/40 rounded-xl text-xs font-bold transition-colors cursor-pointer border border-blue-100 dark:border-brand-500/10"
                     >
                       <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
                       </svg>
                       <span>LinkedIn</span>
                     </a>
-                    <a 
-                      href="#" 
+                    <a
+                      href="#"
                       target="_blank" rel="noopener noreferrer" href="https://github.com"
                       className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100/80 dark:bg-slate-900/60 text-slate-700 dark:text-slate-300 hover:bg-slate-200/50 dark:hover:bg-slate-800 rounded-xl text-xs font-bold transition-colors cursor-pointer border border-slate-205 dark:border-slate-800"
                     >
                       <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
                       </svg>
                       <span>GitHub</span>
                     </a>
@@ -3536,7 +3663,7 @@ function MentorsList() {
 
             {/* Bottom Actions footer */}
             <div className="flex items-center gap-3 pt-4 border-t border-slate-100 dark:border-slate-850 mt-2">
-              <button 
+              <button
                 onClick={() => {
                   setBookingMentor(selectedProfile);
                   setSelectedProfile(null);
@@ -3546,7 +3673,7 @@ function MentorsList() {
                 <Calendar size={13} />
                 <span>Book Office Hours</span>
               </button>
-              <button 
+              <button
                 onClick={() => setSelectedProfile(null)}
                 className="px-6 py-3.5 border border-slate-205 dark:border-slate-800 hover:bg-slate-55 dark:hover:bg-slate-900/60 text-slate-700 dark:text-slate-350 rounded-xl text-xs font-bold transition-all active:scale-95 cursor-pointer bg-transparent"
               >
@@ -3569,7 +3696,7 @@ function AIPanelButton() {
   const [query, setQuery] = useState('');
   const [result, setResult] = useState('');
   const [loading, setLoading] = useState(false);
-  
+
   // Voice feature states
   const [isListening, setIsListening] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(false); // Disabled by default
@@ -3602,12 +3729,12 @@ Your main goals are:
           finalTranscript += event.results[i][0].transcript;
         }
         setQuery(finalTranscript);
-        
+
         // Clear previous timer
         if (voiceTimerRef.current) {
           clearTimeout(voiceTimerRef.current);
         }
-        
+
         // Wait 5 seconds after speech stops to submit
         voiceTimerRef.current = setTimeout(() => {
           handleAIRequest(null, finalTranscript);
@@ -3627,7 +3754,7 @@ Your main goals are:
 
       recognitionRef.current = recognition;
     }
-    
+
     return () => {
       if (voiceTimerRef.current) clearTimeout(voiceTimerRef.current);
     };
@@ -3648,7 +3775,7 @@ Your main goals are:
 
   const speakText = async (text) => {
     if (!voiceEnabled) return;
-    
+
     try {
       const sarvamApiKey = import.meta.env.VITE_SARVAM_API_KEY || 'MISSING_SARVAM_KEY';
       if (sarvamApiKey === 'MISSING_SARVAM_KEY') {
@@ -3708,7 +3835,7 @@ Your main goals are:
 
     try {
       const apiKey = import.meta.env.VITE_NVIDIA_API_KEY || 'MISSING_API_KEY';
-      
+
       const payload = {
         model: "nvidia/nemotron-3-super-120b-a12b",
         messages: [
@@ -3728,20 +3855,20 @@ Your main goals are:
         body: JSON.stringify(payload)
       }).catch(() => {
         // Mock fallback if API fails or no key
-        return { 
-          ok: true, 
-          json: () => Promise.resolve({ 
-            choices: [{ message: { content: "To navigate to the Past Year Question Vault, click 'Quizzes' in the left sidebar, then select the 'Past Year' toggle. How else can I assist you today?" } }] 
-          }) 
+        return {
+          ok: true,
+          json: () => Promise.resolve({
+            choices: [{ message: { content: "To navigate to the Past Year Question Vault, click 'Quizzes' in the left sidebar, then select the 'Past Year' toggle. How else can I assist you today?" } }]
+          })
         };
       });
-      
+
       const data = await response.json();
       const aiResponse = data.choices?.[0]?.message?.content || 'Analysis complete.';
-      
+
       setResult(aiResponse);
       setShowPopup(true);
-      
+
       // Auto-hide popup after 10 seconds if it's just a notification
       setTimeout(() => setShowPopup(false), 10000);
 
@@ -3757,7 +3884,7 @@ Your main goals are:
 
   return (
     <div className="fixed bottom-6 right-6 z-[100] flex flex-col items-end gap-3">
-      
+
       {/* Contextual Popup Notification */}
       {showPopup && !isOpen && (
         <div className="mb-2 w-80 bg-brand-600 dark:bg-brand-700 text-white shadow-xl rounded-xl p-4 flex gap-3 animate-in fade-in slide-in-from-bottom-4">
@@ -3781,8 +3908,8 @@ Your main goals are:
               <span className="font-bold">AetherLearn Guide</span>
             </div>
             <div className="flex items-center gap-1">
-              <button 
-                onClick={() => setVoiceEnabled(!voiceEnabled)} 
+              <button
+                onClick={() => setVoiceEnabled(!voiceEnabled)}
                 className="hover:bg-white/20 p-1.5 rounded transition-colors"
                 title={voiceEnabled ? "Mute Voice Responses" : "Enable Voice Responses"}
               >
@@ -3793,7 +3920,7 @@ Your main goals are:
               </button>
             </div>
           </div>
-          
+
           <div className="p-4 space-y-4">
             <div className="flex items-center justify-around pb-3 border-b border-slate-100 dark:border-slate-800">
               <button className="flex flex-col items-center text-xs text-slate-500 hover:text-brand-500 transition-colors">
@@ -3809,7 +3936,7 @@ Your main goals are:
                 Interface Help
               </button>
             </div>
-            
+
             {result && (
               <div className="p-3 bg-brand-50 dark:bg-slate-800 border border-brand-100 dark:border-slate-700 rounded-lg text-sm text-slate-800 dark:text-slate-200 max-h-48 overflow-y-auto">
                 <div className="flex items-center gap-2 mb-2">
@@ -3867,7 +3994,19 @@ function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [activeTab, setActiveTab] = useState('Curriculum');
   const [isInitializing, setIsInitializing] = useState(true);
+  const [isNavigating, setIsNavigating] = useState(false);
   const [isDark, setIsDark] = useState(() => document.documentElement.classList.contains('dark'));
+
+  // Smooth page loading transition handler
+  const handleTabSwitch = (tabName) => {
+    if (tabName === activeTab) return;
+    setIsNavigating(true);
+    setTimeout(() => {
+      setActiveTab(tabName);
+      setIsNavigating(false);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 320);
+  };
 
   // Track theme changes from Navbar's toggle via MutationObserver
   useEffect(() => {
@@ -3901,56 +4040,83 @@ function App() {
   }, []);
 
   const handleLoginSuccess = (user) => {
-    setIsLoggedIn(true);
-    setCurrentUser(user);
-    setActiveTab('Dashboard');
+    setIsNavigating(true);
+    setTimeout(() => {
+      setIsLoggedIn(true);
+      setCurrentUser(user);
+      setActiveTab('Dashboard');
+      setIsNavigating(false);
+    }, 400);
   };
 
   const handleLogout = async () => {
+    setIsNavigating(true);
     try {
-      await fetch('http://localhost:8000/users/logout', { 
+      await fetch('http://localhost:8000/users/logout', {
         method: 'POST',
-        credentials: 'include' 
+        credentials: 'include'
       });
     } catch (e) { }
-    
-    setIsLoggedIn(false);
-    setCurrentUser(null);
-    setActiveTab('Curriculum');
+
+    setTimeout(() => {
+      setIsLoggedIn(false);
+      setCurrentUser(null);
+      setActiveTab('Curriculum');
+      setIsNavigating(false);
+    }, 300);
   };
 
   if (isInitializing) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-[#050505] flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 dark:bg-[#050505] flex flex-col items-center justify-center gap-4">
         {isDark && <StarfieldBackground />}
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500"></div>
+        <div className="w-12 h-12 rounded-2xl bg-[#253df5] flex items-center justify-center text-white shadow-xl shadow-[#253df5]/30 animate-bounce">
+          <Zap className="w-6 h-6 fill-current" />
+        </div>
+        <div className="w-48 h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+          <div className="h-full bg-[#253df5] animate-loader-bar" />
+        </div>
       </div>
     );
   }
 
   return (
     <div className="relative min-h-screen bg-slate-50 dark:bg-[#050505] text-slate-900 dark:text-slate-100 flex flex-col font-sans antialiased selection:bg-brand-500/10 dark:selection:bg-brand-500/30 selection:text-brand-600 dark:selection:text-brand-450 transition-colors duration-300 overflow-x-hidden">
+      {/* Top Page Loading Bar */}
+      {isNavigating && (
+        <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-[#253df5]/20 overflow-hidden">
+          <div className="h-full bg-gradient-to-r from-[#253df5] via-indigo-400 to-[#253df5] animate-loader-bar" />
+        </div>
+      )}
+
       {/* Animated starfield particles — only in dark mode */}
       {isDark && <StarfieldBackground />}
 
       {activeTab !== 'Login' && activeTab !== 'Dashboard' && (
-        <Navbar 
-          activeTab={activeTab} 
-          setActiveTab={setActiveTab} 
+        <Navbar
+          activeTab={activeTab}
+          setActiveTab={handleTabSwitch}
           isLoggedIn={isLoggedIn}
           currentUser={currentUser}
           onLogout={handleLogout}
         />
       )}
-      
-      <main className="relative z-10 flex-grow flex flex-col items-center justify-center">
-        {activeTab === 'Dashboard' && isLoggedIn && (
-          currentUser?.role === 'Overseer' ? (
-            <OverseerDashboard user={currentUser} onLogout={handleLogout} />
-          ) : (currentUser?.role === 'Mentor' || currentUser?.role === 'Teacher') ? (
-            <MentorDashboard user={currentUser} onLogout={handleLogout} />
+
+      <main className={`relative z-10 flex-grow flex flex-col items-center justify-center w-full transition-all duration-300 ${isNavigating ? 'opacity-40 scale-[0.995]' : 'animate-fade-in-page'}`}>
+        {activeTab === 'Dashboard' && (
+          isLoggedIn ? (
+            currentUser?.role === 'Overseer' ? (
+              <OverseerDashboard user={currentUser} onLogout={handleLogout} />
+            ) : (currentUser?.role === 'Mentor' || currentUser?.role === 'Teacher') ? (
+              <MentorDashboard user={currentUser} onLogout={handleLogout} />
+            ) : (
+              <StudentDashboard user={currentUser} onLogout={handleLogout} />
+            )
           ) : (
-            <StudentDashboard user={currentUser} onLogout={handleLogout} />
+            <LoginPage
+              onBackToHome={() => setActiveTab('Curriculum')}
+              onLoginSuccess={handleLoginSuccess}
+            />
           )
         )}
         {activeTab === 'Curriculum' && (
@@ -3966,21 +4132,21 @@ function App() {
         {activeTab === 'Live Sessions' && <LiveSessions />}
         {activeTab === 'Mentors' && <MentorsList />}
         {activeTab === 'Login' && (
-          <LoginPage 
-            onBackToHome={() => setActiveTab(isLoggedIn ? 'Dashboard' : 'Curriculum')} 
+          <LoginPage
+            onBackToHome={() => setActiveTab(isLoggedIn ? 'Dashboard' : 'Curriculum')}
             onLoginSuccess={handleLoginSuccess}
           />
         )}
       </main>
 
       {activeTab !== 'Login' && activeTab !== 'Dashboard' && (
-        <Footer 
-          setActiveTab={setActiveTab} 
+        <Footer
+          setActiveTab={setActiveTab}
           isLoggedIn={isLoggedIn}
           onLogout={handleLogout}
         />
       )}
-      
+
     </div>
   );
 }

@@ -7,7 +7,8 @@ def get_user_by_email(db: Session, email: str) -> models.User | None:
 def create_user(db: Session, user: schemas.UserCreate) -> models.User:
     from .security import get_password_hash
     hashed_password = get_password_hash(user.password)
-    db_user = models.User(email=user.email, hashed_password=hashed_password)
+    user_role = getattr(user, 'role', None) or "Student"
+    db_user = models.User(email=user.email, hashed_password=hashed_password, role=user_role)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)

@@ -48,12 +48,20 @@ export default function StudentDashboard({ user, onLogout }) {
   const [formGmail, setFormGmail] = useState(user?.gmail || '');
   const [formPhone, setFormPhone] = useState(user?.phone_number || '');
 
-  // AI Document Processing State
+  // AI Document Processing & Chatbot State
   const [aiHealth, setAiHealth] = useState(null);
   const [aiSelectedFile, setAiSelectedFile] = useState(null);
   const [aiProcessing, setAiProcessing] = useState(false);
   const [aiResult, setAiResult] = useState(null);
   const [aiError, setAiError] = useState(null);
+
+  // AI Chatbot Drawer State
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [chatMessages, setChatMessages] = useState([
+    { role: 'model', content: 'Hi! 👋 I am your Aether AI Tutor powered by Gemini 3.6 Flash. Ask me any question about your courses, code, or assignments!' }
+  ]);
+  const [chatInput, setChatInput] = useState('');
+  const [isChatLoading, setIsChatLoading] = useState(false);
 
   useEffect(() => {
     fetch('http://localhost:8000/ai/health')
@@ -61,6 +69,55 @@ export default function StudentDashboard({ user, onLogout }) {
       .then(data => data && setAiHealth(data))
       .catch(() => {});
   }, []);
+
+  const handleSendChatMessage = async (e, customPrompt = null) => {
+    if (e) e.preventDefault();
+    const promptToSend = customPrompt || chatInput.trim();
+    if (!promptToSend || isChatLoading) return;
+
+    setChatInput('');
+    const updatedHistory = [...chatMessages, { role: 'user', content: promptToSend }];
+    setChatMessages(updatedHistory);
+    setIsChatLoading(true);
+
+    try {
+      const res = await fetch('http://localhost:8000/ai/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-Key': 'super-secret-api-key-for-ai-access'
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          message: promptToSend,
+          history: updatedHistory.map(m => ({ role: m.role, content: m.content }))
+        })
+      });
+
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.detail || 'AI Chat failed');
+      }
+
+      const data = await res.json();
+      setChatMessages(prev => [
+        ...prev,
+        {
+          role: 'model',
+          content: data.response || 'No response from AI.',
+          provider: data.provider,
+          model: data.model
+        }
+      ]);
+    } catch (err) {
+      setChatMessages(prev => [
+        ...prev,
+        { role: 'model', content: `⚠️ ${err.message || 'Failed to communicate with AI Tutor'}` }
+      ]);
+    } finally {
+      setIsChatLoading(false);
+    }
+  };
 
   const handleProcessPdf = async (e) => {
     e.preventDefault();
@@ -184,22 +241,35 @@ export default function StudentDashboard({ user, onLogout }) {
   const getUserAvatar = (u) => {
     if (profileImage) return profileImage;
     if (!u) return null;
+    if (u.picture) return u.picture;
     const email = u.email ? u.email.toLowerCase() : '';
     if (email.includes('alex')) return alexRiversProfile;
     if (email.includes('sarah')) return sarahProfile;
     return null;
   };
 
+  const getEffectiveName = () => {
+    if (formName && formName.trim()) return formName.trim();
+    if (user?.name && user.name.trim()) return user.name.trim();
+    if (user?.email) return user.email.split('@')[0];
+    return 'Student';
+  };
+
   const getFirstName = (fullName) => {
-    if (!fullName) return 'Alex';
-    return fullName.split(' ')[0];
+    const target = fullName || getEffectiveName();
+    if (!target) return 'Student';
+    const clean = target.replace(/^[0-9_.-]+/, '').trim();
+    const firstWord = (clean || target).split(/[\s._-]+/)[0];
+    return firstWord.charAt(0).toUpperCase() + firstWord.slice(1).toLowerCase();
   };
 
   const getInitials = (fullName) => {
-    if (!fullName) return 'ST';
-    const parts = fullName.trim().split(/\s+/);
-    if (parts.length >= 2) {
-      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    const target = fullName || getEffectiveName();
+    if (!target) return 'ST';
+    const clean = target.replace(/^[0-9_.-]+/, '').trim() || target;
+    const parts = clean.trim().split(/[\s._-]+/);
+    if (parts.length >= 2 && parts[0] && parts[1]) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
     }
     return parts[0].substring(0, 2).toUpperCase();
   };
@@ -236,21 +306,21 @@ export default function StudentDashboard({ user, onLogout }) {
           <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-slate-200 dark:border-slate-800 shadow-sm flex-shrink-0 flex items-center justify-center bg-[#253df5]">
             {getUserAvatar(user) ? (
               <img loading="lazy" src={getUserAvatar(user)} 
-                alt={user?.name || "Alex Rivers"} 
+                alt={getEffectiveName()} 
                 className="w-full h-full object-cover"
               />
             ) : (
               <span className="text-white text-sm font-black tracking-wider">
-                {getInitials(user?.name || 'ST')}
+                {getInitials()}
               </span>
             )}
           </div>
           <div className="truncate">
-            <h3 className="font-extrabold text-slate-800 dark:text-white text-sm sm:text-base tracking-wide uppercase leading-tight">
-              {user?.name || 'ALEX RIVERS'}
+            <h3 className="font-extrabold text-slate-800 dark:text-white text-sm sm:text-base tracking-wide uppercase leading-tight truncate">
+              {getEffectiveName()}
             </h3>
-            <span className="text-[9px] font-bold text-slate-450 dark:text-slate-500 font-mono tracking-widest block mt-0.5">
-              {user?.role === 'Mentor' ? 'LEAD INSTRUCTOR' : 'AI RESEARCHER PATH'}
+            <span className="text-[9px] font-bold text-slate-455 dark:text-slate-500 font-mono tracking-widest block mt-0.5">
+              {user?.role === 'Mentor' || user?.role === 'Teacher' ? 'LEAD INSTRUCTOR' : 'AI RESEARCHER PATH'}
             </span>
           </div>
         </div>
@@ -333,13 +403,13 @@ export default function StudentDashboard({ user, onLogout }) {
               <Cpu className="w-5 h-5 text-[#253df5]" />
               <div>
                 <h3 className="font-extrabold text-sm text-slate-900 dark:text-white">AI PYQ Document Processor</h3>
-                <span className="text-[10px] text-slate-400 font-mono">PyMuPDF (JPG) → PaddleOCR (Apple ANE) → Ollama (gemma4:12b)</span>
+                <span className="text-[10px] text-slate-400 font-mono">PyMuPDF (JPG) → PaddleOCR (Apple ANE) → {aiHealth?.active_primary || 'Gemini API (Primary) / Gemma (Fallback)'}</span>
               </div>
             </div>
             {aiHealth && (
               <div className="flex items-center gap-2 text-[10px] font-bold">
                 <span className={`px-2 py-0.5 rounded-full border ${aiHealth.ready ? 'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800' : 'bg-amber-50 text-amber-600 border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800'}`}>
-                  {aiHealth.ready ? '● AI Pipeline Ready' : '▲ AI Engine Initialising'}
+                  {aiHealth.ready ? `● ${aiHealth.active_primary || 'AI Pipeline'} Ready` : '▲ AI Engine Initialising'}
                 </span>
               </div>
             )}
@@ -383,7 +453,9 @@ export default function StudentDashboard({ user, onLogout }) {
                 <span className="font-bold text-xs text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
                   <Check size={14} /> PDF Analysis Complete — {aiResult.filename}
                 </span>
-                <span className="text-[10px] font-mono text-slate-400">gemma4:12b Output</span>
+                <span className="text-[10px] font-mono text-slate-400">
+                  {aiResult.analysis?.provider === 'gemini' ? '✨ Gemini 3.6 Flash' : aiResult.analysis?.provider === 'gemma' ? '⚡ Gemma 4:12b (Ollama)' : 'AI Output'}
+                </span>
               </div>
 
               {aiResult.analysis && (
@@ -878,11 +950,25 @@ export default function StudentDashboard({ user, onLogout }) {
                  <ArrowLeft size={15} />
                </button>
                <div className="flex flex-col text-left">
-                 <h2 className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white leading-tight">
-                   {selectedCourse.title}
-                 </h2>
+                 <div className="flex items-center gap-2 flex-wrap">
+                   <h2 className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white leading-tight">
+                     {selectedCourse.title}
+                   </h2>
+                   {selectedCourse.nptelUrl && (
+                     <a
+                       href={selectedCourse.nptelUrl}
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-orange-500/10 hover:bg-orange-500/20 text-orange-600 dark:text-orange-400 border border-orange-500/30 text-[11px] font-bold transition-all"
+                       title="Open official course on NPTEL / Swayam portal"
+                     >
+                       <ExternalLink size={12} />
+                       <span>NPTEL / Swayam</span>
+                     </a>
+                   )}
+                 </div>
                  <span className="text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 mt-0.5">
-                   Course ID: {selectedCourse.id === 'aml' ? 'ML-401' : selectedCourse.id === 'nlp' ? 'NLP-501' : 'CS-501'}
+                   Course ID: {selectedCourse.nptelCode || (selectedCourse.id === 'aml' ? 'ML-401' : selectedCourse.id === 'nlp' ? 'NLP-501' : 'CS-501')}
                  </span>
                </div>
              </div>
@@ -1700,12 +1786,12 @@ export default function StudentDashboard({ user, onLogout }) {
             <div className="w-9 h-9 rounded-full overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm flex-shrink-0 flex items-center justify-center bg-[#253df5] ml-1">
               {getUserAvatar(user) ? (
                 <img loading="lazy" src={getUserAvatar(user)} 
-                  alt={user?.name || "Alex Rivers"} 
+                  alt={getEffectiveName()} 
                   className="w-full h-full object-cover"
                 />
               ) : (
                 <span className="text-white text-xs font-black tracking-wider">
-                  {getInitials(user?.name || 'ST')}
+                  {getInitials()}
                 </span>
               )}
             </div>
@@ -1720,7 +1806,7 @@ export default function StudentDashboard({ user, onLogout }) {
             <>
               <div className="mb-2">
                 <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-                  Welcome back, {getFirstName(user?.name)}.
+                  Welcome back, {getFirstName()}.
                 </h1>
               </div>
               <div className="bg-white dark:bg-[#0c0c0c] rounded-3xl p-8 sm:p-10 border border-[#eef2f6] dark:border-slate-800/80 shadow-xs relative overflow-hidden flex flex-col justify-center text-left">
@@ -2011,9 +2097,12 @@ export default function StudentDashboard({ user, onLogout }) {
                 description: "Explore deep learning architectures, neural networks, and advanced predictive models. Study CNN operations, transformers, backpropagation, and optimization techniques to master state-of-the-art AI systems.",
                 featured: true,
                 image: circuitBoardImage,
-                instructor: "Dr. Elena Vance",
+                instructor: "Dr. Elena Vance (IIT Madras)",
                 credits: 4,
-                nextAssignment: "CNN Feature Mapping (June 10)"
+                nextAssignment: "CNN Feature Mapping (June 10)",
+                nptelUrl: "https://nptel.ac.in/courses/106106202",
+                nptelCode: "NPTEL106106202",
+                nptelInstitute: "IIT Madras / NPTEL"
               },
               {
                 id: 'nlp',
@@ -2022,9 +2111,12 @@ export default function StudentDashboard({ user, onLogout }) {
                 semester: "Semester 5",
                 description: "Understand how machines process, interpret, and generate human language. Study tokenizer structures, word embeddings, attention mechanisms, and transformers for sequence modeling.",
                 icon: Globe,
-                instructor: "Dr. Priya Sharma",
+                instructor: "Dr. Priya Sharma (IIT Kharagpur)",
                 credits: 4,
-                nextAssignment: "Attention Mechanisms Project (June 15)"
+                nextAssignment: "Attention Mechanisms Project (June 15)",
+                nptelUrl: "https://nptel.ac.in/courses/106105158",
+                nptelCode: "NPTEL106105158",
+                nptelInstitute: "IIT Kharagpur / NPTEL"
               },
               {
                 id: 'distsys',
@@ -2033,9 +2125,12 @@ export default function StudentDashboard({ user, onLogout }) {
                 semester: "Semester 5",
                 description: "Architect and design highly scalable, fault-tolerant network services, consistency protocols, and consensus algorithms. Study MapReduce models, Raft replication, and vector clocks in dynamic networks.",
                 icon: Layers,
-                instructor: "Prof. Marcus Brody",
+                instructor: "Prof. Marcus Brody (IIT Delhi)",
                 credits: 4,
-                nextAssignment: "Raft Consensus (June 12)"
+                nextAssignment: "Raft Consensus (June 12)",
+                nptelUrl: "https://nptel.ac.in/courses/106106168",
+                nptelCode: "NPTEL106106168",
+                nptelInstitute: "IIT Delhi / NPTEL"
               },
               {
                 id: 'dsa',
@@ -2044,9 +2139,12 @@ export default function StudentDashboard({ user, onLogout }) {
                 semester: "Semester 4",
                 description: "Master the fundamental building blocks of efficient software design including graphs, trees, sorting, and dynamic programming. Analyze complexity bounds, recursive algorithms, and optimal data storage structures.",
                 icon: Network,
-                instructor: "Dr. Vikram Singh",
+                instructor: "Dr. Vikram Singh (IIT Delhi)",
                 credits: 4,
-                nextAssignment: "Graph Flow Algorithms (Completed)"
+                nextAssignment: "Graph Flow Algorithms (Completed)",
+                nptelUrl: "https://nptel.ac.in/courses/106102064",
+                nptelCode: "NPTEL106102064",
+                nptelInstitute: "IIT Delhi / NPTEL"
               },
               {
                 id: 'ai',
@@ -2055,9 +2153,12 @@ export default function StudentDashboard({ user, onLogout }) {
                 semester: "Semester 4",
                 description: "A comprehensive introduction to search algorithms, state-space exploration, heuristics, and classical reasoning methods. Study search agents, game theory, constraint satisfaction, and logical inference frameworks.",
                 icon: Bot,
-                instructor: "Dr. Ananya Desai",
+                instructor: "Dr. Ananya Desai (IIT Madras)",
                 credits: 3,
-                nextAssignment: "Alpha-Beta Pruning Agent (Completed)"
+                nextAssignment: "Alpha-Beta Pruning Agent (Completed)",
+                nptelUrl: "https://nptel.ac.in/courses/106106126",
+                nptelCode: "NPTEL106106126",
+                nptelInstitute: "IIT Madras / NPTEL"
               },
               {
                 id: 'db',
@@ -2066,9 +2167,12 @@ export default function StudentDashboard({ user, onLogout }) {
                 semester: "Semester 3",
                 description: "Learn the principles of relational databases, SQL queries, transaction isolation, indexing strategies, and data modeling. Explore B+ tree index execution, normal forms, and transaction logging systems.",
                 icon: Database,
-                instructor: "Prof. Sourav Roy",
+                instructor: "Prof. Sourav Roy (IIT Bombay)",
                 credits: 4,
-                nextAssignment: "B+ Tree Indexing lab (Completed)"
+                nextAssignment: "B+ Tree Indexing lab (Completed)",
+                nptelUrl: "https://nptel.ac.in/courses/106105175",
+                nptelCode: "NPTEL106105175",
+                nptelInstitute: "IIT Bombay / NPTEL"
               },
               {
                 id: 'os',
@@ -2077,9 +2181,12 @@ export default function StudentDashboard({ user, onLogout }) {
                 semester: "Semester 3",
                 description: "Dive into process scheduling, virtual memory management, deadlock prevention, concurrency control, and system calls. Understand kernel space execution, thread synchronization, and file system layouts.",
                 icon: Cpu,
-                instructor: "Dr. Julian Vance",
+                instructor: "Dr. Julian Vance (IIT Madras)",
                 credits: 4,
-                nextAssignment: "Kernel Thread Scheduler (Completed)"
+                nextAssignment: "Kernel Thread Scheduler (Completed)",
+                nptelUrl: "https://nptel.ac.in/courses/106106144",
+                nptelCode: "NPTEL106106144",
+                nptelInstitute: "IIT Madras / NPTEL"
               },
               {
                 id: 'cn',
@@ -2088,9 +2195,12 @@ export default function StudentDashboard({ user, onLogout }) {
                 semester: "Semester 2",
                 description: "Discover the layers, routing protocols, sliding window mechanisms, congestion control, and socket programming APIs. Trace packet routing, TCP handshake mechanisms, and domain name resolution pipelines.",
                 icon: Router,
-                instructor: "Dr. Sarah Jenkins",
+                instructor: "Dr. Sarah Jenkins (IIT Kharagpur)",
                 credits: 3,
-                nextAssignment: "TCP Socket Chat App (Completed)"
+                nextAssignment: "TCP Socket Chat App (Completed)",
+                nptelUrl: "https://nptel.ac.in/courses/106105081",
+                nptelCode: "NPTEL106105081",
+                nptelInstitute: "IIT Kharagpur / NPTEL"
               },
               {
                 id: 'compiler',
@@ -2099,9 +2209,12 @@ export default function StudentDashboard({ user, onLogout }) {
                 semester: "Semester 5",
                 description: "Study lexical analysis, parse tree generation, syntax-directed translation, semantic analysis, intermediate representation, and optimization. Implement scanners, parser engines, and assembly output generators.",
                 icon: Scale,
-                instructor: "Prof. Robert Chen",
+                instructor: "Prof. Robert Chen (IIT Kanpur)",
                 credits: 4,
-                nextAssignment: "Lexer & Parser for Mini-C (June 20)"
+                nextAssignment: "Lexer & Parser for Mini-C (June 20)",
+                nptelUrl: "https://nptel.ac.in/courses/106104072",
+                nptelCode: "NPTEL106104072",
+                nptelInstitute: "IIT Kanpur / NPTEL"
               },
               {
                 id: 'se',
@@ -2110,9 +2223,12 @@ export default function StudentDashboard({ user, onLogout }) {
                 semester: "Semester 3",
                 description: "Apply software engineering methodologies, design patterns, testing frameworks, CI/CD pipeline automation, and agile Scrum workflows. Master UML diagrams, refactoring patterns, and modular code construction.",
                 icon: FileText,
-                instructor: "Dr. Priya Sharma",
+                instructor: "Dr. Priya Sharma (IIT Kharagpur)",
                 credits: 3,
-                nextAssignment: "Clean Architecture Design (Completed)"
+                nextAssignment: "Clean Architecture Design (Completed)",
+                nptelUrl: "https://nptel.ac.in/courses/106105182",
+                nptelCode: "NPTEL106105182",
+                nptelInstitute: "IIT Kharagpur / NPTEL"
               },
               {
                 id: 'graphics',
@@ -2121,9 +2237,12 @@ export default function StudentDashboard({ user, onLogout }) {
                 semester: "Semester 4",
                 description: "Learn 2D and 3D rendering pipelines, ray tracing foundations, OpenGL shader development, matrix transformations, and lighting models. Compute rasterization, shadows, textures, and camera projections.",
                 icon: Sparkles,
-                instructor: "Dr. Vikram Singh",
+                instructor: "Dr. Vikram Singh (IIT Delhi)",
                 credits: 3,
-                nextAssignment: "Ray Tracing Reflections (June 18)"
+                nextAssignment: "Ray Tracing Reflections (June 18)",
+                nptelUrl: "https://nptel.ac.in/courses/106102065",
+                nptelCode: "NPTEL106102065",
+                nptelInstitute: "IIT Delhi / NPTEL"
               },
               {
                 id: 'cyber',
@@ -2132,9 +2251,12 @@ export default function StudentDashboard({ user, onLogout }) {
                 semester: "Semester 5",
                 description: "Understand system threats, network security protocols, symmetric/asymmetric encryption, hash functions, and digital signatures. Examine network firewalls, penetration testing, RSA encryption, and key exchanges.",
                 icon: Lock,
-                instructor: "Prof. Clara Stone",
+                instructor: "Prof. Clara Stone (IIT Madras)",
                 credits: 4,
-                nextAssignment: "RSA Key Exchange Hack (June 25)"
+                nextAssignment: "RSA Key Exchange Hack (June 25)",
+                nptelUrl: "https://nptel.ac.in/courses/106106129",
+                nptelCode: "NPTEL106106129",
+                nptelInstitute: "IIT Madras / NPTEL"
               },
               {
                 id: 'eth',
@@ -2143,9 +2265,12 @@ export default function StudentDashboard({ user, onLogout }) {
                 semester: "Semester 1",
                 description: "Examine the moral implications and societal impact of artificial intelligence. Focus on model alignment, training dataset bias, public privacy protection, transparent explainability, and policy governance regulations.",
                 icon: Scale,
-                instructor: "Dr. Ananya Desai",
+                instructor: "Dr. Ananya Desai (IIT Madras)",
                 credits: 2,
-                nextAssignment: "Ethics in Generative AI Essay (Completed)"
+                nextAssignment: "Ethics in Generative AI Essay (Completed)",
+                nptelUrl: "https://nptel.ac.in/courses/106106126",
+                nptelCode: "NPTEL106106126",
+                nptelInstitute: "IIT Madras / NPTEL"
               }
             ];
 
@@ -2163,8 +2288,13 @@ export default function StudentDashboard({ user, onLogout }) {
                 {/* Header Row */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div className="space-y-1">
-                    <h2 className="text-2xl font-extrabold text-slate-905 dark:text-white tracking-tight">My Learning Journey</h2>
-                    <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">Continue your mastery of advanced computing sciences.</p>
+                    <h2 className="text-2xl font-extrabold text-slate-905 dark:text-white tracking-tight flex items-center gap-2">
+                      My Learning Journey
+                      <span className="text-[10px] bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/30 px-2.5 py-0.5 rounded-full font-mono font-bold">
+                        NPTEL / Swayam Integrated
+                      </span>
+                    </h2>
+                    <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">Continue your mastery of advanced computing sciences with official IIT / NPTEL modules.</p>
                   </div>
 
                   {/* Filters Row */}
@@ -2175,8 +2305,8 @@ export default function StudentDashboard({ user, onLogout }) {
                         onClick={() => setCourseFilter('Active')}
                         className={`px-4 py-2 rounded-full text-xs font-bold transition-all duration-200 ${
                           courseFilter === 'Active'
-                            ? 'bg-[#253df5] text-white shadow-xs'
-                            : 'text-slate-550 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                            ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-2xs'
+                            : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
                         }`}
                       >
                         Active ({activeCount})
@@ -2185,11 +2315,11 @@ export default function StudentDashboard({ user, onLogout }) {
                         onClick={() => setCourseFilter('Completed')}
                         className={`px-4 py-2 rounded-full text-xs font-bold transition-all duration-200 ${
                           courseFilter === 'Completed'
-                            ? 'bg-[#253df5] text-white shadow-xs'
-                            : 'text-slate-550 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                            ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-2xs'
+                            : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
                         }`}
                       >
-                        Completed
+                        Completed ({courses.length - activeCount})
                       </button>
                     </div>
 
@@ -2232,14 +2362,26 @@ export default function StudentDashboard({ user, onLogout }) {
                             <span className="absolute top-4 left-4 bg-white/90 dark:bg-[#0c0c0c]/90 text-[#253df5] dark:text-brand-400 px-3 py-1.5 rounded-lg text-xs font-bold tracking-wide shadow-2xs">
                               {course.semester}
                             </span>
+                            {course.nptelInstitute && (
+                              <span className="absolute bottom-4 left-4 bg-orange-600 text-white px-2.5 py-1 rounded-md text-[10px] font-black tracking-wider shadow-sm">
+                                🏛️ {course.nptelInstitute}
+                              </span>
+                            )}
                           </div>
                           
                           {/* Right: Course Details */}
                           <div className="p-6 flex flex-col justify-between flex-grow text-left">
                             <div className="space-y-2">
-                              <h3 className="text-lg font-extrabold text-slate-900 dark:text-white leading-tight">
-                                {course.title}
-                              </h3>
+                              <div className="flex items-center justify-between">
+                                <h3 className="text-lg font-extrabold text-slate-900 dark:text-white leading-tight">
+                                  {course.title}
+                                </h3>
+                                {course.nptelCode && (
+                                  <span className="text-[10px] font-mono font-bold text-orange-600 dark:text-orange-400 bg-orange-500/10 px-2 py-0.5 rounded">
+                                    {course.nptelCode}
+                                  </span>
+                                )}
+                              </div>
                               <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 leading-relaxed">
                                 {course.description}
                               </p>
@@ -2259,13 +2401,26 @@ export default function StudentDashboard({ user, onLogout }) {
                                   />
                                 </div>
                               </div>
-                              {/* Continue button */}
-                              <button 
-                                onClick={() => setSelectedCourse(course)}
-                                className="w-full sm:w-auto bg-[#253df5] hover:bg-[#1d2ae0] text-white text-xs font-black py-3 px-6 rounded-xl transition-all duration-200 tracking-wider"
-                              >
-                                Continue Learning
-                              </button>
+                              {/* Buttons Row */}
+                              <div className="flex flex-wrap items-center gap-2.5">
+                                <button 
+                                  onClick={() => setSelectedCourse(course)}
+                                  className="bg-[#253df5] hover:bg-[#1d2ae0] text-white text-xs font-black py-3 px-6 rounded-xl transition-all duration-200 tracking-wider flex-1 sm:flex-none"
+                                >
+                                  Continue Learning
+                                </button>
+                                {course.nptelUrl && (
+                                  <a 
+                                    href={course.nptelUrl} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl bg-orange-500/10 hover:bg-orange-500/20 text-orange-600 dark:text-orange-400 border border-orange-500/30 text-xs font-bold transition-all"
+                                  >
+                                    <ExternalLink size={14} />
+                                    <span>NPTEL Portal</span>
+                                  </a>
+                                )}
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -2282,9 +2437,16 @@ export default function StudentDashboard({ user, onLogout }) {
                             <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800/80 text-slate-655 dark:text-slate-355 flex items-center justify-center flex-shrink-0">
                               <course.icon size={18} className="text-[#253df5] dark:text-brand-400" />
                             </div>
-                            <span className="bg-[#f1f5f9] dark:bg-slate-800 text-slate-500 dark:text-slate-400 px-2.5 py-1 rounded-md text-[10px] font-bold">
-                              {course.semester}
-                            </span>
+                            <div className="flex items-center gap-1.5">
+                              {course.nptelInstitute && (
+                                <span className="bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20 px-2 py-0.5 rounded text-[9px] font-bold">
+                                  NPTEL
+                                </span>
+                              )}
+                              <span className="bg-[#f1f5f9] dark:bg-slate-800 text-slate-500 dark:text-slate-400 px-2.5 py-1 rounded-md text-[10px] font-bold">
+                                {course.semester}
+                              </span>
+                            </div>
                           </div>
 
                           {/* Course Title and Description */}
@@ -2313,22 +2475,35 @@ export default function StudentDashboard({ user, onLogout }) {
                               </div>
                             </div>
 
-                            {/* Action button */}
-                            {course.progress < 100 ? (
-                              <button 
-                                onClick={() => setSelectedCourse(course)}
-                                className="w-full bg-white dark:bg-[#0c0c0c] border border-[#253df5] dark:border-brand-400/50 text-[#253df5] dark:text-brand-400 text-xs font-extrabold py-2.5 rounded-xl transition-all duration-200 tracking-wider text-center hover:bg-[#253df5] hover:text-white dark:hover:bg-brand-400 dark:hover:text-[#0c0c0c]"
-                              >
-                                Continue Learning
-                              </button>
-                            ) : (
-                              <button 
-                                onClick={() => setSelectedCourse(course)}
-                                className="w-full bg-white dark:bg-[#0c0c0c] border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 text-xs font-extrabold py-2.5 rounded-xl transition-all duration-200 tracking-wider text-center hover:bg-slate-50 dark:hover:bg-slate-800/50"
-                              >
-                                Review Materials
-                              </button>
-                            )}
+                            {/* Action buttons */}
+                            <div className="flex items-center gap-2">
+                              {course.progress < 100 ? (
+                                <button 
+                                  onClick={() => setSelectedCourse(course)}
+                                  className="flex-1 bg-white dark:bg-[#0c0c0c] border border-[#253df5] dark:border-brand-400/50 text-[#253df5] dark:text-brand-400 text-xs font-extrabold py-2.5 rounded-xl transition-all duration-200 tracking-wider text-center hover:bg-[#253df5] hover:text-white dark:hover:bg-brand-400 dark:hover:text-[#0c0c0c]"
+                                >
+                                  Continue
+                                </button>
+                              ) : (
+                                <button 
+                                  onClick={() => setSelectedCourse(course)}
+                                  className="flex-1 bg-white dark:bg-[#0c0c0c] border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 text-xs font-extrabold py-2.5 rounded-xl transition-all duration-200 tracking-wider text-center hover:bg-slate-50 dark:hover:bg-slate-800/50"
+                                >
+                                  Review
+                                </button>
+                              )}
+                              {course.nptelUrl && (
+                                <a 
+                                  href={course.nptelUrl} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="p-2.5 rounded-xl bg-orange-500/10 hover:bg-orange-500/20 text-orange-600 dark:text-orange-400 border border-orange-500/30 transition-all flex items-center justify-center"
+                                  title={`Open ${course.title} on NPTEL / Swayam`}
+                                >
+                                  <ExternalLink size={15} />
+                                </a>
+                              )}
+                            </div>
                           </div>
                         </div>
                       );
@@ -2510,7 +2685,7 @@ export default function StudentDashboard({ user, onLogout }) {
                     </div>
                   </div>
 
-                  {/* Focus Period Pie Chart Card */}
+                  {/* Assessment-Based Distribution Card */}
                   <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs space-y-4">
                     <div className="flex justify-between items-center border-b border-slate-105 dark:border-slate-850 pb-3">
                       <div>
@@ -2518,10 +2693,10 @@ export default function StudentDashboard({ user, onLogout }) {
                           <span className="w-5 h-5 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
                             <Clock size={12} />
                           </span>
-                          Focus Period Breakdown
+                          Assessment Type Weighting
                         </h3>
                         <p className="text-[10px] font-semibold text-slate-400 mt-1">
-                          Distribution of study time for {selectedSubject}.
+                          Weight distribution for {selectedSubject} assessments.
                         </p>
                       </div>
                     </div>
@@ -2531,78 +2706,149 @@ export default function StudentDashboard({ user, onLogout }) {
                       <div className="relative w-40 h-40">
                         <svg viewBox="0 0 100 100" className="w-full h-full transform -rotate-90 rounded-full">
                           <circle cx="50" cy="50" r="40" fill="transparent" stroke="currentColor" strokeWidth="20" className="text-slate-100 dark:text-slate-800" />
-                          <circle cx="50" cy="50" r="40" fill="transparent" stroke="#3b82f6" strokeWidth="20" strokeDasharray={`${pLectures * 2.51} 251`} strokeDashoffset="0" />
-                          <circle cx="50" cy="50" r="40" fill="transparent" stroke="#10b981" strokeWidth="20" strokeDasharray={`${pPractice * 2.51} 251`} strokeDashoffset={`-${pLectures * 2.51}`} />
-                          <circle cx="50" cy="50" r="40" fill="transparent" stroke="#8b5cf6" strokeWidth="20" strokeDasharray={`${pRevision * 2.51} 251`} strokeDashoffset={`-${(pLectures + pPractice) * 2.51}`} />
-                          <circle cx="50" cy="50" r="40" fill="transparent" stroke="#f59e0b" strokeWidth="20" strokeDasharray={`${pQuiz * 2.51} 251`} strokeDashoffset={`-${(pLectures + pPractice + pRevision) * 2.51}`} />
+                          <circle cx="50" cy="50" r="40" fill="transparent" stroke="#253df5" strokeWidth="20" strokeDasharray={`${45 * 2.51} 251`} strokeDashoffset="0" />
+                          <circle cx="50" cy="50" r="40" fill="transparent" stroke="#10b981" strokeWidth="20" strokeDasharray={`${35 * 2.51} 251`} strokeDashoffset={`-${45 * 2.51}`} />
+                          <circle cx="50" cy="50" r="40" fill="transparent" stroke="#8b5cf6" strokeWidth="20" strokeDasharray={`${20 * 2.51} 251`} strokeDashoffset={`-${(45 + 35) * 2.51}`} />
                         </svg>
                         {/* Center Hole for Doughnut Look */}
                         <div className="absolute inset-0 m-auto w-24 h-24 bg-white dark:bg-[#0c0c0c] rounded-full flex items-center justify-center shadow-inner">
                           <div className="text-center">
-                            <span className="text-xl font-black text-slate-900 dark:text-white block">{selectedSubjectData.hours}</span>
-                            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Total</span>
+                            <span className="text-xl font-black text-slate-900 dark:text-white block">100%</span>
+                            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Total Weight</span>
                           </div>
                         </div>
                       </div>
 
                       {/* Legend */}
-                      <div className="flex flex-col gap-3 justify-center">
+                      <div className="flex flex-col gap-3 justify-center text-left">
                         <div className="flex items-center gap-2">
-                          <span className="w-3 h-3 rounded-full bg-blue-500"></span>
-                          <span className="text-xs font-bold text-slate-700 dark:text-slate-300">Lectures ({pLectures}%)</span>
+                          <span className="w-3 h-3 rounded-full bg-[#253df5]"></span>
+                          <span className="text-xs font-bold text-slate-700 dark:text-slate-300">Major Exams (45%)</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="w-3 h-3 rounded-full bg-emerald-500"></span>
-                          <span className="text-xs font-bold text-slate-700 dark:text-slate-300">Practice ({pPractice}%)</span>
+                          <span className="text-xs font-bold text-slate-700 dark:text-slate-300">Minor Assignments (35%)</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="w-3 h-3 rounded-full bg-purple-500"></span>
-                          <span className="text-xs font-bold text-slate-700 dark:text-slate-300">Revision ({pRevision}%)</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="w-3 h-3 rounded-full bg-amber-500"></span>
-                          <span className="text-xs font-bold text-slate-700 dark:text-slate-300">Quizzes ({pQuiz}%)</span>
+                          <span className="text-xs font-bold text-slate-700 dark:text-slate-300">Weekly Tasks (20%)</span>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Subject-wise Mastery Trend Card */}
-                <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs space-y-4">
-                  <div className="border-b border-slate-105 dark:border-slate-850 pb-3 text-left">
-                    <h3 className="font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-2">
-                      <span className="w-5 h-5 rounded-full bg-blue-500/10 text-blue-500 flex items-center justify-center">
-                        <TrendingUp size={12} />
-                      </span>
-                      Subject-wise Mastery Trend
-                    </h3>
-                    <p className="text-[10px] font-semibold text-slate-400 mt-1">
-                      Tracking progress against syllabus goals over the current semester.
-                    </p>
+                {/* Major, Minor & Weekly Assessment Performance Matrix */}
+                <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs space-y-6 text-left">
+                  <div className="border-b border-slate-105 dark:border-slate-850 pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <h3 className="font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2">
+                        <span className="w-6 h-6 rounded-full bg-blue-500/10 text-blue-500 flex items-center justify-center">
+                          <TrendingUp size={14} />
+                        </span>
+                        Assessment-Based Mastery Breakdown
+                      </h3>
+                      <p className="text-xs font-semibold text-slate-400 mt-1">
+                        Performance categorized across Major Examinations, Minor Projects, and Weekly Tasks.
+                      </p>
+                    </div>
+                    <span className="bg-[#253df5]/10 text-[#253df5] dark:text-[#7f7eff] text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider font-mono self-start sm:self-auto">
+                      Non-Week Assessment Metrics
+                    </span>
                   </div>
 
+                  {/* SVG Chart using Assessment Types instead of Weeks */}
                   <div className="pt-2">
-                    <svg className="w-full h-52 overflow-visible" viewBox="0 0 500 200">
+                    <svg className="w-full h-56 overflow-visible" viewBox="0 0 500 200">
                       <defs>
-                        <linearGradient id="chart-grad" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#253df5" stopOpacity="0.12" />
+                        <linearGradient id="assessment-chart-grad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#253df5" stopOpacity="0.18" />
                           <stop offset="100%" stopColor="#253df5" stopOpacity="0.0" />
                         </linearGradient>
                       </defs>
+
+                      {/* Grid Lines */}
                       {[0, 1, 2, 3].map((i) => (
-                        <line key={i} x1="30" y1={30 + i * 45} x2="470" y2={30 + i * 45} stroke="currentColor" className="text-slate-100 dark:text-slate-800/60" strokeWidth="1" strokeDasharray="4 4" />
+                        <line key={i} x1="30" y1={30 + i * 42} x2="470" y2={30 + i * 42} stroke="currentColor" className="text-slate-100 dark:text-slate-800/60" strokeWidth="1" strokeDasharray="4 4" />
                       ))}
-                      <path d="M 30,150 Q 130,140 240,110 T 470,60 L 470,170 L 30,170 Z" fill="url(#chart-grad)" />
-                      <path d="M 30,150 Q 130,145 240,130 T 470,100" fill="none" stroke="#94a3b8" strokeWidth="2" strokeDasharray="6 6" className="opacity-50" />
-                      <path d={selectedSubject === 'Machine Learning' ? "M 30,150 Q 130,110 240,90 T 470,30" : "M 30,150 Q 130,140 240,110 T 470,60"} fill="none" stroke="#253df5" strokeWidth="3.5" strokeLinecap="round" />
-                      
-                      {['Week 1', 'Week 4', 'Week 8', 'Week 12', 'Week 16'].map((label, idx) => (
-                        <text key={idx} x={30 + idx * 110} y="190" textAnchor="middle" className="text-[9px] font-extrabold fill-slate-400 uppercase tracking-wider font-mono">
-                          {label}
+
+                      {/* Area Fill */}
+                      <path d="M 50,70 L 150,110 L 250,50 L 350,85 L 450,60 L 450,160 L 50,160 Z" fill="url(#assessment-chart-grad)" />
+
+                      {/* Benchmark Line */}
+                      <path d="M 50,110 Q 150,105 250,95 T 450,85" fill="none" stroke="#94a3b8" strokeWidth="2" strokeDasharray="6 6" className="opacity-50" />
+
+                      {/* Actual Score Line */}
+                      <path d="M 50,70 L 150,110 L 250,50 L 350,85 L 450,60" fill="none" stroke="#253df5" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
+
+                      {/* Data Points */}
+                      {[
+                        { x: 50, y: 70, val: '92%' },
+                        { x: 150, y: 110, val: '84%' },
+                        { x: 250, y: 50, val: '96%' },
+                        { x: 350, y: 85, val: '89%' },
+                        { x: 450, y: 60, val: '94%' },
+                      ].map((pt, i) => (
+                        <g key={i}>
+                          <circle cx={pt.x} cy={pt.y} r="5" className="fill-[#253df5] stroke-white dark:stroke-[#0c0c0c]" strokeWidth="2" />
+                          <text x={pt.x} y={pt.y - 12} textAnchor="middle" className="text-[10px] font-black fill-[#253df5] dark:fill-[#7f7eff] font-mono">
+                            {pt.val}
+                          </text>
+                        </g>
+                      ))}
+
+                      {/* Assessment Category X-Axis Labels */}
+                      {[
+                        { label: 'MAJOR EXAMS', x: 50 },
+                        { label: 'MINOR PROJECTS', x: 150 },
+                        { label: 'WEEKLY TASKS', x: 250 },
+                        { label: 'PRACTICAL LABS', x: 350 },
+                        { label: 'OVERALL SCORE', x: 450 },
+                      ].map((item, idx) => (
+                        <text key={idx} x={item.x} y="188" textAnchor="middle" className="text-[9px] font-extrabold fill-slate-400 uppercase tracking-wider font-mono">
+                          {item.label}
                         </text>
                       ))}
                     </svg>
+                  </div>
+
+                  {/* Assessment Category Breakdown Cards */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                    {/* Major Assignments */}
+                    <div className="p-4 rounded-2xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/30 space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase font-mono tracking-wider">🏆 Major Exams & Projects</span>
+                        <span className="text-sm font-black text-blue-700 dark:text-blue-300 font-mono">92%</span>
+                      </div>
+                      <p className="text-xs text-slate-600 dark:text-slate-300 font-medium">Midterm Exams, Term Neural Network Architecture Thesis & Final ML Project.</p>
+                      <div className="w-full h-1.5 bg-blue-200 dark:bg-blue-900 rounded-full overflow-hidden">
+                        <div className="h-full bg-[#253df5] rounded-full" style={{ width: '92%' }}></div>
+                      </div>
+                    </div>
+
+                    {/* Minor Assignments */}
+                    <div className="p-4 rounded-2xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/30 space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase font-mono tracking-wider">📝 Minor Labs & Quizzes</span>
+                        <span className="text-sm font-black text-emerald-700 dark:text-emerald-300 font-mono">88%</span>
+                      </div>
+                      <p className="text-xs text-slate-600 dark:text-slate-300 font-medium">Transformer Coding Exercises, B+ Tree Indexing & SQL Tuning Homeworks.</p>
+                      <div className="w-full h-1.5 bg-emerald-200 dark:bg-emerald-900 rounded-full overflow-hidden">
+                        <div className="h-full bg-emerald-500 rounded-full" style={{ width: '88%' }}></div>
+                      </div>
+                    </div>
+
+                    {/* Weekly Continuous Tasks */}
+                    <div className="p-4 rounded-2xl bg-purple-50/50 dark:bg-purple-950/20 border border-purple-100 dark:border-purple-900/30 space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-[10px] font-black text-purple-600 dark:text-purple-400 uppercase font-mono tracking-wider">⚡ Weekly Tasks & Viva</span>
+                        <span className="text-sm font-black text-purple-700 dark:text-purple-300 font-mono">96%</span>
+                      </div>
+                      <p className="text-xs text-slate-600 dark:text-slate-300 font-medium">Continuous Weekly Coding Drills, Discussion Participation & Oral Viva.</p>
+                      <div className="w-full h-1.5 bg-purple-200 dark:bg-purple-900 rounded-full overflow-hidden">
+                        <div className="h-full bg-purple-500 rounded-full" style={{ width: '96%' }}></div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -3369,6 +3615,134 @@ export default function StudentDashboard({ user, onLogout }) {
             <a href="#" className="hover:text-brand-600 transition-colors duration-200">Support</a>
           </div>
         </footer>
+
+        {/* ================= FLOATING AI TUTOR CHATBOT ================= */}
+        {isChatOpen && (
+          <div className="fixed bottom-24 right-6 sm:right-8 w-96 max-w-[calc(100vw-2.5rem)] h-[560px] max-h-[calc(100vh-7.5rem)] bg-white/95 dark:bg-[#0c0c0c]/95 border border-slate-200/90 dark:border-slate-800/90 shadow-2xl shadow-blue-500/10 rounded-3xl z-[9999] flex flex-col overflow-hidden animate-fadeIn backdrop-blur-2xl transition-all duration-300">
+            {/* Header */}
+            <div className="p-4 bg-gradient-to-r from-[#253df5] via-blue-600 to-indigo-600 text-white flex items-center justify-between shadow-md">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center text-white backdrop-blur-md border border-white/20 shadow-inner">
+                  <Bot size={22} className="animate-pulse" />
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-sm leading-tight flex items-center gap-2">
+                    Aether AI Tutor
+                    <span className="text-[9px] bg-white/20 px-2 py-0.5 rounded-full font-mono font-bold tracking-wide border border-white/20">
+                      {aiHealth?.active_primary === 'Gemini API' ? 'Gemini 3.6 Flash' : 'Gemma 4:12b'}
+                    </span>
+                  </h3>
+                  <span className="text-[10px] text-blue-100/90 font-medium block mt-0.5">Online • 24/7 AI Academic Assistant</span>
+                </div>
+              </div>
+              <button 
+                onClick={() => setIsChatOpen(false)}
+                className="p-2 rounded-xl hover:bg-white/20 text-white/90 hover:text-white transition-all active:scale-95"
+                title="Close Chat"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Message Area */}
+            <div className="flex-1 p-4 overflow-y-auto space-y-4 text-xs text-left scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-800">
+              {chatMessages.map((msg, idx) => (
+                <div 
+                  key={idx} 
+                  className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}
+                >
+                  <div 
+                    className={`max-w-[85%] p-3.5 rounded-2xl leading-relaxed font-medium transition-all ${
+                      msg.role === 'user' 
+                        ? 'bg-gradient-to-r from-[#253df5] to-blue-600 text-white rounded-br-xs shadow-md shadow-blue-500/15' 
+                        : 'bg-slate-100/90 dark:bg-slate-900/90 text-slate-800 dark:text-slate-100 border border-slate-200/80 dark:border-slate-800/90 rounded-bl-xs shadow-sm'
+                    }`}
+                  >
+                    <div className="whitespace-pre-wrap">{msg.content}</div>
+                    {msg.provider && (
+                      <span className="text-[9px] font-mono opacity-60 block mt-1.5 text-right">
+                        {msg.provider === 'gemini' ? '✨ Gemini 3.6 Flash' : '⚡ Gemma 4:12b'}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ))}
+
+              {isChatLoading && (
+                <div className="flex items-center gap-2.5 p-3.5 bg-slate-100/90 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 rounded-2xl rounded-bl-xs max-w-[75%] shadow-sm">
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#253df5] animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#253df5] animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#253df5] animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400 font-bold ml-1">AI is thinking...</span>
+                </div>
+              )}
+            </div>
+
+            {/* Quick Prompts */}
+            {chatMessages.length <= 2 && (
+              <div className="px-3.5 py-2.5 bg-slate-50/80 dark:bg-slate-950/80 border-t border-slate-100 dark:border-slate-850 flex items-center gap-2 overflow-x-auto text-[10px] no-scrollbar">
+                <button 
+                  onClick={() => handleSendChatMessage(null, "Explain backpropagation in neural networks")}
+                  className="px-3 py-1.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-bold whitespace-nowrap hover:border-[#253df5] hover:text-[#253df5] dark:hover:text-blue-400 transition-all shadow-xs"
+                >
+                  💡 Neural Networks
+                </button>
+                <button 
+                  onClick={() => handleSendChatMessage(null, "What is the difference between supervised and unsupervised learning?")}
+                  className="px-3 py-1.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-bold whitespace-nowrap hover:border-[#253df5] hover:text-[#253df5] dark:hover:text-blue-400 transition-all shadow-xs"
+                >
+                  ⚡ ML Basics
+                </button>
+                <button 
+                  onClick={() => handleSendChatMessage(null, "Give me 3 practice tips for my upcoming exam")}
+                  className="px-3 py-1.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-bold whitespace-nowrap hover:border-[#253df5] hover:text-[#253df5] dark:hover:text-blue-400 transition-all shadow-xs"
+                >
+                  📝 Exam Tips
+                </button>
+              </div>
+            )}
+
+            {/* Input Form */}
+            <form onSubmit={handleSendChatMessage} className="p-3 bg-white dark:bg-[#0c0c0c] border-t border-slate-100 dark:border-slate-850 flex items-center gap-2">
+              <input 
+                type="text"
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+                placeholder="Ask AI Tutor anything..."
+                disabled={isChatLoading}
+                className="flex-1 px-4 py-2.5 bg-slate-100/70 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-[#253df5]/30 focus:border-[#253df5] transition-all placeholder:text-slate-400"
+              />
+              <button 
+                type="submit"
+                disabled={!chatInput.trim() || isChatLoading}
+                className="p-2.5 bg-[#253df5] hover:bg-[#1d2ae0] active:scale-95 text-white rounded-xl transition-all disabled:opacity-40 flex items-center justify-center shadow-md shadow-blue-500/20"
+              >
+                <Send size={15} />
+              </button>
+            </form>
+          </div>
+        )}
+
+        {/* Toggle Floating Action Button */}
+        <button 
+          onClick={() => setIsChatOpen(!isChatOpen)}
+          className="fixed bottom-6 right-6 sm:right-8 z-[9998] p-3.5 bg-gradient-to-r from-[#253df5] to-blue-600 hover:from-[#1d2ae0] hover:to-blue-700 text-white rounded-2xl shadow-xl shadow-blue-500/30 transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center gap-2.5 group"
+          title={isChatOpen ? "Minimize Aether AI Tutor" : "Open Aether AI Tutor"}
+        >
+          {isChatOpen ? (
+            <>
+              <X size={20} className="transition-transform" />
+              <span className="text-xs font-extrabold pr-1 hidden sm:inline">Close</span>
+            </>
+          ) : (
+            <>
+              <Bot size={22} className="group-hover:rotate-12 transition-transform" />
+              <span className="text-xs font-extrabold pr-1 hidden sm:inline">AI Tutor</span>
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping absolute -top-1 -right-1"></span>
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 absolute -top-1 -right-1"></span>
+            </>
+          )}
+        </button>
 
       </div>
 

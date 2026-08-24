@@ -139,3 +139,152 @@ html.dark body {
   max-width: 1200px;
   margin: 0 auto;
 }
+
+/* ================= DYNAMIC IMAGE & CARD ANIMATIONS ================= */
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(0.4deg);
+  }
+}
+
+@keyframes pulseGlowSubtle {
+  0%, 100% {
+    filter: drop-shadow(0 0 12px rgba(37, 61, 245, 0.25));
+  }
+  50% {
+    filter: drop-shadow(0 0 28px rgba(37, 61, 245, 0.5));
+  }
+}
+
+@keyframes sheenSweep {
+  0% {
+    transform: translateX(-100%) rotate(25deg);
+  }
+  100% {
+    transform: translateX(200%) rotate(25deg);
+  }
+}
+
+.animate-float-slow {
+  animation: floatSlow 5s ease-in-out infinite;
+}
+
+.animate-pulse-glow-subtle {
+  animation: pulseGlowSubtle 4s ease-in-out infinite;
+}
+
+.img-dynamic-card {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.img-dynamic-card:hover {
+  transform: translateY(-4px) scale(1.015);
+  box-shadow: 0 20px 40px -15px rgba(37, 61, 245, 0.2);
+}
+
+.sheen-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+.sheen-wrapper::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.15) 50%,
+    transparent 100%
+  );
+  transform: translateX(-100%) rotate(25deg);
+  pointer-events: none;
+}
+.sheen-wrapper:hover::after {
+  animation: sheenSweep 1.2s ease-in-out;
+}
+
+/* ================= DROPDOWN ANIMATIONS ================= */
+@keyframes dropdownPop {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-dropdown-pop {
+  animation: dropdownPop 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: top center;
+}
+
+/* ================= LOGIN FORM & CARD ANIMATIONS ================= */
+@keyframes loginCardIn {
+  0% {
+    opacity: 0;
+    transform: translateY(24px) scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes borderGlowPulse {
+  0%, 100% {
+    border-color: rgba(37, 61, 245, 0.3);
+    box-shadow: 0 0 15px rgba(37, 61, 245, 0.1);
+  }
+  50% {
+    border-color: rgba(37, 61, 245, 0.8);
+    box-shadow: 0 0 30px rgba(37, 61, 245, 0.25);
+  }
+}
+
+.animate-login-card {
+  animation: loginCardIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-border-glow {
+  animation: borderGlowPulse 3s ease-in-out infinite;
+}
+
+/* ================= PAGE TRANSITION & LOADING ANIMATIONS ================= */
+@keyframes fadeInPage {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-page {
+  animation: fadeInPage 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes loaderProgress {
+  0% {
+    width: 0%;
+  }
+  50% {
+    width: 70%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+.animate-loader-bar {
+  animation: loaderProgress 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+

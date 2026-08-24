@@ -112,6 +112,7 @@ function combineDateTimeString(dateStr, timeStr) {
 export default function MentorDashboard({ user, onLogout }) {
   const [activeNav, setActiveNav] = useState('Dashboard');
   const [selectedCohort, setSelectedCohort] = useState('Advanced Calculus - Sec A');
+  const [selectedStudentId, setSelectedStudentId] = useState('all');
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isCreatingCohort, setIsCreatingCohort] = useState(false);
@@ -205,7 +206,8 @@ export default function MentorDashboard({ user, onLogout }) {
     }
   };
 
-  // Cohort details mock database
+  // Cohort details mock database with 200-mark assessment scheme
+  // (Major: 70, Minor: 30, Project: 50, Report: 30, Viva: 20 = 200 Total)
   const cohortsList = {
     'Advanced Calculus - Sec A': {
       subject: 'Advanced Calculus',
@@ -217,11 +219,51 @@ export default function MentorDashboard({ user, onLogout }) {
       alertRate: '15%',
       alerts: 3,
       students: [
-        { id: '25mca016', name: 'Ananya Iyer', grade: 62, stress: 'High', engagement: 'Low', avatar: ananyaDesaiProfile },
-        { id: '25mca042', name: 'Arjun Mehta', grade: 71, stress: 'Medium', engagement: 'Medium', avatar: null },
-        { id: '25mca109', name: 'Rohan Das', grade: 58, stress: 'High', engagement: 'Low', avatar: null },
-        { id: '25mca005', name: 'Alex Rivers', grade: 89, stress: 'Low', engagement: 'High', avatar: alexRiversProfile },
-        { id: '25mca088', name: 'Priya Sharma', grade: 94, stress: 'Low', engagement: 'High', avatar: priyaSharmaProfile }
+        { 
+          id: '25mca016', 
+          name: 'Ananya Iyer', 
+          grade: 62, 
+          stress: 'High', 
+          engagement: 'Low', 
+          avatar: ananyaDesaiProfile,
+          assessment: { major: 42, minor: 18, project: 32, report: 19, viva: 13, weekly: [62, 60, 65, 59, 64] }
+        },
+        { 
+          id: '25mca042', 
+          name: 'Arjun Mehta', 
+          grade: 71, 
+          stress: 'Medium', 
+          engagement: 'Medium', 
+          avatar: null,
+          assessment: { major: 51, minor: 22, project: 38, report: 20, viva: 14, weekly: [70, 72, 69, 74, 71] }
+        },
+        { 
+          id: '25mca109', 
+          name: 'Rohan Das', 
+          grade: 58, 
+          stress: 'High', 
+          engagement: 'Low', 
+          avatar: null,
+          assessment: { major: 39, minor: 16, project: 30, report: 18, viva: 11, weekly: [56, 58, 60, 54, 58] }
+        },
+        { 
+          id: '25mca005', 
+          name: 'Alex Rivers', 
+          grade: 89, 
+          stress: 'Low', 
+          engagement: 'High', 
+          avatar: alexRiversProfile,
+          assessment: { major: 64, minor: 27, project: 45, report: 26, viva: 18, weekly: [86, 88, 90, 89, 92] }
+        },
+        { 
+          id: '25mca088', 
+          name: 'Priya Sharma', 
+          grade: 94, 
+          stress: 'Low', 
+          engagement: 'High', 
+          avatar: priyaSharmaProfile,
+          assessment: { major: 68, minor: 29, project: 48, report: 28, viva: 19, weekly: [92, 95, 94, 96, 98] }
+        }
       ]
     },
     'Linear Algebra - Sec B': {
@@ -234,9 +276,33 @@ export default function MentorDashboard({ user, onLogout }) {
       alertRate: '8%',
       alerts: 1,
       students: [
-        { id: '25mla002', name: 'Sarah Jenkins', grade: 88, stress: 'Low', engagement: 'High', avatar: sarahProfile },
-        { id: '25mla015', name: 'Vikram Singh', grade: 79, stress: 'Medium', engagement: 'Medium', avatar: vikramSinghProfile },
-        { id: '25mla094', name: 'Meera Patel', grade: 64, stress: 'High', engagement: 'Medium', avatar: null }
+        { 
+          id: '25mla002', 
+          name: 'Sarah Jenkins', 
+          grade: 88, 
+          stress: 'Low', 
+          engagement: 'High', 
+          avatar: sarahProfile,
+          assessment: { major: 63, minor: 26, project: 44, report: 25, viva: 18, weekly: [85, 87, 89, 91, 88] }
+        },
+        { 
+          id: '25mla015', 
+          name: 'Vikram Singh', 
+          grade: 79, 
+          stress: 'Medium', 
+          engagement: 'Medium', 
+          avatar: vikramSinghProfile,
+          assessment: { major: 55, minor: 23, project: 40, report: 23, viva: 15, weekly: [76, 78, 80, 79, 81] }
+        },
+        { 
+          id: '25mla094', 
+          name: 'Meera Patel', 
+          grade: 64, 
+          stress: 'High', 
+          engagement: 'Medium', 
+          avatar: null,
+          assessment: { major: 44, minor: 19, project: 33, report: 19, viva: 13, weekly: [62, 64, 66, 63, 65] }
+        }
       ]
     },
     'Physics 101 - Sec A': {
@@ -249,9 +315,33 @@ export default function MentorDashboard({ user, onLogout }) {
       alertRate: '22%',
       alerts: 4,
       students: [
-        { id: '25phy004', name: 'Arjun Mehta', grade: 54, stress: 'High', engagement: 'Low', avatar: null },
-        { id: '25phy019', name: 'Kunal Sen', grade: 76, stress: 'Medium', engagement: 'Medium', avatar: null },
-        { id: '25phy055', name: 'Diya Roy', grade: 91, stress: 'Low', engagement: 'High', avatar: null }
+        { 
+          id: '25phy004', 
+          name: 'Arjun Mehta', 
+          grade: 54, 
+          stress: 'High', 
+          engagement: 'Low', 
+          avatar: null,
+          assessment: { major: 36, minor: 15, project: 28, report: 16, viva: 10, weekly: [52, 54, 56, 53, 55] }
+        },
+        { 
+          id: '25phy019', 
+          name: 'Kunal Sen', 
+          grade: 76, 
+          stress: 'Medium', 
+          engagement: 'Medium', 
+          avatar: null,
+          assessment: { major: 53, minor: 22, project: 38, report: 22, viva: 15, weekly: [74, 76, 78, 75, 77] }
+        },
+        { 
+          id: '25phy055', 
+          name: 'Diya Roy', 
+          grade: 91, 
+          stress: 'Low', 
+          engagement: 'High', 
+          avatar: null,
+          assessment: { major: 65, minor: 28, project: 46, report: 27, viva: 18, weekly: [90, 92, 91, 93, 94] }
+        }
       ]
     }
   };
@@ -622,12 +712,15 @@ export default function MentorDashboard({ user, onLogout }) {
           </div>
 
           <div className="flex items-center gap-3">
-            {/* Cohort Select Dropdown */}
+            {/* Course / Cohort Select Dropdown */}
             <div className="relative">
               <select
                 value={selectedCohort}
-                onChange={(e) => setSelectedCohort(e.target.value)}
-                className="appearance-none pl-4 pr-10 py-2 bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800 rounded-2xl text-xs font-extrabold text-slate-700 dark:text-slate-350 cursor-pointer shadow-xs focus:outline-none focus:ring-1 focus:ring-[#253df5]"
+                onChange={(e) => {
+                  setSelectedCohort(e.target.value);
+                  setSelectedStudentId('all');
+                }}
+                className="appearance-none pl-4 pr-10 py-2 bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800 rounded-2xl text-xs font-extrabold text-slate-700 dark:text-slate-350 cursor-pointer shadow-xs focus:outline-none focus:ring-1 focus:ring-[#253df5] animate-dropdown-pop"
               >
                 {Object.keys(cohortsList).map(name => (
                   <option key={name}>{name}</option>
@@ -635,6 +728,25 @@ export default function MentorDashboard({ user, onLogout }) {
               </select>
               <span className="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none text-slate-400">
                 <ChevronDown size={12} />
+              </span>
+            </div>
+
+            {/* Student Filter Dropdown */}
+            <div className="relative">
+              <select
+                value={selectedStudentId}
+                onChange={(e) => setSelectedStudentId(e.target.value)}
+                className="appearance-none pl-4 pr-10 py-2 bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800 rounded-2xl text-xs font-extrabold text-[#253df5] dark:text-[#7f7eff] cursor-pointer shadow-xs focus:outline-none focus:ring-1 focus:ring-[#253df5] animate-dropdown-pop"
+              >
+                <option value="all">👥 All Students ({currentCohortData.students?.length || 0})</option>
+                {currentCohortData.students?.map(s => (
+                  <option key={s.id} value={s.id}>
+                    🎓 {s.name} ({s.id})
+                  </option>
+                ))}
+              </select>
+              <span className="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none text-slate-400">
+                <User size={12} />
               </span>
             </div>
 
@@ -670,9 +782,134 @@ export default function MentorDashboard({ user, onLogout }) {
                   {currentCohortData.subject} Dashboard
                 </h1>
                 <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-                  Overview of cohort health and curriculum analytics.
+                  Overview of cohort health, student 200-mark evaluation scheme, and curriculum analytics.
                 </p>
               </div>
+
+              {/* 200-Mark Student Assessment Scheme Breakdown Card */}
+              {(() => {
+                const activeStudent = selectedStudentId !== 'all' 
+                  ? currentCohortData.students?.find(s => s.id === selectedStudentId) 
+                  : currentCohortData.students?.[0];
+                const assess = activeStudent?.assessment || { major: 64, minor: 27, project: 45, report: 26, viva: 18, weekly: [86, 88, 90, 89, 92] };
+                const totalScore = assess.major + assess.minor + assess.project + assess.report + assess.viva;
+                const percentage = Math.round((totalScore / 200) * 100);
+
+                return (
+                  <div className="bg-white dark:bg-[#0c0c0c] border border-[#eef2f6] dark:border-slate-800/80 rounded-3xl p-6 shadow-xs space-y-6 text-left animate-fadeIn">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-850 pb-4">
+                      <div className="flex items-center gap-3.5">
+                        <div className="w-12 h-12 rounded-2xl bg-[#253df5]/10 text-[#253df5] font-black text-base flex items-center justify-center border border-[#253df5]/20 font-mono">
+                          {activeStudent?.name ? activeStudent.name.slice(0, 2).toUpperCase() : 'ST'}
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h3 className="font-extrabold text-base text-slate-900 dark:text-white">
+                              {selectedStudentId !== 'all' ? activeStudent?.name : `${currentCohortData.subject} Student Evaluation`}
+                            </h3>
+                            <span className="bg-[#253df5]/10 text-[#253df5] dark:text-[#7f7eff] text-[10px] font-black px-2.5 py-0.5 rounded font-mono">
+                              {selectedStudentId !== 'all' ? `ID: ${activeStudent?.id}` : '200-MARK SCHEME'}
+                            </span>
+                          </div>
+                          <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mt-0.5">
+                            Continuous evaluation scheme: Major (70), Minor (30), Project (50), Report (30), Viva (20).
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-4 bg-slate-50 dark:bg-slate-900/60 p-3 px-5 rounded-2xl border border-slate-200/60 dark:border-slate-800">
+                        <div className="text-right">
+                          <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block font-mono">TOTAL CUMULATIVE MARKS</span>
+                          <span className="text-2xl font-black text-[#253df5] dark:text-[#7f7eff] font-mono">
+                            {totalScore} <span className="text-xs text-slate-400 font-normal">/ 200</span>
+                          </span>
+                        </div>
+                        <div className="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-black text-sm font-mono border border-emerald-500/20">
+                          {percentage}%
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 5 Marks Components Grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                      {/* Component 1: Major Examination (70 Marks) */}
+                      <div className="p-4 rounded-2xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/30 space-y-2">
+                        <div className="flex justify-between items-center">
+                          <span className="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase font-mono tracking-wider">🏆 Major Exam</span>
+                          <span className="text-[10px] font-black text-blue-700 dark:text-blue-300 font-mono">Max 70</span>
+                        </div>
+                        <div className="text-2xl font-black text-slate-900 dark:text-white font-mono">
+                          {assess.major} <span className="text-xs text-slate-400 font-normal">/ 70</span>
+                        </div>
+                        <div className="w-full h-1.5 bg-blue-200 dark:bg-blue-900 rounded-full overflow-hidden">
+                          <div className="h-full bg-[#253df5] rounded-full" style={{ width: `${(assess.major / 70) * 100}%` }}></div>
+                        </div>
+                        <span className="text-[9px] font-bold text-slate-400 block pt-1 font-mono">Sessional Midterm & Paper</span>
+                      </div>
+
+                      {/* Component 2: Minor Examination (30 Marks) */}
+                      <div className="p-4 rounded-2xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/30 space-y-2">
+                        <div className="flex justify-between items-center">
+                          <span className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase font-mono tracking-wider">📝 Minor Exam</span>
+                          <span className="text-[10px] font-black text-emerald-700 dark:text-emerald-300 font-mono">Max 30</span>
+                        </div>
+                        <div className="text-2xl font-black text-slate-900 dark:text-white font-mono">
+                          {assess.minor} <span className="text-xs text-slate-400 font-normal">/ 30</span>
+                        </div>
+                        <div className="w-full h-1.5 bg-emerald-200 dark:bg-emerald-900 rounded-full overflow-hidden">
+                          <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${(assess.minor / 30) * 100}%` }}></div>
+                        </div>
+                        <span className="text-[9px] font-bold text-slate-400 block pt-1 font-mono">Short Tests & Quizzes</span>
+                      </div>
+
+                      {/* Component 3: Project Work (50 Marks) */}
+                      <div className="p-4 rounded-2xl bg-purple-50/50 dark:bg-purple-950/20 border border-purple-100 dark:border-purple-900/30 space-y-2">
+                        <div className="flex justify-between items-center">
+                          <span className="text-[10px] font-black text-purple-600 dark:text-purple-400 uppercase font-mono tracking-wider">💻 Project Work</span>
+                          <span className="text-[10px] font-black text-purple-700 dark:text-purple-300 font-mono">Max 50</span>
+                        </div>
+                        <div className="text-2xl font-black text-slate-900 dark:text-white font-mono">
+                          {assess.project} <span className="text-xs text-slate-400 font-normal">/ 50</span>
+                        </div>
+                        <div className="w-full h-1.5 bg-purple-200 dark:bg-purple-900 rounded-full overflow-hidden">
+                          <div className="h-full bg-purple-500 rounded-full" style={{ width: `${(assess.project / 50) * 100}%` }}></div>
+                        </div>
+                        <span className="text-[9px] font-bold text-slate-400 block pt-1 font-mono">Practical Code & Repo</span>
+                      </div>
+
+                      {/* Component 4: Report Submission (30 Marks) */}
+                      <div className="p-4 rounded-2xl bg-amber-50/50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/30 space-y-2">
+                        <div className="flex justify-between items-center">
+                          <span className="text-[10px] font-black text-amber-600 dark:text-amber-400 uppercase font-mono tracking-wider">📄 Report Submission</span>
+                          <span className="text-[10px] font-black text-amber-700 dark:text-amber-300 font-mono">Max 30</span>
+                        </div>
+                        <div className="text-2xl font-black text-slate-900 dark:text-white font-mono">
+                          {assess.report} <span className="text-xs text-slate-400 font-normal">/ 30</span>
+                        </div>
+                        <div className="w-full h-1.5 bg-amber-200 dark:bg-amber-900 rounded-full overflow-hidden">
+                          <div className="h-full bg-amber-500 rounded-full" style={{ width: `${(assess.report / 30) * 100}%` }}></div>
+                        </div>
+                        <span className="text-[9px] font-bold text-slate-400 block pt-1 font-mono">Thesis & Lab Reports</span>
+                      </div>
+
+                      {/* Component 5: Class Viva (20 Marks) */}
+                      <div className="p-4 rounded-2xl bg-rose-50/50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/30 space-y-2">
+                        <div className="flex justify-between items-center">
+                          <span className="text-[10px] font-black text-rose-600 dark:text-rose-400 uppercase font-mono tracking-wider">🗣 Class Viva</span>
+                          <span className="text-[10px] font-black text-rose-700 dark:text-rose-300 font-mono">Max 20</span>
+                        </div>
+                        <div className="text-2xl font-black text-slate-900 dark:text-white font-mono">
+                          {assess.viva} <span className="text-xs text-slate-400 font-normal">/ 20</span>
+                        </div>
+                        <div className="w-full h-1.5 bg-rose-200 dark:bg-rose-900 rounded-full overflow-hidden">
+                          <div className="h-full bg-rose-500 rounded-full" style={{ width: `${(assess.viva / 20) * 100}%` }}></div>
+                        </div>
+                        <span className="text-[9px] font-bold text-slate-400 block pt-1 font-mono">Oral Viva & Participation</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
 
               {/* Main Grid: Left alerts (7 cols) and Right mastery stats (5 cols) */}
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">

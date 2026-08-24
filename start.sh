@@ -192,8 +192,9 @@ if command -v ollama &>/dev/null; then
 
   # Auto-pull gemma4:12b if not already downloaded
   if ! ollama list 2>/dev/null | grep -q "${OLLAMA_MODEL}"; then
-    log_info "Pulling ${OLLAMA_MODEL} (this may take a few minutes on first run)..."
-    ollama pull "${OLLAMA_MODEL}" && log_success "${OLLAMA_MODEL} ready" || log_warn "Pull failed — AI analysis will degrade gracefully"
+    log_info "Triggering background pull for ${OLLAMA_MODEL}..."
+    ollama pull "${OLLAMA_MODEL}" >/dev/null 2>&1 &
+    log_success "${OLLAMA_MODEL} download initiated in background"
   else
     log_success "Ollama ${OLLAMA_MODEL} is ready"
   fi

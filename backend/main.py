@@ -5,7 +5,7 @@ from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 
 from .database import engine, Base
-from .routers import users, ai, integrations
+from .routers import users, ai, integrations, storage
 from .routers.ai import limiter
 from .config import settings
 
@@ -91,6 +91,7 @@ app.add_middleware(
 app.include_router(users.router)
 app.include_router(ai.router)
 app.include_router(integrations.router)
+app.include_router(storage.router)
 
 @app.get("/")
 def read_root():

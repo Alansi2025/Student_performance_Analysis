@@ -30,10 +30,14 @@ try:
     OLLAMA_BASE_URL = settings.ollama_base_url
     OLLAMA_MODEL    = settings.ollama_model
     PADDLE_HOME     = settings.paddle_home
+    GEMINI_API_KEY  = settings.gemini_api_key
+    GEMINI_MODEL    = settings.gemini_model
 except Exception:
     OLLAMA_BASE_URL = os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434")
     OLLAMA_MODEL    = os.environ.get("OLLAMA_MODEL",    "gemma4:12b")
     PADDLE_HOME     = os.environ.get("PADDLE_HOME",     os.path.join(os.path.expanduser("~"), ".paddleocr"))
+    GEMINI_API_KEY  = os.environ.get("GEMINI_API_KEY",  "")
+    GEMINI_MODEL    = os.environ.get("GEMINI_MODEL",    "gemini-3.6-flash")
 
 
 # ---------------------------------------------------------------------------
@@ -99,8 +103,18 @@ def extract_text_with_paddle(image_path: str) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Ollama gemma4:12b health check and analysis
+# Gemini API & Ollama (Gemma) health checks & analysis
 # ---------------------------------------------------------------------------
+
+def check_gemini_health() -> dict:
+    """Check if Gemini API is configured and ready."""
+    is_configured = bool(GEMINI_API_KEY and GEMINI_API_KEY.strip())
+    return {
+        "configured": is_configured,
+        "model":      GEMINI_MODEL,
+        "available":  is_configured,
+    }
+
 
 def check_ollama_health() -> dict:
     """Check if Ollama is running and gemma4:12b is available."""
@@ -108,7 +122,6 @@ def check_ollama_health() -> dict:
         resp = httpx.get(f"{OLLAMA_BASE_URL}/api/tags", timeout=5.0)
         resp.raise_for_status()
         models = [m["name"] for m in resp.json().get("models", [])]
-        # Match both "gemma4:12b" and "gemma4:12b-it-qat" etc.
         model_ready = any(OLLAMA_MODEL in m for m in models)
         return {
             "ollama_running":  True,
@@ -126,11 +139,8 @@ def check_ollama_health() -> dict:
 
 
 def pull_ollama_model(model: str = OLLAMA_MODEL) -> bool:
-    """
-    Auto-pull the model from Ollama if it is not already available.
-    Returns True on success.
-    """
-    print(f"[Ollama] Pulling model {model} (this may take a few minutes)…")
+    """Auto-pull the model from Ollama if missing."""
+    print(f"[Ollama] Pulling model {model}...")
     try:
         with httpx.stream(
             "POST",
@@ -139,13 +149,7 @@ def pull_ollama_model(model: str = OLLAMA_MODEL) -> bool:
             timeout=600.0,
         ) as resp:
             for line in resp.iter_lines():
-                try:
-                    data = json.loads(line)
-                    status = data.get("status", "")
-                    if status:
-                        print(f"[Ollama pull] {status}")
-                except Exception:
-                    pass
+                pass
         return True
     except Exception as exc:
         print(f"[Ollama] Pull failed: {exc}")
@@ -167,6 +171,40 @@ Text:
 {text}
 \"\"\"
 """
+
+
+def analyze_with_gemini(text: str) -> dict:
+    """Send text to Cloud Gemini API (gemini-3.6-flash) for structured JSON analysis."""
+    if not GEMINI_API_KEY or not GEMINI_API_KEY.strip():
+        return {"error": "No Gemini API key configured"}
+
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent?key={GEMINI_API_KEY}"
+    prompt = ANALYSIS_PROMPT.format(text=text[:4000])
+
+    payload = {
+        "contents": [{"parts": [{"text": prompt}]}],
+        "generationConfig": {
+            "responseMimeType": "application/json"
+        }
+    }
+
+    try:
+        resp = httpx.post(url, json=payload, timeout=30.0)
+        resp.raise_for_status()
+        data = resp.json()
+        raw_text = data["candidates"][0]["content"]["parts"][0]["text"]
+        if "```" in raw_text:
+            raw_text = raw_text.split("```")[1]
+            if raw_text.startswith("json"):
+                raw_text = raw_text[4:]
+        raw_text = raw_text.strip()
+        result = json.loads(raw_text)
+        result["provider"] = "gemini"
+        result["model"] = GEMINI_MODEL
+        return result
+    except Exception as exc:
+        print(f"[Gemini API] Failed: {exc}")
+        return {"error": str(exc)}
 
 
 def analyze_with_ollama(text: str) -> dict:
@@ -191,13 +229,117 @@ def analyze_with_ollama(text: str) -> dict:
         )
         resp.raise_for_status()
         raw = resp.json().get("response", "{}")
-        return json.loads(raw)
+        res = json.loads(raw)
+        res["provider"] = "gemma"
+        res["model"] = OLLAMA_MODEL
+        return res
     except httpx.ConnectError:
         return {"error": "Ollama not reachable", "model": OLLAMA_MODEL}
     except (json.JSONDecodeError, KeyError) as exc:
         return {"error": f"Invalid response from model: {exc}"}
     except Exception as exc:
         return {"error": str(exc)}
+
+
+def analyze_pyq_text(text: str) -> dict:
+    """
+    Primary LLM entry point:
+    1. Try Gemini API first (if GEMINI_API_KEY is configured).
+    2. Fall back to Gemma (Ollama) if Gemini fails or is missing.
+    """
+    if GEMINI_API_KEY and GEMINI_API_KEY.strip():
+        print(f"[AI Engine] Analyzing via Gemini API ({GEMINI_MODEL})...")
+        res = analyze_with_gemini(text)
+        if "error" not in res:
+            return res
+        print(f"[AI Engine] Gemini API error ({res.get('error')}), falling back to Gemma (Ollama)...")
+
+    print(f"[AI Engine] Analyzing via Gemma (Ollama)...")
+    res = analyze_with_ollama(text)
+    if "error" not in res:
+        res["provider"] = "gemma"
+        res["model"] = OLLAMA_MODEL
+    return res
+
+
+# ---------------------------------------------------------------------------
+# Interactive Chatbot Functions (Gemini API + Gemma Fallback)
+# ---------------------------------------------------------------------------
+
+def chat_with_gemini(prompt: str, history: list = None) -> dict:
+    """Send interactive chat message to Cloud Gemini API (gemini-3.6-flash)."""
+    if not GEMINI_API_KEY or not GEMINI_API_KEY.strip():
+        return {"error": "No Gemini API key configured"}
+
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent?key={GEMINI_API_KEY}"
+    
+    contents = []
+    if history:
+        for msg in history[-10:]:
+            role = "user" if msg.get("role") in ["user", "human"] else "model"
+            contents.append({"role": role, "parts": [{"text": msg.get("content", "")}]})
+    
+    contents.append({"role": "user", "parts": [{"text": prompt}]})
+
+    payload = {
+        "contents": contents,
+        "systemInstruction": {
+            "parts": [{"text": "You are AetherLearn AI, an expert, encouraging academic tutor. Provide clear, structured, and helpful responses to student questions."}]
+        }
+    }
+
+    try:
+        resp = httpx.post(url, json=payload, timeout=30.0)
+        resp.raise_for_status()
+        data = resp.json()
+        raw_text = data["candidates"][0]["content"]["parts"][0]["text"]
+        return {
+            "response": raw_text.strip(),
+            "provider": "gemini",
+            "model": GEMINI_MODEL
+        }
+    except Exception as exc:
+        print(f"[Gemini Chat] Error: {exc}")
+        return {"error": str(exc)}
+
+
+def chat_with_ollama(prompt: str, history: list = None) -> dict:
+    """Send interactive chat message to local Ollama gemma4:12b."""
+    health = check_ollama_health()
+    if not health["ollama_running"]:
+        return {"error": f"Ollama not reachable at {OLLAMA_BASE_URL}"}
+
+    try:
+        resp = httpx.post(
+            f"{OLLAMA_BASE_URL}/api/generate",
+            json={
+                "model": OLLAMA_MODEL,
+                "prompt": f"System: You are AetherLearn AI academic tutor.\nUser: {prompt}\nAssistant:",
+                "stream": False,
+            },
+            timeout=120.0,
+        )
+        resp.raise_for_status()
+        raw = resp.json().get("response", "")
+        return {
+            "response": raw.strip(),
+            "provider": "gemma",
+            "model": OLLAMA_MODEL
+        }
+    except Exception as exc:
+        return {"error": str(exc)}
+
+
+def chat_with_ai(prompt: str, history: list = None) -> dict:
+    """Primary chat handler: Gemini API first, Gemma Ollama fallback."""
+    if GEMINI_API_KEY and GEMINI_API_KEY.strip():
+        res = chat_with_gemini(prompt, history)
+        if "error" not in res:
+            return res
+        print(f"[AI Chat] Gemini failed ({res.get('error')}) — falling back to Gemma...")
+    
+    res = chat_with_ollama(prompt, history)
+    return res
 
 
 # ---------------------------------------------------------------------------

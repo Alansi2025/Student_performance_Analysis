@@ -9,16 +9,30 @@ AI endpoints:
 import os
 import shutil
 from fastapi import APIRouter, Depends, UploadFile, File, HTTPException, Request
-from ..security import verify_api_key
+from pydantic import BaseModel
+from typing import List, Optional
+from ..security import verify_api_key, verify_api_key_or_session
 from ..ai.extract_text import extract_text_from_images
 from ..ai.convert_pdfs import convert_pdfs_to_jpgs
 from ..ai.pyq_analysis.analyze_pyq import (
+    analyze_pyq_text,
+    analyze_with_gemini,
     analyze_with_ollama,
+    chat_with_ai,
+    check_gemini_health,
     check_ollama_health,
     pull_ollama_model,
 )
 from slowapi import Limiter
 from slowapi.util import get_remote_address
+
+class ChatMessage(BaseModel):
+    role: str
+    content: str
+
+class ChatRequest(BaseModel):
+    message: str
+    history: Optional[List[ChatMessage]] = []
 
 limiter = Limiter(key_func=get_remote_address)
 router  = APIRouter(prefix="/ai", tags=["ai"])
@@ -36,11 +50,13 @@ def ai_health_check():
     """
     Reports the status of:
     - PaddleOCR subprocess venv
-    - Ollama connectivity and gemma4:12b availability
+    - Cloud Gemini API
+    - Local Ollama connectivity and gemma4:12b availability
     """
     ai_venv_py = os.path.join(AI_DIR, "ai_venv", "bin", "python")
     paddle_ready = os.path.exists(ai_venv_py)
 
+    gemini = check_gemini_health()
     ollama = check_ollama_health()
 
     return {
@@ -49,8 +65,10 @@ def ai_health_check():
             "venv_path":  ai_venv_py,
             "note":       "Runs in dedicated Python 3.12 subprocess (Apple ANE via Accelerate)",
         },
+        "gemini": gemini,
         "ollama": ollama,
-        "ready": paddle_ready and ollama["model_available"],
+        "active_primary": "Gemini API" if gemini["available"] else "Gemma (Ollama)",
+        "ready": paddle_ready and (gemini["available"] or ollama["model_available"]),
     }
 
 
@@ -63,14 +81,14 @@ def ai_health_check():
 def process_pdf_securely(
     request:  Request,
     file:     UploadFile = File(...),
-    api_key:  str        = Depends(verify_api_key),
+    auth:     str        = Depends(verify_api_key_or_session),
 ):
     """
-    Full AI pipeline (protected by API key + rate limiting):
+    Full AI pipeline (protected by Session Auth or API key + rate limiting):
     1. Accept PDF upload
     2. Convert pages → JPG images  (PyMuPDF)
     3. Extract text via PaddleOCR   (Python 3.12 subprocess, Apple ANE)
-    4. Analyse with Ollama gemma4:12b and auto-pull if missing
+    4. Analyse with Gemini API (gemini-3.6-flash) first, fallback to Gemma (Ollama)
     5. Return { filename, extracted_text, analysis }
     """
     if not file.filename.lower().endswith(".pdf"):
@@ -98,13 +116,10 @@ def process_pdf_securely(
             with open(output_txt, "r", encoding="utf-8") as fh:
                 extracted_text = fh.read()
 
-        # Step 3 — Ollama gemma4:12b analysis (auto-pulls model if needed)
+        # Step 3 — Gemini API (Primary) -> Gemma Ollama (Fallback) Analysis
         analysis: dict = {}
         if extracted_text.strip():
-            health = check_ollama_health()
-            if health["ollama_running"] and not health["model_available"]:
-                pull_ollama_model()
-            analysis = analyze_with_ollama(extracted_text)
+            analysis = analyze_pyq_text(extracted_text)
 
         # Step 4 — Activity log
         client_ip = request.client.host if request.client else "unknown"
@@ -115,7 +130,7 @@ def process_pdf_securely(
             crud.log_activity(
                 db,
                 action="AI_USAGE",
-                details=f"PDF processed (PaddleOCR+Ollama gemma4:12b): {file.filename}",
+                details=f"PDF processed (PaddleOCR+{analysis.get('provider', 'AI')} {analysis.get('model', '')}): {file.filename}",
                 ip_address=client_ip,
             )
         finally:
@@ -130,3 +145,32 @@ def process_pdf_securely(
 
     except Exception as exc:
         raise HTTPException(status_code=500, detail=f"Processing error: {exc}")
+
+
+# ---------------------------------------------------------------------------
+# POST /ai/chat
+# ---------------------------------------------------------------------------
+
+@router.post("/chat")
+@limiter.limit("20/minute")
+def ai_chatbot_endpoint(
+    request: Request,
+    payload: ChatRequest,
+    auth: str = Depends(verify_api_key_or_session),
+):
+    """
+    Interactive Chatbot endpoint:
+    - Protected by Google/Session Auth OR API key
+    - Powered by Cloud Gemini API (gemini-3.6-flash) primary
+    - Fallback to local Gemma (gemma4:12b via Ollama)
+    """
+    if not payload.message.strip():
+        raise HTTPException(status_code=400, detail="Message cannot be empty.")
+
+    history_dicts = [{"role": msg.role, "content": msg.content} for msg in (payload.history or [])]
+    result = chat_with_ai(payload.message, history_dicts)
+
+    if "error" in result and not result.get("response"):
+        raise HTTPException(status_code=500, detail=result["error"])
+
+    return result

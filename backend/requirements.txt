@@ -13,3 +13,4 @@ paddleocr
 paddlepaddle
 httpx
 pydantic-settings
+google-cloud-storage

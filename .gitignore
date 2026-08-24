@@ -43,3 +43,4 @@ __pycache__/
 *.sln
 *.sw?
 backend/ai/ai_venv/
+backend/gcs_local_data/
